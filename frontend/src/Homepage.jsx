@@ -31,6 +31,14 @@ function GithubMark(props) {
   );
 }
 
+function LinkedinMark(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM7.114 20.452H3.558V9h3.556v11.452z" />
+    </svg>
+  );
+}
+
 function Cite({ n }) {
   return <sup className="hp-cite ml-0.5 text-[0.65em] font-medium text-coral-600">{n}</sup>;
 }
@@ -85,15 +93,17 @@ export default function Homepage({ onGetStarted }) {
     <div className="homepage min-h-screen bg-paper font-sans text-ink">
       {/* Nav */}
       <header className="sticky top-0 z-20 border-b border-white/60 bg-surface/70 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_8px_24px_-18px_rgba(16,163,127,0.35)] backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2.5">
-            <span className="hp-logo-ring relative flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-coral-400 to-coral-600 font-serif text-sm font-semibold text-white shadow-[0_4px_12px_-2px_rgba(16,163,127,0.55)]">
-              D
-            </span>
-            <span className="font-serif text-lg font-semibold">RAG Document Assistant</span>
-            <span className="hidden rounded-full bg-coral-50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-coral-600 sm:inline-block">
-              RAG
-            </span>
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:py-4">
+          <div className="flex items-center justify-between gap-2.5 sm:justify-start">
+            <div className="flex items-center gap-2.5 overflow-hidden">
+              <span className="hp-logo-ring relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-coral-400 to-coral-600 font-serif text-sm font-semibold text-white shadow-[0_4px_12px_-2px_rgba(16,163,127,0.55)] sm:h-9 sm:w-9">
+                D
+              </span>
+              <span className="truncate font-serif text-base font-semibold sm:text-lg">RAG Document Assistant</span>
+              <span className="hidden shrink-0 rounded-full bg-coral-50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-coral-600 sm:inline-block">
+                RAG
+              </span>
+            </div>
           </div>
           <nav className="hidden items-center gap-1 rounded-full border border-rule bg-paper/80 p-1 text-sm text-muted md:flex">
             {[
@@ -107,25 +117,30 @@ export default function Homepage({ onGetStarted }) {
               </a>
             ))}
           </nav>
-          <div className="flex items-center gap-3">
-            <button onClick={openChat} className="hp-btn-glass inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5">
-              <span className="relative z-10 inline-flex items-center gap-1.5">
-                Get Started <ArrowRight size={14} />
+          <div className="flex flex-nowrap items-center gap-1.5 sm:gap-3 sm:justify-end">
+            <button onClick={openChat} className="hp-btn-glass inline-flex shrink-0 items-center gap-0.5 rounded-full px-2 py-1 text-[11px] font-medium text-white transition hover:-translate-y-0.5 sm:gap-1.5 sm:px-4 sm:py-2 sm:text-sm">
+              <span className="relative z-10 inline-flex items-center gap-0.5 sm:gap-1.5">
+                Get Started <ArrowRight size={11} className="sm:hidden" /><ArrowRight size={14} className="hidden sm:inline" />
               </span>
             </button>
             <button
               onClick={() => setShowTechnical(true)}
-              className="hidden rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white shadow-[0_6px_16px_-6px_rgba(26,29,31,0.5)] transition hover:-translate-y-0.5 hover:bg-black lg:inline-flex"
+              title="Technical overview"
+              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-ink px-2 py-1 text-[11px] font-semibold text-white shadow-[0_6px_16px_-6px_rgba(26,29,31,0.5)] transition hover:-translate-y-0.5 hover:bg-black sm:gap-1.5 sm:px-4 sm:py-2 sm:text-sm"
             >
+              <Code2 size={11} className="sm:hidden" />
+              <Code2 size={15} className="hidden sm:inline" />
               Technical overview
             </button>
-            <button
-              type="button"
-              title="Add your GitHub repo link here"
-              className="hidden h-9 w-9 items-center justify-center rounded-full border border-rule text-black transition hover:border-coral-500 sm:inline-flex"
+            <a
+              href="https://github.com/usmandev16/Rag-Document-Assistant"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="View source on GitHub"
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-rule text-black transition hover:border-coral-500 sm:h-9 sm:w-9"
             >
-              <GithubMark className="h-5 w-5" />
-            </button>
+              <GithubMark className="h-4 w-4 sm:h-5 sm:w-5" />
+            </a>
           </div>
         </div>
       </header>
@@ -402,8 +417,17 @@ export default function Homepage({ onGetStarted }) {
       </section>
 
       <footer className="border-t border-rule">
-        <div className="mx-auto max-w-6xl px-6 py-8 text-xs text-faint">
-          RAG Document Assistant
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-xs text-faint">
+          <span>RAG Document Assistant — made by M Usman</span>
+          <a
+            href="https://www.linkedin.com/in/usmandatasciences/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Connect on LinkedIn"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-rule text-black transition hover:border-coral-500"
+          >
+            <LinkedinMark className="h-4 w-4" />
+          </a>
         </div>
       </footer>
     </div>

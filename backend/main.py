@@ -34,7 +34,10 @@ app = FastAPI(title="RAG Doc Chat API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    # The frontend calls this API directly from its own origin (no nginx
+    # proxy — see frontend/nginx.conf), and nothing here uses cookies, so a
+    # wildcard is safe: no allow_credentials, so browsers never send any.
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -27,13 +27,13 @@ function docTimeLabel(isoString) {
   return date.toLocaleDateString("en-US", { day: "numeric", month: "short" });
 }
 
-function IconRail({ theme, onToggleTheme, onExit }) {
+function IconRail({ theme, onToggleTheme, onExit, onToggleChats }) {
   return (
     <div className="icon-rail">
       <div className="rail-brand" title="Doc Chat">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6a4 4 0 0 0 2.5 2.5L22 12l-5.6 1.9a4 4 0 0 0-2.5 2.5L12 22l-1.9-5.6a4 4 0 0 0-2.5-2.5L2 12l5.6-1.9a4 4 0 0 0 2.5-2.5L12 2z"/></svg>
       </div>
-      <div className="rail-item active" title="Chats">
+      <div className="rail-item active" title="Chats" onClick={onToggleChats}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
       </div>
       <div className="rail-spacer"></div>
@@ -192,6 +192,7 @@ export default function App({ onExit }) {
   const [messageSearch, setMessageSearch] = useState("");
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
   const [attachments, setAttachments] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -289,9 +290,11 @@ export default function App({ onExit }) {
     setMessages([]);
     setIndexedDocs([]);
     setActiveTab("chats");
+    setSidebarOpen(false);
   }
 
   async function handleSelectChat(id) {
+    setSidebarOpen(false);
     if (id === currentChatId) return;
     const chat = await getChatById(id);
     setMessages(chat.messages.map((m) => ({ role: m.role, content: m.content })));
@@ -309,9 +312,15 @@ export default function App({ onExit }) {
 
   return (
     <>
-      <IconRail theme={theme} onToggleTheme={setTheme} onExit={onExit} />
+      <IconRail
+        theme={theme}
+        onToggleTheme={setTheme}
+        onExit={onExit}
+        onToggleChats={() => setSidebarOpen((open) => !open)}
+      />
+      {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
       <div className="app-shell">
-        <aside className="sidebar">
+        <aside className={`sidebar${sidebarOpen ? " open" : ""}`}>
           <div className="sb-head">
             <div className="sb-logo">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6a4 4 0 0 0 2.5 2.5L22 12l-5.6 1.9a4 4 0 0 0-2.5 2.5L12 22l-1.9-5.6a4 4 0 0 0-2.5-2.5L2 12l5.6-1.9a4 4 0 0 0 2.5-2.5L12 2z"/></svg>

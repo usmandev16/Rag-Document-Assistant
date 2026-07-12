@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   ArrowLeft,
   CodeXml,
-  ExternalLink,
   FolderInput,
   Scissors,
   Cpu,
@@ -387,12 +386,14 @@ export default function TechnicalOverview({ onBack }) {
 
           <Section id="links" eyebrow="Links" icon={Link2} title="Links">
             <div className="flex flex-wrap gap-3">
-              <span className="inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2 text-sm text-faint">
-                <CodeXml size={15} /> GitHub — add link
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2 text-sm text-faint">
-                <ExternalLink size={15} /> Live demo — add link
-              </span>
+              <a
+                href="https://github.com/usmandev16/Rag-Document-Assistant"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2 text-sm text-ink transition hover:border-coral-500 hover:text-coral-600"
+              >
+                <CodeXml size={15} /> GitHub
+              </a>
             </div>
           </Section>
         </div>

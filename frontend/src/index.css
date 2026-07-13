@@ -109,7 +109,11 @@ button { font-family: inherit; cursor: pointer; }
    right (main) corners. */
 .app-shell {
     display: flex;
-    height: 100vh;
+    height: 100vh; /* fallback for browsers without dvh support */
+    height: 100dvh; /* mobile browsers change available height as their
+                       address bar shows/hides — 100vh doesn't track that,
+                       so the input bar at the bottom ends up clipped
+                       below the visible area. dvh does track it. */
     margin: 0 16px 0 64px; /* left margin clears the flush fixed rail */
 }
 

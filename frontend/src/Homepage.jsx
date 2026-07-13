@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowRight,
   FileText,
@@ -83,10 +83,31 @@ function SectionHeading({ eyebrow, title, lede }) {
 
 export default function Homepage({ onGetStarted }) {
   const openChat = onGetStarted || (() => {});
-  const [showTechnical, setShowTechnical] = useState(false);
+  const [showTechnical, setShowTechnical] = useState(
+    () => window.location.pathname === "/technical-overview"
+  );
+
+  // Keeps the URL in sync so /technical-overview is a real, shareable,
+  // reloadable link instead of just in-memory component state — and so
+  // the browser's back button works.
+  useEffect(() => {
+    const onPopState = () => setShowTechnical(window.location.pathname === "/technical-overview");
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  function openTechnical() {
+    window.history.pushState({}, "", "/technical-overview");
+    setShowTechnical(true);
+  }
+
+  function closeTechnical() {
+    window.history.pushState({}, "", "/");
+    setShowTechnical(false);
+  }
 
   if (showTechnical) {
-    return <TechnicalOverview onBack={() => setShowTechnical(false)} />;
+    return <TechnicalOverview onBack={closeTechnical} />;
   }
 
   return (
@@ -124,7 +145,7 @@ export default function Homepage({ onGetStarted }) {
               </span>
             </button>
             <button
-              onClick={() => setShowTechnical(true)}
+              onClick={openTechnical}
               title="Technical overview"
               className="inline-flex shrink-0 items-center gap-1 rounded-full bg-ink px-2 py-1 text-[11px] font-semibold text-white shadow-[0_6px_16px_-6px_rgba(26,29,31,0.5)] transition hover:-translate-y-0.5 hover:bg-black sm:gap-1.5 sm:px-4 sm:py-2 sm:text-sm"
             >

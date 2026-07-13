@@ -69,6 +69,27 @@ def cleanup_stale_chats(max_age_hours: float = 6) -> None:
         delete_chat(chat_id)
 
 
+def wipe_session(session_id: str) -> None:
+    for chat_id in session_chat_ids(session_id):
+        delete_chat_chunks(chat_id)
+        delete_chat(chat_id)
+
+
+RATE_LIMIT_MARKERS = ("rate_limit_exceeded", "tokens per minute", "Request too large")
+
+
+def groq_error_answer(exc: Exception) -> str:
+    """A generic "couldn't reach Groq" message hides what's actually wrong
+    when it's a rate limit, which needs a different response from the user
+    (wait, or ask something shorter) than a real connectivity failure."""
+    if any(marker in str(exc) for marker in RATE_LIMIT_MARKERS):
+        return (
+            "This question needs more context than the current rate limit allows "
+            "right now. Try a shorter question, or wait a minute and try again."
+        )
+    return "Sorry, I couldn't reach Groq to generate an answer."
+
+
 def is_greeting(text: str) -> bool:
     return text.strip().lower().strip("!.,? ") in GREETINGS
 
@@ -116,9 +137,18 @@ def clear_session(session_id: str = Depends(get_session_id)):
     """Called when the visitor leaves the chat (e.g. back to the homepage) —
     wipes their chats and indexed documents immediately, instead of waiting
     for the stale-chat TTL sweep."""
-    for chat_id in session_chat_ids(session_id):
-        delete_chat_chunks(chat_id)
-        delete_chat(chat_id)
+    wipe_session(session_id)
+    return {"ok": True}
+
+
+@app.post("/api/session/clear-beacon")
+def clear_session_beacon(session_id: str):
+    """Same as DELETE /api/session, but reads session_id from the query
+    string instead of a header. navigator.sendBeacon() — the only browser
+    API that reliably fires a request while a page is unloading (reload,
+    tab close, navigating away) — can't set custom headers, so this is
+    what the frontend's pagehide handler calls instead."""
+    wipe_session(session_id)
     return {"ok": True}
 
 
@@ -173,10 +203,13 @@ def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
     search_query = build_retrieval_query(req.question, history)
     # The model's 128k-token context window is not the real ceiling here —
     # this Groq account's "on_demand" service tier caps requests at 12000
-    # tokens per minute, and ~60 chunks (~13k tokens) blows straight through
-    # that. Stay well under it: ~215 tokens/chunk observed, so 20 chunks is
-    # ~4300 tokens, leaving headroom for system prompt, history, and output.
-    n_ctx = min(total_chunks, 20)
+    # tokens per minute. ~215 tokens/chunk observed, so 40 chunks is ~8600
+    # tokens, leaving headroom for system prompt, history, and output while
+    # still comfortably under the limit. A large document (e.g. 200+ pages)
+    # produces far more chunks than this can ever cover in one question —
+    # that's a hard ceiling from the rate tier, not something this number
+    # alone fixes; see the "Limitations" note on the Technical Overview page.
+    n_ctx = min(total_chunks, 40)
 
     if is_greeting(req.question):
         answer = (
@@ -192,7 +225,7 @@ def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         try:
             answer, trace = answer_with_web_search(req.question, context_chunks, [m.model_dump() for m in history])
         except Exception as exc:
-            return respond({"answer": "Sorry, I couldn't reach Groq to generate an answer.", "error": str(exc)})
+            return respond({"answer": groq_error_answer(exc), "error": str(exc)})
         searched_at = trace.pop("searched_at", None)
         return respond({
             "answer": answer,
@@ -210,7 +243,7 @@ def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
     try:
         answer = answer_question(req.question, context_chunks, [m.model_dump() for m in history])
     except Exception as exc:
-        return respond({"answer": "Sorry, I couldn't reach Groq to generate an answer.", "error": str(exc)})
+        return respond({"answer": groq_error_answer(exc), "error": str(exc)})
 
     sources = [
         {

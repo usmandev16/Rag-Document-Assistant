@@ -70,3 +70,12 @@ export async function clearSession() {
   const res = await fetch(`${API_BASE}/api/session`, { method: "DELETE", headers: sessionHeaders() });
   return res.json();
 }
+
+// sendBeacon can't set the X-Session-Id header, so the id goes in the
+// query string instead — this is the only browser API that reliably
+// fires while the page is unloading (reload, tab close, navigating away),
+// which a normal fetch isn't guaranteed to complete before that happens.
+export function clearSessionOnUnload() {
+  const id = getSessionId();
+  navigator.sendBeacon(`${API_BASE}/api/session/clear-beacon?session_id=${encodeURIComponent(id)}`);
+}

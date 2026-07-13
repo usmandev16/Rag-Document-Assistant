@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Homepage from "./Homepage";
 import App from "./App";
-import { clearSession } from "./api.js";
+import { clearSession, clearSessionOnUnload } from "./api.js";
 
 export default function Root() {
   const [showChat, setShowChat] = useState(false);
+
+  useEffect(() => {
+    // Fires on reload, tab close, or navigating away — not just the
+    // explicit "exit" button — so a refresh doesn't leave old chats and
+    // documents sitting around for the same session to see again.
+    window.addEventListener("pagehide", clearSessionOnUnload);
+    return () => window.removeEventListener("pagehide", clearSessionOnUnload);
+  }, []);
 
   function handleExit() {
     setShowChat(false);

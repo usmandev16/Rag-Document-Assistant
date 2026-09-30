@@ -34,12 +34,26 @@ export async function getDocuments(chatId) {
   return res.json();
 }
 
+// The backend queues ingestion on a Celery worker and returns a task id
+// right away; poll until it finishes and resolve with the same
+// { indexed, total_chunks } shape the old synchronous endpoint returned.
 export async function uploadDocuments(files, chatId) {
   const formData = new FormData();
   formData.append("chat_id", chatId);
   for (const file of files) formData.append("files", file);
   const res = await fetch(`${API_BASE}/api/documents`, { method: "POST", headers: sessionHeaders(), body: formData });
-  return res.json();
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.detail || `Upload failed (${res.status})`);
+
+  const deadline = Date.now() + 5 * 60 * 1000;
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const statusRes = await fetch(`${API_BASE}/api/upload/status/${body.task_id}`, { headers: sessionHeaders() });
+    const status = await statusRes.json();
+    if (status.status === "success") return status.result;
+    if (status.status === "failure" || !statusRes.ok) throw new Error(status.error || status.detail || "Ingestion failed");
+  }
+  throw new Error("Ingestion timed out");
 }
 
 export async function sendChat(question, history, chatId) {
@@ -48,7 +62,10 @@ export async function sendChat(question, history, chatId) {
     headers: sessionHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ question, history, chat_id: chatId }),
   });
-  return res.json();
+  const body = await res.json();
+  // Rate limited: show the server's "try again in Ns" text as the reply.
+  if (res.status === 429) return { answer: body.detail, chat_id: chatId };
+  return body;
 }
 
 export async function getChats() {

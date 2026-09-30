@@ -242,7 +242,7 @@ export default function Homepage({ onGetStarted }) {
               [Code2, "Python", "Core of the application."],
               [Layers, "RAG", "Grounds every answer in the actual documents."],
               [Cpu, "all-MiniLM-L6-v2", "Turns documents into vectors on the server, in-house."],
-              [Database, "Chroma", "Stores the vectors and finds the most relevant pieces."],
+              [Database, "Pinecone", "Stores the vectors and finds the most relevant pieces."],
               [Zap, "Groq (Llama)", "Fast answer generation."],
               [Globe, "Internet search", "For live market comparison."],
             ].map(([Icon, name, desc], i) => (

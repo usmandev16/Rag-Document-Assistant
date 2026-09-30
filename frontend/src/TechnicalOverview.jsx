@@ -177,7 +177,7 @@ export default function TechnicalOverview({ onBack }) {
                 between conversations.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {["Python", "FastAPI", "React", "Chroma", "Hugging Face embeddings", "Groq (Llama 3.3 + compound-beta)"].map((s) => (
+                {["Python", "FastAPI", "React", "Pinecone", "Redis + Celery", "Hugging Face embeddings", "Groq (Llama 3.3 + compound-beta)"].map((s) => (
                   <span key={s} className="rounded-full border border-rule bg-coral-50 px-3 py-1 font-mono text-xs text-coral-600">
                     {s}
                   </span>
@@ -198,14 +198,14 @@ export default function TechnicalOverview({ onBack }) {
                   <PipelineStep icon={FolderInput} n="1">Documents are loaded and parsed: pypdf for PDFs, python-docx for Word, and pandas for Excel and CSV.</PipelineStep>
                   <PipelineStep icon={Scissors} n="2">Text is split into overlapping, paragraph-packed chunks (about 800 characters, 150 overlap).</PipelineStep>
                   <PipelineStep icon={Cpu} n="3">Each chunk is embedded into a vector using a local Hugging Face model (all-MiniLM-L6-v2).</PipelineStep>
-                  <PipelineStep icon={Database} n="4" last>Vectors and their source metadata are stored in Chroma.</PipelineStep>
+                  <PipelineStep icon={Database} n="4" last>Vectors and their source metadata are stored in Pinecone.</PipelineStep>
                 </div>
               </Card>
               <Card>
                 <p className="font-mono text-xs uppercase tracking-wide text-faint">Query — per question</p>
                 <div className="mt-4">
                   <PipelineStep icon={HelpCircle} n="1">The question is embedded with the same model.</PipelineStep>
-                  <PipelineStep icon={Search} n="2">Chroma returns the nearest chunks by vector similarity.</PipelineStep>
+                  <PipelineStep icon={Search} n="2">Pinecone returns the nearest chunks by vector similarity.</PipelineStep>
                   <PipelineStep icon={FileCode2} n="3">The retrieved chunks and the question are composed into a grounded prompt.</PipelineStep>
                   <PipelineStep icon={Sparkles} n="4">Groq (llama-3.3-70b-versatile, or compound-beta for web search) generates the answer using only that context.</PipelineStep>
                   <PipelineStep icon={FileOutput} n="5" last>The answer is returned with the source document and section shown.</PipelineStep>
@@ -229,9 +229,9 @@ export default function TechnicalOverview({ onBack }) {
                   does not provide embeddings), avoids a per-chunk API cost, and keeps that stage
                   in-house.
                 </DefItem>
-                <DefItem term="Chroma (vector store)">
-                  Purpose-built for vector similarity search, runs locally, and needs no separate
-                  setup, unlike forcing vector search onto a general SQL database. Each chunk carries
+                <DefItem term="Pinecone (vector store)">
+                  Managed vector database, shared by every API and worker process, so the app can
+                  scale past one server. Each chat gets its own namespace, and each chunk carries
                   its chat id and session owner as metadata, and retrieval filters on it, so a
                   question only ever searches the documents uploaded to that specific chat.
                 </DefItem>

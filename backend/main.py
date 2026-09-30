@@ -1,14 +1,13 @@
+import asyncio
+import base64
 import os
-from datetime import datetime
 
-from dotenv import load_dotenv
+from celery.result import AsyncResult
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from src.chunking import chunk_text
 from src.llm import answer_question, answer_with_web_search, generate_title, needs_web_search
-from src.loaders import extract_text
 from src.chat_store import (
     append_messages,
     create_chat,
@@ -20,9 +19,17 @@ from src.chat_store import (
     session_chat_ids,
     stale_chat_ids,
 )
-from src.vectorstore import add_chunks, chunk_count, delete_chat_chunks, list_documents, query_chunks
+from src.rate_limit import (
+    CHAT_RATE_LIMIT_PER_MINUTE,
+    UPLOAD_RATE_LIMIT_PER_MINUTE,
+    add_tokens,
+    check_tokens,
+    hit,
+)
+from src.vectorstore import delete_chat_chunks, has_chunks, list_documents, query_chunks
+from src.worker import celery_app, ingest_documents
 
-load_dotenv()
+MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_MB", "20")) * 1024 * 1024
 
 GREETINGS = {
     "hi", "hello", "hey", "hii", "hiya", "yo", "howdy",
@@ -40,6 +47,8 @@ app.add_middleware(
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
+    # Retry-After isn't CORS-safelisted; without this the browser hides it.
+    expose_headers=["Retry-After"],
 )
 
 
@@ -60,19 +69,32 @@ def get_session_id(x_session_id: str | None = Header(default=None)) -> str:
     return x_session_id or "anonymous"
 
 
-def cleanup_stale_chats(max_age_hours: float = 6) -> None:
+async def chat_limits(session_id: str = Depends(get_session_id)) -> None:
+    await hit("chat", session_id, CHAT_RATE_LIMIT_PER_MINUTE)
+    await check_tokens(session_id)
+
+
+async def upload_limits(session_id: str = Depends(get_session_id)) -> None:
+    await hit("upload", session_id, UPLOAD_RATE_LIMIT_PER_MINUTE)
+
+
+async def remove_chat(chat_id: str) -> None:
+    # Pinecone's SDK is sync — keep it off the event loop.
+    await asyncio.to_thread(delete_chat_chunks, chat_id)
+    await delete_chat(chat_id)
+
+
+async def cleanup_stale_chats(max_age_hours: float = 6) -> None:
     """No login system, so this — not the per-tab session id alone — is what
     actually makes old chats and their indexed documents go away instead of
-    accumulating on disk forever."""
-    for chat_id in stale_chat_ids(max_age_hours):
-        delete_chat_chunks(chat_id)
-        delete_chat(chat_id)
+    accumulating forever."""
+    for chat_id in await stale_chat_ids(max_age_hours):
+        await remove_chat(chat_id)
 
 
-def wipe_session(session_id: str) -> None:
-    for chat_id in session_chat_ids(session_id):
-        delete_chat_chunks(chat_id)
-        delete_chat(chat_id)
+async def wipe_session(session_id: str) -> None:
+    for chat_id in await session_chat_ids(session_id):
+        await remove_chat(chat_id)
 
 
 RATE_LIMIT_MARKERS = ("rate_limit_exceeded", "tokens per minute", "Request too large")
@@ -104,81 +126,105 @@ def build_retrieval_query(question: str, history: list[ChatMessage]) -> str:
 
 
 @app.get("/api/status")
-def status():
+async def status():
     return {"groq_connected": bool(os.environ.get("GROQ_API_KEY"))}
 
 
 @app.get("/api/documents")
-def get_documents(chat_id: str):
-    return list_documents(chat_id)
+async def get_documents(chat_id: str, session_id: str = Depends(get_session_id)):
+    if not await owns_chat(chat_id, session_id):
+        return []
+    return await asyncio.to_thread(list_documents, chat_id)
 
 
 @app.get("/api/chats")
-def get_chats(session_id: str = Depends(get_session_id)):
-    cleanup_stale_chats()
-    return list_chats(session_id)
+async def get_chats(session_id: str = Depends(get_session_id)):
+    await cleanup_stale_chats()
+    return await list_chats(session_id)
 
 
 @app.post("/api/chats")
-def new_chat(session_id: str = Depends(get_session_id)):
-    return create_chat(session_id)
+async def new_chat(session_id: str = Depends(get_session_id)):
+    return await create_chat(session_id)
 
 
 @app.get("/api/chats/{chat_id}")
-def get_chat_by_id(chat_id: str, session_id: str = Depends(get_session_id)):
-    chat = get_chat(chat_id)
-    if chat is None or not owns_chat(chat_id, session_id):
+async def get_chat_by_id(chat_id: str, session_id: str = Depends(get_session_id)):
+    chat = await get_chat(chat_id)
+    if chat is None or chat.get("session_id") != session_id:
         raise HTTPException(status_code=404, detail="Chat not found")
     return chat
 
 
 @app.delete("/api/session")
-def clear_session(session_id: str = Depends(get_session_id)):
+async def clear_session(session_id: str = Depends(get_session_id)):
     """Called when the visitor leaves the chat (e.g. back to the homepage) —
     wipes their chats and indexed documents immediately, instead of waiting
     for the stale-chat TTL sweep."""
-    wipe_session(session_id)
+    await wipe_session(session_id)
     return {"ok": True}
 
 
 @app.post("/api/session/clear-beacon")
-def clear_session_beacon(session_id: str):
+async def clear_session_beacon(session_id: str):
     """Same as DELETE /api/session, but reads session_id from the query
     string instead of a header. navigator.sendBeacon() — the only browser
     API that reliably fires a request while a page is unloading (reload,
     tab close, navigating away) — can't set custom headers, so this is
     what the frontend's pagehide handler calls instead."""
-    wipe_session(session_id)
+    await wipe_session(session_id)
     return {"ok": True}
 
 
-@app.post("/api/documents")
-def upload_documents(chat_id: str = Form(...), files: list[UploadFile] = File(...)):
-    indexed = []
+@app.post("/api/documents", status_code=202, dependencies=[Depends(upload_limits)])
+async def upload_documents(
+    chat_id: str = Form(...),
+    files: list[UploadFile] = File(...),
+    session_id: str = Depends(get_session_id),
+):
+    """Queue parse → chunk → embed → Pinecone on the Celery worker and return
+    right away; the frontend polls /api/upload/status/{task_id}."""
+    if not await owns_chat(chat_id, session_id):
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    payload, total = [], 0
     for file in files:
-        raw_text = extract_text(file.filename, file.file.read())
-        chunks = chunk_text(raw_text, chunk_size=800, overlap=150)
-        add_chunks(chunks, source=file.filename, chat_id=chat_id)
-        preview = chunks[0][:140] + ("..." if len(chunks[0]) > 140 else "") if chunks else ""
-        indexed.append({
-            "name": file.filename,
-            "chunks": len(chunks),
-            "preview": preview,
-            "uploaded_at": datetime.now().isoformat(),
-        })
-    return {"indexed": indexed, "total_chunks": sum(d["chunks"] for d in indexed)}
+        data = await file.read()
+        total += len(data)
+        if total > MAX_UPLOAD_BYTES:
+            raise HTTPException(status_code=413, detail=f"Upload exceeds {MAX_UPLOAD_BYTES // (1024 * 1024)} MB.")
+        payload.append({"name": file.filename, "data": base64.b64encode(data).decode()})
+
+    task = await asyncio.to_thread(ingest_documents.delay, chat_id, session_id, payload)
+    return {"task_id": task.id, "status": "queued"}
 
 
-@app.post("/api/chat")
-def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
+@app.get("/api/upload/status/{task_id}")
+async def upload_status(task_id: str, session_id: str = Depends(get_session_id)):
+    result = AsyncResult(task_id, app=celery_app)
+    # .state / .result read the Celery backend with a sync Redis client.
+    state, value = await asyncio.to_thread(lambda: (result.state, result.result))
+
+    if state == "SUCCESS":
+        if value.get("session_id") != session_id:
+            raise HTTPException(status_code=404, detail="Task not found")
+        return {"task_id": task_id, "status": "success", "result": value}
+    if state == "FAILURE":
+        return {"task_id": task_id, "status": "failure", "error": str(value)}
+    # PENDING (queued, or an unknown id — Celery can't tell them apart) / STARTED / RETRY
+    return {"task_id": task_id, "status": state.lower()}
+
+
+@app.post("/api/chat", dependencies=[Depends(chat_limits)])
+async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
     # A chat_id that's missing or belongs to someone else's session gets a
     # fresh chat instead of an error — same effect as opening the sidebar's
     # "New chat" button.
-    chat_id = req.chat_id if req.chat_id and owns_chat(req.chat_id, session_id) else None
-    chat_id = chat_id or create_chat(session_id)["id"]
+    chat_id = req.chat_id if req.chat_id and await owns_chat(req.chat_id, session_id) else None
+    chat_id = chat_id or (await create_chat(session_id))["id"]
 
-    def respond(payload: dict, title: str | None = None) -> dict:
-        append_messages(
+    async def respond(payload: dict, title: str | None = None) -> dict:
+        await append_messages(
             chat_id,
             {"role": "user", "content": req.question},
             {"role": "assistant", "content": payload["answer"]},
@@ -187,18 +233,19 @@ def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         )
         return {**payload, "chat_id": chat_id}
 
-    def title_for(answer: str) -> str | None:
+    async def title_for(answer: str) -> str | None:
         # A greeting-truncated title ("hi") is a poor label; only worth the
         # extra Groq call once, on a chat's first real, grounded answer.
-        if not needs_title(chat_id):
+        if not await needs_title(chat_id):
             return None
         try:
-            return generate_title(req.question, answer)
+            title, tokens = await generate_title(req.question, answer)
         except Exception:
             return None
+        await add_tokens(session_id, tokens)
+        return title
 
-    total_chunks = chunk_count(chat_id)
-    has_docs = total_chunks > 0
+    has_docs = await asyncio.to_thread(has_chunks, chat_id)
     history = req.history
     search_query = build_retrieval_query(req.question, history)
     # The model's 128k-token context window is not the real ceiling here —
@@ -209,7 +256,8 @@ def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
     # produces far more chunks than this can ever cover in one question —
     # that's a hard ceiling from the rate tier, not something this number
     # alone fixes; see the "Limitations" note on the Technical Overview page.
-    n_ctx = min(total_chunks, 40)
+    # Pinecone returns fewer than top_k when the chat has fewer chunks.
+    n_ctx = 40
 
     if is_greeting(req.question):
         answer = (
@@ -217,33 +265,36 @@ def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
             if has_docs
             else "Hello! I don't have any documents to work with yet. Upload one to get started."
         )
-        return respond({"answer": answer})
+        return await respond({"answer": answer})
+
+    results = await asyncio.to_thread(query_chunks, search_query, chat_id, n_ctx) if has_docs else []
+    context_chunks = [f"[From {meta.get('source', 'document')}]\n{doc}" for doc, meta in results]
 
     if needs_web_search(req.question):
-        results = query_chunks(search_query, chat_id, n_results=n_ctx) if has_docs else []
-        context_chunks = [f"[From {meta.get('source', 'document')}]\n{doc}" for doc, meta in results]
         try:
-            answer, trace = answer_with_web_search(req.question, context_chunks, [m.model_dump() for m in history])
+            answer, trace, tokens = await answer_with_web_search(
+                req.question, context_chunks, [m.model_dump() for m in history]
+            )
         except Exception as exc:
-            return respond({"answer": groq_error_answer(exc), "error": str(exc)})
+            return await respond({"answer": groq_error_answer(exc), "error": str(exc)})
+        await add_tokens(session_id, tokens)
         searched_at = trace.pop("searched_at", None)
-        return respond({
+        return await respond({
             "answer": answer,
             "web_search": {
                 **trace,
                 "searched_at": searched_at.isoformat() if searched_at else None,
             },
-        }, title=title_for(answer))
+        }, title=await title_for(answer))
 
-    results = query_chunks(search_query, chat_id, n_results=n_ctx)
     if not results:
-        return respond({"answer": "I don't know. No documents have been indexed yet."})
+        return await respond({"answer": "I don't know. No documents have been indexed yet."})
 
-    context_chunks = [f"[From {meta.get('source', 'document')}]\n{doc}" for doc, meta in results]
     try:
-        answer = answer_question(req.question, context_chunks, [m.model_dump() for m in history])
+        answer, tokens = await answer_question(req.question, context_chunks, [m.model_dump() for m in history])
     except Exception as exc:
-        return respond({"answer": groq_error_answer(exc), "error": str(exc)})
+        return await respond({"answer": groq_error_answer(exc), "error": str(exc)})
+    await add_tokens(session_id, tokens)
 
     sources = [
         {
@@ -253,4 +304,4 @@ def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         }
         for doc, meta in results
     ]
-    return respond({"answer": answer, "sources": sources}, title=title_for(answer))
+    return await respond({"answer": answer, "sources": sources}, title=await title_for(answer))

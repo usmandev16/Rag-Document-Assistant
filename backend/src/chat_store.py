@@ -1,49 +1,67 @@
 import json
-import os
 import uuid
 from datetime import datetime, timedelta
 
-# ponytail: single JSON file is plenty for one local user; move to sqlite
-# if this ever needs concurrent multi-user access.
-CHATS_FILE = "chats.json"
+from src.redis_client import redis
+
+# Redis layout (shared by every API worker, so no lost writes between them):
+#   chat:{id}             hash  id, session_id, title, created_at, updated_at
+#   chat:{id}:msgs        list  JSON messages (RPUSH = atomic append)
+#   session:{sid}:chats   set   chat ids owned by that session
+#   chats:updated         zset  chat id -> updated_at timestamp (stale sweep)
+NEW_TITLE = "New chat"
+UPDATED = "chats:updated"
 
 
-def _load() -> dict:
-    if not os.path.exists(CHATS_FILE):
-        return {}
-    with open(CHATS_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+def _key(chat_id: str) -> str:
+    return f"chat:{chat_id}"
 
 
-def _save(chats: dict) -> None:
-    with open(CHATS_FILE, "w", encoding="utf-8") as f:
-        json.dump(chats, f, indent=2)
+def _msgs_key(chat_id: str) -> str:
+    return f"chat:{chat_id}:msgs"
 
 
-def create_chat(session_id: str) -> dict:
-    chats = _load()
-    chat_id = uuid.uuid4().hex[:12]
-    now = datetime.now().isoformat()
+def _session_key(session_id: str) -> str:
+    return f"session:{session_id}:chats"
+
+
+async def _save_new(chat_id: str, session_id: str) -> dict:
+    now = datetime.now()
     chat = {
         "id": chat_id,
         "session_id": session_id,
-        "title": "New chat",
-        "created_at": now,
-        "updated_at": now,
-        "messages": [],
+        "title": NEW_TITLE,
+        "created_at": now.isoformat(),
+        "updated_at": now.isoformat(),
     }
-    chats[chat_id] = chat
-    _save(chats)
+    async with redis.pipeline(transaction=True) as pipe:
+        pipe.hset(_key(chat_id), mapping=chat)
+        pipe.sadd(_session_key(session_id), chat_id)
+        pipe.zadd(UPDATED, {chat_id: now.timestamp()})
+        await pipe.execute()
     return chat
 
 
-def list_chats(session_id: str) -> list[dict]:
-    chats = _load()
+async def create_chat(session_id: str) -> dict:
+    chat = await _save_new(uuid.uuid4().hex[:12], session_id)
+    return {**chat, "messages": []}
+
+
+async def list_chats(session_id: str) -> list[dict]:
+    chat_ids = await redis.smembers(_session_key(session_id))
+    if not chat_ids:
+        return []
+    async with redis.pipeline() as pipe:
+        for chat_id in chat_ids:
+            pipe.hgetall(_key(chat_id))
+            pipe.lindex(_msgs_key(chat_id), -1)
+        rows = await pipe.execute()
+
     result = []
-    for chat in chats.values():
-        if chat.get("session_id") != session_id:
+    for chat, last_raw in zip(rows[::2], rows[1::2]):
+        if not chat:
             continue
-        last = chat["messages"][-1]["content"] if chat["messages"] else "No messages yet."
+        last = json.loads(last_raw)["content"] if last_raw else "No messages yet."
         result.append({
             "id": chat["id"],
             "title": chat["title"],
@@ -54,21 +72,24 @@ def list_chats(session_id: str) -> list[dict]:
     return result
 
 
-def get_chat(chat_id: str) -> dict | None:
-    return _load().get(chat_id)
+async def get_chat(chat_id: str) -> dict | None:
+    chat = await redis.hgetall(_key(chat_id))
+    if not chat:
+        return None
+    messages = await redis.lrange(_msgs_key(chat_id), 0, -1)
+    return {**chat, "messages": [json.loads(m) for m in messages]}
 
 
-def owns_chat(chat_id: str, session_id: str) -> bool:
-    chat = get_chat(chat_id)
-    return chat is not None and chat.get("session_id") == session_id
+async def owns_chat(chat_id: str, session_id: str) -> bool:
+    return await redis.hget(_key(chat_id), "session_id") == session_id
 
 
-def needs_title(chat_id: str) -> bool:
-    chat = get_chat(chat_id)
-    return chat is None or chat["title"] == "New chat"
+async def needs_title(chat_id: str) -> bool:
+    title = await redis.hget(_key(chat_id), "title")
+    return title is None or title == NEW_TITLE
 
 
-def append_messages(
+async def append_messages(
     chat_id: str,
     user_message: dict,
     assistant_message: dict,
@@ -79,52 +100,38 @@ def append_messages(
     turn. Pass `title` (e.g. an LLM-generated topic summary) when the caller
     has something better than the raw first question — "hi" makes a poor
     title even though it's a fine first message."""
-    chats = _load()
-    chat = chats.get(chat_id)
-    if chat is None:
-        now = datetime.now().isoformat()
-        chat = {
-            "id": chat_id,
-            "session_id": session_id,
-            "title": "New chat",
-            "created_at": now,
-            "messages": [],
-        }
-        chats[chat_id] = chat
+    chat = await redis.hgetall(_key(chat_id)) or await _save_new(chat_id, session_id or "")
 
-    if chat["title"] == "New chat":
+    now = datetime.now()
+    fields = {"updated_at": now.isoformat()}
+    if chat["title"] == NEW_TITLE:
         question = user_message["content"]
-        chat["title"] = title or (question[:48] + ("..." if len(question) > 48 else ""))
+        fields["title"] = title or (question[:48] + ("..." if len(question) > 48 else ""))
 
-    chat["messages"].append(user_message)
-    chat["messages"].append(assistant_message)
-    chat["updated_at"] = datetime.now().isoformat()
-    _save(chats)
-
-
-def delete_chat(chat_id: str) -> None:
-    chats = _load()
-    if chats.pop(chat_id, None) is not None:
-        _save(chats)
+    async with redis.pipeline(transaction=True) as pipe:
+        pipe.rpush(_msgs_key(chat_id), json.dumps(user_message), json.dumps(assistant_message))
+        pipe.hset(_key(chat_id), mapping=fields)
+        pipe.zadd(UPDATED, {chat_id: now.timestamp()})
+        await pipe.execute()
 
 
-def session_chat_ids(session_id: str) -> list[str]:
-    chats = _load()
-    return [c["id"] for c in chats.values() if c.get("session_id") == session_id]
+async def delete_chat(chat_id: str) -> None:
+    session_id = await redis.hget(_key(chat_id), "session_id")
+    async with redis.pipeline(transaction=True) as pipe:
+        pipe.delete(_key(chat_id), _msgs_key(chat_id))
+        pipe.zrem(UPDATED, chat_id)
+        if session_id is not None:
+            pipe.srem(_session_key(session_id), chat_id)
+        await pipe.execute()
 
 
-def stale_chat_ids(max_age_hours: float) -> list[str]:
+async def session_chat_ids(session_id: str) -> list[str]:
+    return list(await redis.smembers(_session_key(session_id)))
+
+
+async def stale_chat_ids(max_age_hours: float) -> list[str]:
     """Chats untouched for longer than max_age_hours — this is what actually
     makes "the data goes away after I leave" true, since a per-tab session id
-    alone only hides other people's chats, it doesn't remove them from disk."""
+    alone only hides other people's chats, it doesn't remove them."""
     cutoff = datetime.now() - timedelta(hours=max_age_hours)
-    chats = _load()
-    stale = []
-    for chat in chats.values():
-        try:
-            updated_at = datetime.fromisoformat(chat["updated_at"])
-        except (KeyError, ValueError):
-            continue
-        if updated_at < cutoff:
-            stale.append(chat["id"])
-    return stale
+    return await redis.zrangebyscore(UPDATED, "-inf", cutoff.timestamp())

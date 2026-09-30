@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-from groq import Groq
+from groq import AsyncGroq
 
 MODEL_NAME = "llama-3.3-70b-versatile"
 SEARCH_MODEL_NAME = "compound-beta"
@@ -42,11 +42,22 @@ def needs_web_search(question: str) -> bool:
     return any(keyword in lowered for keyword in MARKET_KEYWORDS)
 
 
-def _get_client() -> Groq:
-    api_key = os.environ.get("GROQ_API_KEY")
-    if not api_key:
-        raise RuntimeError("GROQ_API_KEY is not set. Add it to your .env file.")
-    return Groq(api_key=api_key)
+_client: AsyncGroq | None = None
+
+
+def _get_client() -> AsyncGroq:
+    # One shared async client, so concurrent requests reuse its connection pool.
+    global _client
+    if _client is None:
+        api_key = os.environ.get("GROQ_API_KEY")
+        if not api_key:
+            raise RuntimeError("GROQ_API_KEY is not set. Add it to your .env file.")
+        _client = AsyncGroq(api_key=api_key)
+    return _client
+
+
+def _tokens(response) -> int:
+    return getattr(response.usage, "total_tokens", 0) or 0
 
 
 def _history_messages(history: list[dict] | None) -> list[dict]:
@@ -57,9 +68,9 @@ def _history_messages(history: list[dict] | None) -> list[dict]:
     return [{"role": turn["role"], "content": turn["content"]} for turn in recent]
 
 
-def answer_question(
+async def answer_question(
     question: str, context_chunks: list[str], history: list[dict] | None = None
-) -> str:
+) -> tuple[str, int]:
     context = "\n\n---\n\n".join(context_chunks)
     user_prompt = f"Context:\n{context}\n\nQuestion: {question}"
 
@@ -67,16 +78,15 @@ def answer_question(
     messages += _history_messages(history)
     messages.append({"role": "user", "content": user_prompt})
 
-    client = _get_client()
-    response = client.chat.completions.create(
+    response = await _get_client().chat.completions.create(
         model=MODEL_NAME,
         messages=messages,
         temperature=0,
     )
-    return response.choices[0].message.content
+    return response.choices[0].message.content, _tokens(response)
 
 
-def generate_title(question: str, answer: str) -> str:
+async def generate_title(question: str, answer: str) -> tuple[str, int]:
     """A short, topic-based chat title (e.g. "Invoice data summary"), not
     just the user's literal first message — "hi" isn't a useful title even
     though it's a perfectly fine thing to say."""
@@ -85,15 +95,14 @@ def generate_title(question: str, answer: str) -> str:
         "3 to 6 words, title case, no quotes, no trailing punctuation.\n\n"
         f"User: {question}\nAssistant: {answer}\n\nTitle:"
     )
-    client = _get_client()
-    response = client.chat.completions.create(
+    response = await _get_client().chat.completions.create(
         model=MODEL_NAME,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
         max_tokens=20,
     )
     title = (response.choices[0].message.content or "").strip().strip('"')
-    return title[:48]
+    return title[:48], _tokens(response)
 
 
 def _extract_search_trace(message) -> dict:
@@ -128,9 +137,9 @@ def _extract_search_trace(message) -> dict:
     return {"queries": queries, "sources": ranked}
 
 
-def answer_with_web_search(
+async def answer_with_web_search(
     question: str, context_chunks: list[str], history: list[dict] | None = None
-) -> tuple[str, dict]:
+) -> tuple[str, dict, int]:
     if context_chunks:
         context = "\n\n---\n\n".join(context_chunks)
         user_prompt = f"Document context:\n{context}\n\nQuestion: {question}"
@@ -141,8 +150,7 @@ def answer_with_web_search(
     messages += _history_messages(history)
     messages.append({"role": "user", "content": user_prompt})
 
-    client = _get_client()
-    response = client.chat.completions.create(
+    response = await _get_client().chat.completions.create(
         model=SEARCH_MODEL_NAME,
         messages=messages,
         temperature=0,
@@ -152,4 +160,4 @@ def answer_with_web_search(
 
     trace = _extract_search_trace(message)
     trace["searched_at"] = searched_at
-    return message.content, trace
+    return message.content, trace, _tokens(response)

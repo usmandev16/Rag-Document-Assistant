@@ -1,0 +1,33 @@
+# Local stack: Redis + API + Celery worker. Frontend runs with `npm start`.
+#   docker compose up --build
+services:
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "127.0.0.1:6379:6379"   # local only; no password in dev
+    volumes:
+      - redis-data:/data
+
+  api:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      REDIS_HOST: redis
+      WEB_CONCURRENCY: 2        # uvicorn workers; each loads the embedding model
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  worker:
+    build: ./backend
+    command: celery -A src.worker worker --loglevel=info --concurrency=2
+    env_file: ./backend/.env
+    environment:
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+
+volumes:
+  redis-data:

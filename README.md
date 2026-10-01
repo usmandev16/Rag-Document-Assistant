@@ -4,6 +4,8 @@ An AI assistant that answers questions from your own documents and shows exactly
 
 It also runs multiple separate chats, like ChatGPT, where each chat keeps its own uploaded documents isolated from the others, and it can pull live web results to compare your data against the current market.
 
+The backend is architected for 100–1000 concurrent users rather than a single-user demo: API processes hold no local state, document ingestion runs on separate workers, the request path is async end to end, and every session is rate limited. See [Scaling & Production Architecture](#scaling--production-architecture) for the reasoning behind each piece.
+
 ![alt text](image.png)
 
 ## Features
@@ -57,16 +59,40 @@ Nothing is stored on the API's local disk, so any number of API workers and Cele
 
 ## Tech Stack
 
-| Layer | Choice |
-|---|---|
-| Frontend | React (Create React App), plain CSS with a design-token system |
-| Backend | FastAPI (Python, async) + Uvicorn |
-| Background jobs | Celery, with Redis as broker and result backend |
-| Cache / state | Redis: chat history, rate limits, token usage |
-| Loading | pypdf, python-docx, pandas |
-| Embeddings | Hugging Face all-MiniLM-L6-v2 (runs locally) |
-| Vector store | Pinecone (serverless) |
-| Generation | Groq API: llama-3.3-70b-versatile (documents), compound-beta (web search) |
+| Layer | Choice | Why |
+|---|---|---|
+| Frontend | React (Create React App), plain CSS with a design-token system | A single-page chat UI with no server rendering needs; tokens keep light and dark themes consistent. |
+| Backend | FastAPI (Python, async) + Uvicorn | Native `async def` routes, so one process serves many requests that are waiting on the LLM or network. |
+| Background jobs | Celery | Moves CPU-heavy ingestion out of the API process, so an upload never stalls other users' questions. |
+| Broker / state | Redis | One fast, shared store that serves as the Celery broker, holds chat state and rate-limit counters, and backs the planned response cache. |
+| Loading | pypdf, python-docx, pandas | Standard, dependable parsers for each supported format; pandas keeps spreadsheet rows intact. |
+| Embeddings | Hugging Face all-MiniLM-L6-v2 (runs locally) | Small (384-dim), fast on CPU, and free per call, since Groq has no embedding endpoint. |
+| Vector store | Pinecone (serverless) | Managed and network-accessible, so every API and worker process reads and writes the same index concurrently. |
+| Generation | Groq API: llama-3.3-70b-versatile (documents), compound-beta (web search) | Low-latency hosted inference; compound-beta adds built-in live web search. |
+
+## Scaling & Production Architecture
+
+The original version ran as one process with everything on local disk: ChromaDB for vectors, a JSON file for chats, and parsing and embedding inside the upload request. That is fine for one user and falls over for many. Each change below removes a specific bottleneck to supporting concurrent users.
+
+### Decoupling ingestion from querying (Celery)
+
+Ingesting a document is the most expensive thing the system does: parsing a large PDF or spreadsheet, chunking it, and running every chunk through the embedding model is CPU-bound and can take many seconds. Done inside the request, that work occupies an API worker for its whole duration, so one user uploading a large file slows down everyone else's questions, and a burst of uploads can exhaust the API entirely. Ingestion and querying also have opposite profiles: ingestion is heavy, rare, and can tolerate delay; querying is light, frequent, and latency-sensitive. Putting ingestion on a Celery queue lets each scale independently. The upload endpoint only validates and enqueues, returning `202` with a task id, and workers drain the queue at their own pace. Adding throughput for uploads means adding workers, not API servers. `task_acks_late` means a task whose worker crashes is redelivered, not lost.
+
+### Moving the vector store off local disk (Pinecone)
+
+ChromaDB in persistent mode keeps its index on the local filesystem of the process that opened it. That ties the vector store to a single machine and a single writer: a second API instance or a separate ingestion worker cannot safely share it, concurrent writes from several processes risk corruption, and the index is limited by that one host's memory and disk. Pinecone is a network service, so every API worker and every Celery worker reads and writes the same index concurrently, and it scales storage and query throughput independently of the app servers. Per-chat isolation carries over: each chat is its own namespace, and each query still filters on `chat_id` metadata.
+
+### Async request handling (async FastAPI)
+
+The chat endpoint spends almost all of its time waiting: on Redis, on Pinecone, and above all on the LLM, which can take several seconds per answer. With synchronous route handlers, each in-flight request holds a thread for that entire wait. FastAPI runs sync handlers in a thread pool of about 40 threads per process, so roughly 40 slow LLM calls saturate a worker, and every further request queues behind them regardless of how idle the CPU is. With `async def` handlers and async clients (`AsyncGroq`, `redis.asyncio`), a waiting request yields the event loop instead of holding a thread, so one process can keep hundreds of requests in flight. Calls that have no async client (the Pinecone SDK) or are CPU-bound (query embedding) run in a thread pool via `asyncio.to_thread` so they never block the loop.
+
+### Caching repeated queries (Redis)
+
+Under real load, many requests repeat: the same question asked again in a chat, the same follow-up after a reload, the same query embedding computed twice. Each repeat costs an embedding pass, a Pinecone query, and an LLM call, and the LLM call dominates both latency (seconds) and cost (tokens against a per-minute quota). A Redis cache keyed on chat id, document set, and normalized question returns a stored answer in about a millisecond and spends no tokens, so under repeated load it cuts both response time and provider spend. Redis is already deployed for the broker and rate limiter, so the cache needs no new infrastructure. The answer cache itself is the next step on the roadmap; today Redis holds shared chat state, rate-limit counters, and token usage.
+
+### Rate limiting (Redis)
+
+Rate limiting protects two things. First, the API: without a limit, one client, whether buggy, abusive, or just a stuck retry loop, can consume capacity that every other user shares. Second, and just as important, the LLM provider's quota: the Groq account has a fixed tokens-per-minute ceiling that is shared across all users, so one heavy session can exhaust it and turn everyone else's requests into provider errors. The limiter counts requests per session per minute and tracks token usage per session per hour and per day, using atomic Redis counters that are consistent across every API worker. Over the limit, the API returns `429 Too Many Requests` with a `Retry-After` header, so clients back off predictably instead of retrying blindly. All limits are configurable through environment variables.
 
 ## Getting Started
 
@@ -164,60 +190,60 @@ redis-cli keys 'tok:*'            # token usage buckets
 - **Paragraph-packing chunker.** Whole paragraphs are packed together up to the size limit, and only a paragraph that alone exceeds it is split, and then only on sentence boundaries. This keeps each chunk about one topic, and the overlap keeps a fact at a boundary from being cut in half.
 - **Exact-match fallback for IDs.** Embeddings are poor at telling long numeric identifiers apart, so when a question contains a long number, any chunk holding that exact number is force-included alongside the similarity results.
 - **Spreadsheet-aware loading.** Rows are rendered as "Column: value | Column: value", one row per paragraph, so a row and any ID inside it stays intact through chunking. Excel date serials are detected and converted to real dates.
-- **Per-chat isolation, twice.** Each chat is its own Pinecone namespace, and every query also filters on `chat_id` metadata. Chat ownership is checked against the session on every read, upload, and status poll.
-- **Per-session isolation without accounts.** A per-tab id in sessionStorage scopes every chat to that session, with a 6-hour inactivity cleanup and an immediate wipe on exit.
-- **Stateless API processes.** Chats live in Redis and vectors in Pinecone, so API workers can be added freely. Ingestion runs on Celery so a large upload never ties up an API worker.
-- **Async all the way through the request path.** Routes are `async def`; Groq calls use `AsyncGroq`; Redis uses `redis.asyncio`; the sync Pinecone SDK and CPU-bound embedding run in a thread pool.
+- **Ingestion decoupled from querying.** Parsing, chunking, and embedding run on Celery workers, not in the upload request. The upload returns a task id immediately and the frontend polls for completion, so a large file never ties up an API worker, and upload capacity scales by adding workers rather than API servers.
+- **Networked vector store.** Pinecone replaced on-disk ChromaDB, because a local index can only be safely used by one process on one machine. Every API and worker process now shares one index, and per-chat isolation is enforced twice: a namespace per chat, plus a `chat_id` metadata filter on every query.
+- **Async request path.** Routes are `async def`, with `AsyncGroq` and `redis.asyncio` clients, so a request waiting seconds on the LLM does not hold a thread. The sync Pinecone SDK and CPU-bound embedding run in a thread pool so they never block the event loop.
+- **Redis as the shared state layer.** Chat history, rate-limit counters, and token usage live in Redis instead of process memory or a local JSON file. API processes are stateless, so they can be added freely, and writes from concurrent requests are atomic instead of overwriting each other.
+- **Rate limits that protect the provider quota.** Per-session request limits and token budgets are enforced with atomic Redis counters shared by every worker, returning `429` with `Retry-After`. The Groq tokens-per-minute ceiling is shared across all users, so one heavy session cannot exhaust it for everyone else.
+- **Per-session isolation without accounts.** A per-tab id in sessionStorage scopes every chat to that session, with a 6-hour inactivity cleanup and an immediate wipe on exit. Ownership is checked on every chat read, upload, and ingestion status poll.
 - **Swappable generation for document answers.** The Groq client is OpenAI-compatible, so swapping in a local model for a fully private deployment means changing one file (the web-search path is the exception, see Limitations).
 
 ## Limitations
 
-- The real ceiling on context per question is the Groq account's token rate tier (12,000 tokens per minute), not the model's context window. That limit is account-wide, so it is shared by all users. Very large spreadsheets that need every row will not get full coverage on this tier.
-- Rate limits are keyed by the per-tab session id, which the client generates. A determined client can rotate it; real per-user and per-IP limits need authentication (see roadmap).
-- Rate limiting uses a fixed one-minute window, so up to 2x the limit can pass across a window boundary.
-- Token caps are approximate: usage is checked before a call, so the request that crosses the cap still completes.
-- Uploaded files travel base64-encoded through Redis to the worker, which is fine for documents of a few MB but not for very large files.
-- Pinecone is eventually consistent: a document can take a few seconds after ingestion finishes before it is searchable.
-- The ID exact-match fallback and the document list scan every chunk in a chat (O(n)).
-- Chat history in Redis is ephemeral (6-hour inactivity cleanup). It is not a durable history store.
-- No real login or accounts. Isolation is per browser tab, suitable for a demo, not shared production use.
-- The web-search feature depends on Groq's compound-beta and its built-in search, so a fully local deployment would need a custom search-tool layer to replace it.
+- **Not yet load-tested.** The architecture removes the known single-process bottlenecks, but the 100–1000 concurrent-user target has not been verified with a load test.
+- **Groq quota is the real ceiling.** The Groq account's token rate tier (12,000 tokens per minute) caps context per question and total throughput across all users. Very large spreadsheets that need every row will not get full coverage on this tier.
+- **Rate limits are per session, not per user.** The session id is generated by the client, so a determined client can rotate it. Real per-user and per-IP limits need authentication.
+- **Rate limit window is fixed.** A fixed one-minute window can let up to 2x the limit through across a window boundary.
+- **Token caps are approximate.** Usage is checked before each LLM call, so the request that crosses the cap still completes.
+- **No response caching yet.** Repeated questions still pay for a full retrieval and LLM call; the Redis answer cache is planned.
+- **Uploads pass through Redis.** Files travel base64-encoded to the worker, which is fine for documents of a few MB but not for very large files.
+- **Search is eventually consistent.** A document can take a few seconds after ingestion finishes before Pinecone returns it in search.
+- **Some lookups scan the whole chat.** The ID exact-match fallback and the document list read every chunk in a chat (O(n)).
+- **Chat history is ephemeral.** It lives in Redis with a 6-hour inactivity cleanup; there is no durable history store yet.
+- **No real login or accounts.** Isolation is per browser tab.
+- **Web search is tied to Groq.** It depends on compound-beta's built-in search, so a fully local deployment would need a custom search-tool layer to replace it.
 
-## Production Roadmap
+## Roadmap
 
-What still stands between this and a production service for 100–1000+ concurrent users, roughly in priority order:
+Done: Pinecone vector store, Redis, Celery ingestion workers, async routes, per-session rate limiting and token tracking, and Docker Compose for the local stack.
 
-**Security and identity**
-- Real authentication (OAuth / JWT). Scope chats, documents, rate limits, and token budgets to user ids instead of client-generated session ids, and add a per-IP limit behind a trusted proxy.
-- Lock CORS to the frontend origin, serve everything over HTTPS, and enable Redis AUTH/TLS and ACLs.
-- Move secrets to a secrets manager (AWS Secrets Manager, Vault, Doppler) instead of `.env` files.
-- Validate uploads by content type, not just extension, and scan them for malware.
+Still pending, roughly in priority order:
 
-**Data and storage**
+**Next up**
+- Load testing with k6 or Locust to verify the 100–1000 concurrent-user target and find the real bottleneck.
+- Redis response caching: query embeddings, and answers keyed by chat, question hash, and document version.
 - Durable chat history in Postgres, with Redis kept as the cache and ephemeral-state layer.
-- Upload files to object storage (S3/GCS) and pass the object key to Celery instead of base64 bytes through Redis.
-- Data retention and deletion policies (GDPR-style export and erase) now that data outlives a browser tab.
+- Real authentication (OAuth / JWT), so chats, documents, rate limits, and token budgets are scoped to user ids, plus a per-IP limit behind a trusted proxy.
 
 **Performance and cost**
 - Stream answers to the browser (SSE) so users see tokens as they are generated.
-- Redis caching: query embeddings, and answers keyed by chat, question hash, and document version.
-- A global Groq token budget shared across all users to stay under the account's tokens-per-minute limit, with retries and backoff (tenacity) and a fallback LLM provider.
-- Move embedding off the API process: hosted inference, a GPU worker, or Pinecone's integrated embedding. At minimum, bake the model into the Docker image so containers don't download it on start.
-- Hybrid search (Pinecone sparse + dense) and a re-ranker. This also replaces the O(n) exact-ID scan.
+- A global Groq token budget shared across all users, with retries and backoff and a fallback LLM provider.
+- Move embedding off the API process (hosted inference, a GPU worker, or Pinecone's integrated embedding), or at minimum bake the model into the Docker image.
+- Hybrid search (Pinecone sparse + dense) and a re-ranker, which also replaces the O(n) exact-ID scan.
+
+**Storage and security**
+- Upload files to object storage (S3/GCS) and pass the object key to Celery instead of base64 bytes through Redis.
+- Validate uploads by content type and scan them for malware.
+- Lock CORS to the frontend origin, serve over HTTPS, enable Redis AUTH/TLS, and move secrets to a secrets manager.
+- Data retention and deletion policies now that data outlives a browser tab.
 
 **Reliability and operations**
-- Celery task retries with backoff, a dead-letter queue, and Flower for monitoring.
-- Celery beat for the stale-chat sweep instead of running it on `GET /api/chats`.
-- `/healthz` and `/readyz` endpoints (Redis, Pinecone, Groq reachability) for load balancer and orchestrator probes.
-- Observability: structured JSON logs with request ids, OpenTelemetry tracing, Prometheus metrics (latency, queue depth, token spend), and Sentry for errors.
-- Load testing with k6 or Locust to verify the 100–1000 concurrent-user target and find the real bottleneck.
-
-**Deployment**
-- Run on Kubernetes or ECS with autoscaling: API on CPU and latency, workers on Celery queue depth.
-- Managed Redis (ElastiCache, Upstash, Redis Cloud) with persistence and failover.
-- CI/CD: lint, tests, image build, and staged deploys with rollback.
+- Celery task retries with backoff, a dead-letter queue, and Flower for monitoring; Celery beat for the stale-chat sweep.
+- `/healthz` and `/readyz` endpoints for load balancer and orchestrator probes.
+- Structured logs with request ids, OpenTelemetry tracing, Prometheus metrics (latency, queue depth, token spend), and Sentry.
+- Production deployment with autoscaling (API on latency, workers on queue depth), managed Redis, and CI/CD.
 
 **Quality**
-- Evaluation on a labelled question set, run in CI, to catch retrieval and answer regressions.
+- Evaluation on a labelled question set, run in CI.
 - Automated tests for isolation, rate limiting, and ingestion.
 - A local-model deployment path for fully private use.

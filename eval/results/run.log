@@ -1,0 +1,221 @@
+Ingesting 4 documents into namespace 'eval-test-user'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 4227.92it/s]
+  East Pakistan.docx: 17 chunks
+  gfr2025_28032025.pdf: 320 chunks
+  Mid_Year_FY2025_26.pdf: 1 chunks
+  shipments_clean.xlsx: 6 chunks
+[1/50] (factual) What GDP growth did Pakistan record in FY2025?
+2026-10-10 15:38:05,879 INFO rag.llm: groq answer request: ~3224 input tokens (estimate)
+2026-10-10 15:38:07,285 INFO rag.llm: groq answer usage: prompt=3236 completion=80 total=3316
+  judge model 'llama-3.1-8b-instant' unavailable, using 'openai/gpt-oss-20b'
+  hit=False correct=False answer="I don't know."
+[2/50] (factual) What was inflation during July-December FY2026, and what was it last year?
+2026-10-10 15:38:39,285 INFO rag.llm: groq answer request: ~3220 input tokens (estimate)
+2026-10-10 15:38:40,108 INFO rag.llm: groq answer usage: prompt=3059 completion=116 total=3175
+  hit=False correct=False answer="I don't know."
+[3/50] (factual) What was the policy rate as of December 2025?
+2026-10-10 15:39:15,823 INFO rag.llm: groq answer request: ~3153 input tokens (estimate)
+2026-10-10 15:39:17,262 INFO rag.llm: groq answer usage: prompt=2877 completion=62 total=2939
+  hit=False correct=False answer="I don't know."
+[4/50] (factual) What were foreign exchange reserves at end December 2025?
+2026-10-10 15:39:50,183 INFO rag.llm: groq answer request: ~3107 input tokens (estimate)
+2026-10-10 15:39:51,477 INFO rag.llm: groq answer usage: prompt=2894 completion=79 total=2973
+  hit=False correct=False answer="I don't know."
+[5/50] (factual) What level did the KSE-100 index reach on December 31, 2025?
+2026-10-10 15:40:23,650 INFO rag.llm: groq answer request: ~3222 input tokens (estimate)
+2026-10-10 15:40:24,604 INFO rag.llm: groq answer usage: prompt=3371 completion=76 total=3447
+  hit=False correct=False answer="I don't know."
+[6/50] (factual) What were net revenue receipts in July-December FY2026?
+2026-10-10 15:40:56,723 INFO rag.llm: groq answer request: ~3141 input tokens (estimate)
+2026-10-10 15:40:57,620 INFO rag.llm: groq answer usage: prompt=2898 completion=119 total=3017
+  hit=False correct=False answer="I don't know."
+[7/50] (factual) How much did FBR collect in July-December FY2026?
+2026-10-10 15:41:29,724 INFO rag.llm: groq answer request: ~3125 input tokens (estimate)
+2026-10-10 15:41:30,496 INFO rag.llm: groq answer usage: prompt=4262 completion=95 total=4357
+  hit=False correct=False answer="I don't know."
+[8/50] (factual) What was spent on servicing domestic debt in July-December FY2026?
+2026-10-10 15:42:02,494 INFO rag.llm: groq answer request: ~3195 input tokens (estimate)
+2026-10-10 15:42:04,013 INFO rag.llm: groq answer usage: prompt=2951 completion=127 total=3078
+  hit=False correct=False answer="I don't know."
+[9/50] (factual) What was the total outlay of the Federal PSDP 2025-26 and when was it approved?
+2026-10-10 15:42:36,361 INFO rag.llm: groq answer request: ~3050 input tokens (estimate)
+2026-10-10 15:42:37,588 INFO rag.llm: groq answer usage: prompt=2774 completion=175 total=2949
+  hit=False correct=False answer="I don't know."
+[10/50] (factual) What were net FDI inflows in the first half of FY2026?
+2026-10-10 15:43:10,370 INFO rag.llm: groq answer request: ~3095 input tokens (estimate)
+2026-10-10 15:43:11,172 INFO rag.llm: groq answer usage: prompt=3088 completion=111 total=3199
+  hit=False correct=False answer="I don't know."
+[11/50] (factual) Who submitted the Mid-Year Budget Review Report to the Speaker?
+2026-10-10 15:43:43,143 INFO rag.llm: groq answer request: ~3183 input tokens (estimate)
+2026-10-10 15:43:43,976 INFO rag.llm: groq answer usage: prompt=2923 completion=121 total=3044
+  hit=False correct=False answer="I don't know."
+[12/50] (table) How much Petroleum Levy was collected in July-December FY2025-26?
+2026-10-10 15:44:16,047 INFO rag.llm: groq answer request: ~3153 input tokens (estimate)
+2026-10-10 15:44:16,927 INFO rag.llm: groq answer usage: prompt=2924 completion=87 total=3011
+  hit=False correct=False answer="I don't know."
+[13/50] (table) What was the actual Sales Tax collection in July-December FY2025-26?
+2026-10-10 15:44:49,527 INFO rag.llm: groq answer request: ~3210 input tokens (estimate)
+2026-10-10 15:44:50,336 INFO rag.llm: groq answer usage: prompt=3071 completion=109 total=3180
+  hit=False correct=False answer="I don't know."
+[14/50] (table) How much was spent on Education in July-December FY2025-26?
+2026-10-10 15:45:22,450 INFO rag.llm: groq answer request: ~3169 input tokens (estimate)
+2026-10-10 15:45:23,214 INFO rag.llm: groq answer usage: prompt=2943 completion=106 total=3049
+  hit=False correct=False answer="I don't know."
+[15/50] (factual) Under which law and section are the General Financial Rules 2025 made?
+2026-10-10 15:45:55,165 INFO rag.llm: groq answer request: ~3160 input tokens (estimate)
+2026-10-10 15:45:56,059 INFO rag.llm: groq answer usage: prompt=3004 completion=180 total=3184
+  hit=True correct=True answer='The General Financial Rules\u202f2025 are made under the Public Finance Management Act\u202f2019, in exercise '
+[16/50] (factual) From when does a sanction take effect if the order doesn't say otherwise?
+2026-10-10 15:46:27,861 INFO rag.llm: groq answer request: ~3223 input tokens (estimate)
+2026-10-10 15:46:28,676 INFO rag.llm: groq answer usage: prompt=2898 completion=120 total=3018
+  hit=True correct=True answer='A sanction takes effect from the date of the order that conveys it, unless the order itself specifie'
+[17/50] (factual) Under which major object is contingent expenditure classified?
+2026-10-10 15:47:00,345 INFO rag.llm: groq answer request: ~3179 input tokens (estimate)
+2026-10-10 15:47:01,357 INFO rag.llm: groq answer usage: prompt=2928 completion=101 total=3029
+  hit=True correct=True answer='Contingent expenditure is classified under major object\u202fA03[1].'
+[18/50] (factual) Which form is used to request goods from an internal division of the same organization?
+2026-10-10 15:47:33,226 INFO rag.llm: groq answer request: ~3068 input tokens (estimate)
+2026-10-10 15:47:34,068 INFO rag.llm: groq answer usage: prompt=2828 completion=93 total=2921
+  hit=True correct=True answer='The form used is GFR‑14[1]'
+[19/50] (factual) Who signed the GFR 2025 notification?
+2026-10-10 15:48:06,013 INFO rag.llm: groq answer request: ~3229 input tokens (estimate)
+2026-10-10 15:48:07,178 INFO rag.llm: groq answer usage: prompt=3211 completion=293 total=3504
+  hit=False correct=False answer='The GFR\u202f2025 notification was signed by\u202fWaleed (Finance)[1]'
+[20/50] (factual) Between which years did East Pakistan exist as a province?
+2026-10-10 15:48:38,903 INFO rag.llm: groq answer request: ~3162 input tokens (estimate)
+2026-10-10 15:48:39,524 INFO rag.llm: groq answer usage: prompt=2819 completion=68 total=2887
+  hit=True correct=True answer='East Pakistan existed as a province from 1956 until 1971[1].'
+[21/50] (factual) What was East Pakistan's average economic growth between 1960 and 1965?
+2026-10-10 15:49:11,539 INFO rag.llm: groq answer request: ~3240 input tokens (estimate)
+2026-10-10 15:49:12,934 INFO rag.llm: groq answer usage: prompt=2889 completion=100 total=2989
+  hit=True correct=True answer='East Pakistan’s economy grew at an average of\u202f2.6\u202fpercent between\u202f1960\u202fand\u202f1965[1].'
+[22/50] (paraphrased) How much did the government spend paying interest on its loans in the first six months?
+2026-10-10 15:49:44,915 INFO rag.llm: groq answer request: ~3014 input tokens (estimate)
+2026-10-10 15:49:45,779 INFO rag.llm: groq answer usage: prompt=2737 completion=112 total=2849
+  hit=False correct=False answer="I don't know."
+[23/50] (paraphrased) By how much did the central bank cut its benchmark rate from mid-2024 to end-2025?
+2026-10-10 15:50:17,708 INFO rag.llm: groq answer request: ~3086 input tokens (estimate)
+2026-10-10 15:50:18,509 INFO rag.llm: groq answer usage: prompt=3020 completion=47 total=3067
+  hit=False correct=False answer="I don't know."
+[24/50] (paraphrased) How much money did overseas Pakistanis send home in the first half of FY2026?
+2026-10-10 15:50:50,420 INFO rag.llm: groq answer request: ~3115 input tokens (estimate)
+2026-10-10 15:50:51,238 INFO rag.llm: groq answer usage: prompt=3108 completion=140 total=3248
+  hit=False correct=False answer="I don't know."
+[25/50] (paraphrased) Did the government end the first half of the year in surplus or deficit overall?
+2026-10-10 15:51:23,491 INFO rag.llm: groq answer request: ~3195 input tokens (estimate)
+2026-10-10 15:51:24,190 INFO rag.llm: groq answer usage: prompt=2858 completion=97 total=2955
+  hit=False correct=False answer="I don't know."
+[26/50] (paraphrased) Why did interest costs fall so sharply compared to last year?
+2026-10-10 15:51:56,055 INFO rag.llm: groq answer request: ~3104 input tokens (estimate)
+2026-10-10 15:51:56,706 INFO rag.llm: groq answer usage: prompt=2875 completion=87 total=2962
+  hit=False correct=False answer="I don't know."
+[27/50] (paraphrased) If approved money for a new expense is never spent, how long does the approval stay valid?
+2026-10-10 15:52:28,706 INFO rag.llm: groq answer request: ~3129 input tokens (estimate)
+2026-10-10 15:52:29,990 INFO rag.llm: groq answer usage: prompt=2864 completion=376 total=3240
+  hit=True correct=True answer='The sanction (approval) stays in force only until a payment is actually made; if no payment is made '
+[28/50] (paraphrased) Can leftover budget money be carried into next year?
+2026-10-10 15:53:01,917 INFO rag.llm: groq answer request: ~3186 input tokens (estimate)
+2026-10-10 15:53:02,908 INFO rag.llm: groq answer usage: prompt=2888 completion=114 total=3002
+  hit=False correct=True answer='No. Any unspent balance lapses and cannot be used in the following year[1].'
+[29/50] (paraphrased) Which city was made the country's second capital?
+2026-10-10 15:53:35,061 INFO rag.llm: groq answer request: ~3198 input tokens (estimate)
+2026-10-10 15:53:36,032 INFO rag.llm: groq answer usage: prompt=2670 completion=88 total=2758
+  hit=True correct=True answer='Dacca was declared the country’s second capital.\u202f[1]'
+[30/50] (paraphrased) Which foreign architect designed the parliament building in Dacca?
+2026-10-10 15:54:07,932 INFO rag.llm: groq answer request: ~3174 input tokens (estimate)
+2026-10-10 15:54:08,717 INFO rag.llm: groq answer usage: prompt=2953 completion=107 total=3060
+  hit=True correct=True answer='Louis Kahn, an American architect, was recruited to design the national assembly (parliament) comple'
+[31/50] (aggregation) How many shipments are in the shipment sheet?
+2026-10-10 15:54:40,650 INFO rag.llm: groq answer request: ~2270 input tokens (estimate)
+2026-10-10 15:54:41,825 INFO rag.llm: groq answer usage: prompt=3291 completion=327 total=3618
+  hit=None correct=False answer='There are 26 shipments listed in the sheet[1][2].'
+[32/50] (aggregation) How many shipments have been delivered?
+2026-10-10 15:55:13,622 INFO rag.llm: groq answer request: ~2467 input tokens (estimate)
+2026-10-10 15:55:15,021 INFO rag.llm: groq answer usage: prompt=3463 completion=327 total=3790
+  hit=None correct=False answer='Eight shipments have a Current Status of “Delivered” in the provided data【1†L31-L38】【2†L1-L2】.'
+[33/50] (aggregation) What is the total COD amount across all shipments?
+2026-10-10 15:55:47,019 INFO rag.llm: groq answer request: ~2068 input tokens (estimate)
+2026-10-10 15:55:50,123 INFO rag.llm: groq answer usage: prompt=3104 completion=1224 total=4328
+  hit=None correct=False answer='The total COD amount across all shipments is 78,051.0\u202f[1]'
+[34/50] (aggregation) Which destination city received the most shipments?
+2026-10-10 15:56:21,823 INFO rag.llm: groq answer request: ~2129 input tokens (estimate)
+2026-10-10 15:56:23,435 INFO rag.llm: groq answer usage: prompt=3117 completion=492 total=3609
+  hit=None correct=False answer='The destination city that received the most shipments is\u202fLAHORE, with ten shipments recorded in the '
+[35/50] (aggregation) How many shipments went to Karachi?
+2026-10-10 15:56:55,355 INFO rag.llm: groq answer request: ~2167 input tokens (estimate)
+2026-10-10 15:56:56,703 INFO rag.llm: groq answer usage: prompt=3217 completion=258 total=3475
+  hit=None correct=False answer='Three shipments were sent to Karachi[1].'
+[36/50] (aggregation) How many shipments are NON-COD?
+2026-10-10 15:57:28,520 INFO rag.llm: groq answer request: ~2205 input tokens (estimate)
+2026-10-10 15:57:29,436 INFO rag.llm: groq answer usage: prompt=3275 completion=99 total=3374
+  hit=None correct=False answer='1 shipment is NON‑COD, as shown in the row with Service Type “NON‑COD OverNight” in the data set[1].'
+[37/50] (aggregation) What is the highest single COD amount?
+2026-10-10 15:58:01,651 INFO rag.llm: groq answer request: ~2065 input tokens (estimate)
+2026-10-10 15:58:02,883 INFO rag.llm: groq answer usage: prompt=3102 completion=334 total=3436
+  hit=None correct=False answer='The highest COD amount listed is\u202f8086.0\u202f[1]'
+[38/50] (aggregation) How many shipments have status Return Submitted?
+2026-10-10 15:58:34,702 INFO rag.llm: groq answer request: ~2271 input tokens (estimate)
+2026-10-10 15:58:35,814 INFO rag.llm: groq answer usage: prompt=3290 completion=138 total=3428
+  hit=None correct=False answer="I don't know."
+[39/50] (aggregation) How many shipments were booked on 1 September 2026?
+2026-10-10 15:59:07,824 INFO rag.llm: groq answer request: ~2272 input tokens (estimate)
+2026-10-10 15:59:08,580 INFO rag.llm: groq answer usage: prompt=3295 completion=89 total=3384
+  hit=None correct=False answer="I don't know."
+[40/50] (aggregation) What is the total COD amount of delivered shipments only?
+2026-10-10 15:59:42,547 INFO rag.llm: groq answer request: ~2069 input tokens (estimate)
+2026-10-10 15:59:44,044 INFO rag.llm: groq answer usage: prompt=3105 completion=399 total=3504
+  hit=None correct=False answer='The total COD amount for shipments whose status is “Delivered” is\u202f17,172.0\u202f[1]'
+[41/50] (unanswerable) What was Pakistan's unemployment rate in July-December FY2026?
+2026-10-10 16:00:16,002 INFO rag.llm: groq answer request: ~3244 input tokens (estimate)
+2026-10-10 16:00:17,275 INFO rag.llm: groq answer usage: prompt=3250 completion=92 total=3342
+  hit=None correct=True answer="I don't know."
+[42/50] (unanswerable) What is the FBR revenue target for FY2026-27?
+2026-10-10 16:00:48,886 INFO rag.llm: groq answer request: ~1986 input tokens (estimate)
+2026-10-10 16:00:49,670 INFO rag.llm: groq answer usage: prompt=2155 completion=133 total=2288
+  hit=None correct=True answer="I don't know."
+[43/50] (unanswerable) How much did the government spend on flood relief in FY2026?
+2026-10-10 16:01:21,156 INFO rag.llm: groq answer request: ~3205 input tokens (estimate)
+2026-10-10 16:01:21,943 INFO rag.llm: groq answer usage: prompt=2943 completion=119 total=3062
+  hit=None correct=True answer="I don't know."
+[44/50] (unanswerable) What is the monthly salary of a Drawing and Disbursing Officer?
+2026-10-10 16:01:53,390 INFO rag.llm: groq answer request: ~3140 input tokens (estimate)
+2026-10-10 16:01:54,594 INFO rag.llm: groq answer usage: prompt=2738 completion=85 total=2823
+  hit=None correct=True answer="I don't know."
+[45/50] (unanswerable) When will the General Financial Rules 2025 be next revised?
+2026-10-10 16:02:26,078 INFO rag.llm: groq answer request: ~3102 input tokens (estimate)
+2026-10-10 16:02:26,926 INFO rag.llm: groq answer usage: prompt=3068 completion=141 total=3209
+  hit=None correct=True answer="I don't know."
+[46/50] (unanswerable) How many people died in the 1970 Bhola cyclone?
+2026-10-10 16:02:58,476 INFO rag.llm: groq answer request: ~2459 input tokens (estimate)
+2026-10-10 16:02:59,286 INFO rag.llm: groq answer usage: prompt=3512 completion=65 total=3577
+  hit=None correct=True answer="I don't know."
+[47/50] (unanswerable) Who was the governor of East Pakistan in 1969?
+2026-10-10 16:03:31,169 INFO rag.llm: groq answer request: ~3034 input tokens (estimate)
+2026-10-10 16:03:31,994 INFO rag.llm: groq answer usage: prompt=2525 completion=178 total=2703
+  hit=None correct=True answer="I don't know."
+[48/50] (unanswerable) Which courier company handled these shipments?
+2026-10-10 16:04:03,374 INFO rag.llm: groq answer request: ~3111 input tokens (estimate)
+2026-10-10 16:04:04,389 INFO rag.llm: groq answer usage: prompt=3978 completion=136 total=4114
+  hit=None correct=True answer="I don't know."
+[49/50] (unanswerable) What is the delivery charge per kilogram for shipments to Karachi?
+2026-10-10 16:04:35,897 INFO rag.llm: groq answer request: ~2961 input tokens (estimate)
+2026-10-10 16:04:38,641 INFO rag.llm: groq answer usage: prompt=4001 completion=997 total=4998
+  hit=None correct=False answer='The shipments to Karachi show the following COD amounts and weights:\n\n-\u202fCOD\u202f1449.0\u202fPKR for\u202f0.61\u202fkg →'
+[50/50] (unanswerable) What was Pakistan's GDP growth in FY2027?
+2026-10-10 16:05:10,034 INFO rag.llm: groq answer request: ~3152 input tokens (estimate)
+2026-10-10 16:05:10,823 INFO rag.llm: groq answer usage: prompt=3122 completion=116 total=3238
+  hit=None correct=True answer="I don't know."
+
+type             n   retrieval hit rate    answer accuracy     
+------------------------------------------------------------
+factual         18    33.3% (6/18)          33.3% (6/18)       
+table            3     0.0% (0/3)            0.0% (0/3)        
+paraphrased      9    33.3% (3/9)           44.4% (4/9)        
+aggregation     10        n/a                0.0% (0/10)       
+unanswerable    10        n/a               90.0% (9/10)       
+------------------------------------------------------------
+overall         50    30.0% (9/30)          38.0% (19/50)      
+
+Saved 50 results to D:\Usman's work\Rag Doc Chat\eval\results\baseline.jsonl
+exit=0

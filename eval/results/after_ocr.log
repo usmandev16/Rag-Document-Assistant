@@ -1,0 +1,264 @@
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-f96a89a5c627 Creating 
+ Container ragdocchat-worker-run-f96a89a5c627 Created 
+Re-ingesting 'Mid_Year_FY2025_26.pdf': deleted 1 old chunks
+2026-10-10 11:33:28,648 INFO rag.ingest: Mid_Year_FY2025_26.pdf: 16 of 16 pages used OCR
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights:  83%|████████▎ | 86/103 [00:00<00:00, 858.80it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1010.19it/s]
+  Mid_Year_FY2025_26.pdf: 36 chunks
+[1/50] (factual) What GDP growth did Pakistan record in FY2025?
+2026-10-10 11:34:10,087 INFO rag.llm: groq answer request: ~3099 input tokens (estimate)
+2026-10-10 11:34:11,398 INFO rag.llm: groq answer usage: prompt=3218 completion=92 total=3310
+  judge model 'llama-3.1-8b-instant' unavailable, using 'openai/gpt-oss-20b'
+  hit=True correct=True answer='Pakistan recorded GDP growth of 3.09\u202fpercent in FY2025[1].'
+[2/50] (factual) What was inflation during July-December FY2026, and what was it last year?
+2026-10-10 11:34:43,299 INFO rag.llm: groq answer request: ~3065 input tokens (estimate)
+2026-10-10 11:34:44,401 INFO rag.llm: groq answer usage: prompt=3438 completion=199 total=3637
+  hit=True correct=True answer='Inflation was 5.2\u202fpercent during July‑December FY2026, down from 7.2\u202fpercent in the same period last'
+[3/50] (factual) What was the policy rate as of December 2025?
+2026-10-10 11:35:16,424 INFO rag.llm: groq answer request: ~3141 input tokens (estimate)
+2026-10-10 11:35:17,508 INFO rag.llm: groq answer usage: prompt=3382 completion=185 total=3567
+  hit=True correct=True answer='The policy rate was 10.5\u202fpercent as of December\u202f2025[1].'
+[4/50] (factual) What were foreign exchange reserves at end December 2025?
+2026-10-10 11:35:49,302 INFO rag.llm: groq answer request: ~3214 input tokens (estimate)
+2026-10-10 11:35:50,159 INFO rag.llm: groq answer usage: prompt=3147 completion=101 total=3248
+  hit=True correct=True answer='The foreign exchange reserves stood at\u202fUSD\u202f20.7\u202fbillion as of the end of December\u202f2025[1][2]'
+[5/50] (factual) What level did the KSE-100 index reach on December 31, 2025?
+2026-10-10 11:36:22,161 INFO rag.llm: groq answer request: ~3157 input tokens (estimate)
+2026-10-10 11:36:22,943 INFO rag.llm: groq answer usage: prompt=3447 completion=109 total=3556
+  hit=True correct=True answer='The KSE‑100 index reached 174,054 points as of December\u202f31,\u202f2025[1][2].'
+[6/50] (factual) What were net revenue receipts in July-December FY2026?
+2026-10-10 11:36:54,650 INFO rag.llm: groq answer request: ~3056 input tokens (estimate)
+2026-10-10 11:36:55,694 INFO rag.llm: groq answer usage: prompt=3687 completion=175 total=3862
+  hit=True correct=True answer='The net revenue receipts for July‑December FY\u202f2026 were Rs\u202f6,392\u202fbillion[1][2].'
+[7/50] (factual) How much did FBR collect in July-December FY2026?
+2026-10-10 11:37:27,599 INFO rag.llm: groq answer request: ~3223 input tokens (estimate)
+2026-10-10 11:37:28,478 INFO rag.llm: groq answer usage: prompt=3758 completion=169 total=3927
+  hit=True correct=False answer='The Federal Board of Revenue (FBR) collected Rs\u202f6,161\u202fbillion in the July‑December period of FY\u202f2026'
+[8/50] (factual) What was spent on servicing domestic debt in July-December FY2026?
+2026-10-10 11:38:00,530 INFO rag.llm: groq answer request: ~3035 input tokens (estimate)
+2026-10-10 11:38:01,971 INFO rag.llm: groq answer usage: prompt=3208 completion=368 total=3576
+  hit=True correct=True answer='Rs.\u202f3,090\u202fbillion was spent on servicing domestic debt in July‑December\u202fFY2026[1]'
+[9/50] (factual) What was the total outlay of the Federal PSDP 2025-26 and when was it approved?
+2026-10-10 11:38:33,963 INFO rag.llm: groq answer request: ~3215 input tokens (estimate)
+2026-10-10 11:38:34,835 INFO rag.llm: groq answer usage: prompt=3674 completion=166 total=3840
+  hit=True correct=True answer='The Federal PSDP\u202f2025‑26 was approved by the National Economic Council on\u202fJune\u202f4\u202f2025, with a total '
+[10/50] (factual) What were net FDI inflows in the first half of FY2026?
+2026-10-10 11:39:06,577 INFO rag.llm: groq answer request: ~3140 input tokens (estimate)
+2026-10-10 11:39:07,748 INFO rag.llm: groq answer usage: prompt=3157 completion=276 total=3433
+  hit=True correct=True answer='Net FDI inflows were about\u202fUSD\u202f808.1\u202fmillion\u202fin the first half of FY2026[1]'
+[11/50] (factual) Who submitted the Mid-Year Budget Review Report to the Speaker?
+2026-10-10 11:39:39,919 INFO rag.llm: groq answer request: ~3214 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:40:40,090 INFO rag.llm: groq answer request: ~3214 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[12/50] (table) How much Petroleum Levy was collected in July-December FY2025-26?
+2026-10-10 11:41:11,729 INFO rag.llm: groq answer request: ~3085 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:42:11,901 INFO rag.llm: groq answer request: ~3085 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[13/50] (table) What was the actual Sales Tax collection in July-December FY2025-26?
+2026-10-10 11:42:43,417 INFO rag.llm: groq answer request: ~3204 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:43:43,646 INFO rag.llm: groq answer request: ~3204 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[14/50] (table) How much was spent on Education in July-December FY2025-26?
+2026-10-10 11:44:15,015 INFO rag.llm: groq answer request: ~3111 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:45:15,191 INFO rag.llm: groq answer request: ~3111 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[15/50] (factual) Under which law and section are the General Financial Rules 2025 made?
+2026-10-10 11:45:46,871 INFO rag.llm: groq answer request: ~3160 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:46:47,052 INFO rag.llm: groq answer request: ~3160 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[16/50] (factual) From when does a sanction take effect if the order doesn't say otherwise?
+2026-10-10 11:47:18,764 INFO rag.llm: groq answer request: ~3223 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:48:18,943 INFO rag.llm: groq answer request: ~3223 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[17/50] (factual) Under which major object is contingent expenditure classified?
+2026-10-10 11:48:50,640 INFO rag.llm: groq answer request: ~3179 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:49:50,830 INFO rag.llm: groq answer request: ~3179 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[18/50] (factual) Which form is used to request goods from an internal division of the same organization?
+2026-10-10 11:50:22,735 INFO rag.llm: groq answer request: ~3068 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:51:22,960 INFO rag.llm: groq answer request: ~3068 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[19/50] (factual) Who signed the GFR 2025 notification?
+2026-10-10 11:51:55,066 INFO rag.llm: groq answer request: ~3042 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:52:55,435 INFO rag.llm: groq answer request: ~3042 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[20/50] (factual) Between which years did East Pakistan exist as a province?
+2026-10-10 11:53:27,513 INFO rag.llm: groq answer request: ~3162 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:54:27,781 INFO rag.llm: groq answer request: ~3162 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[21/50] (factual) What was East Pakistan's average economic growth between 1960 and 1965?
+2026-10-10 11:54:59,775 INFO rag.llm: groq answer request: ~3085 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:56:00,086 INFO rag.llm: groq answer request: ~3085 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[22/50] (paraphrased) How much did the government spend paying interest on its loans in the first six months?
+2026-10-10 11:56:32,974 INFO rag.llm: groq answer request: ~3034 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:57:33,499 INFO rag.llm: groq answer request: ~3034 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[23/50] (paraphrased) By how much did the central bank cut its benchmark rate from mid-2024 to end-2025?
+2026-10-10 11:58:05,261 INFO rag.llm: groq answer request: ~3069 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 11:59:05,459 INFO rag.llm: groq answer request: ~3069 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[24/50] (paraphrased) How much money did overseas Pakistanis send home in the first half of FY2026?
+2026-10-10 11:59:37,221 INFO rag.llm: groq answer request: ~3073 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:00:37,462 INFO rag.llm: groq answer request: ~3073 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[25/50] (paraphrased) Did the government end the first half of the year in surplus or deficit overall?
+2026-10-10 12:01:09,430 INFO rag.llm: groq answer request: ~3173 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:02:09,875 INFO rag.llm: groq answer request: ~3173 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[26/50] (paraphrased) Why did interest costs fall so sharply compared to last year?
+2026-10-10 12:02:41,582 INFO rag.llm: groq answer request: ~3235 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:03:41,793 INFO rag.llm: groq answer request: ~3235 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[27/50] (paraphrased) If approved money for a new expense is never spent, how long does the approval stay valid?
+2026-10-10 12:04:13,492 INFO rag.llm: groq answer request: ~3129 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:05:13,660 INFO rag.llm: groq answer request: ~3129 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[28/50] (paraphrased) Can leftover budget money be carried into next year?
+2026-10-10 12:05:45,549 INFO rag.llm: groq answer request: ~3186 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:06:45,744 INFO rag.llm: groq answer request: ~3186 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[29/50] (paraphrased) Which city was made the country's second capital?
+2026-10-10 12:07:17,452 INFO rag.llm: groq answer request: ~3047 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:09:00,908 INFO rag.llm: groq answer request: ~3047 input tokens (estimate)
+2026-10-10 12:09:01,820 INFO rag.llm: groq answer usage: prompt=2739 completion=84 total=2823
+  hit=True correct=True answer='Dacca was declared the country’s second capital. [1]'
+[30/50] (paraphrased) Which foreign architect designed the parliament building in Dacca?
+2026-10-10 12:09:33,612 INFO rag.llm: groq answer request: ~3188 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:10:33,857 INFO rag.llm: groq answer request: ~3188 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[31/50] (aggregation) How many shipments are in the shipment sheet?
+2026-10-10 12:11:05,776 INFO rag.llm: groq answer request: ~2270 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:12:05,961 INFO rag.llm: groq answer request: ~2270 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[32/50] (aggregation) How many shipments have been delivered?
+2026-10-10 12:12:37,925 INFO rag.llm: groq answer request: ~2467 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:13:38,079 INFO rag.llm: groq answer request: ~2467 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[33/50] (aggregation) What is the total COD amount across all shipments?
+2026-10-10 12:14:09,688 INFO rag.llm: groq answer request: ~2068 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:15:09,860 INFO rag.llm: groq answer request: ~2068 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[34/50] (aggregation) Which destination city received the most shipments?
+2026-10-10 12:15:41,580 INFO rag.llm: groq answer request: ~2129 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:16:41,769 INFO rag.llm: groq answer request: ~2129 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[35/50] (aggregation) How many shipments went to Karachi?
+2026-10-10 12:17:13,694 INFO rag.llm: groq answer request: ~2167 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:18:13,889 INFO rag.llm: groq answer request: ~2167 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[36/50] (aggregation) How many shipments are NON-COD?
+2026-10-10 12:18:45,707 INFO rag.llm: groq answer request: ~2205 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:19:45,942 INFO rag.llm: groq answer request: ~2205 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[37/50] (aggregation) What is the highest single COD amount?
+2026-10-10 12:20:18,212 INFO rag.llm: groq answer request: ~2065 input tokens (estimate)
+2026-10-10 12:20:25,538 INFO rag.llm: groq answer usage: prompt=3102 completion=207 total=3309
+  hit=None correct=False answer='The highest single COD amount is\u202f8086.0\u202f[1]'
+[38/50] (aggregation) How many shipments have status Return Submitted?
+2026-10-10 12:20:57,645 INFO rag.llm: groq answer request: ~2271 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:21:57,869 INFO rag.llm: groq answer request: ~2271 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[39/50] (aggregation) How many shipments were booked on 1 September 2026?
+2026-10-10 12:22:29,597 INFO rag.llm: groq answer request: ~2272 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:23:29,798 INFO rag.llm: groq answer request: ~2272 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[40/50] (aggregation) What is the total COD amount of delivered shipments only?
+2026-10-10 12:24:02,096 INFO rag.llm: groq answer request: ~2069 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:25:02,310 INFO rag.llm: groq answer request: ~2069 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[41/50] (unanswerable) What was Pakistan's unemployment rate in July-December FY2026?
+2026-10-10 12:25:34,030 INFO rag.llm: groq answer request: ~3114 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:26:34,250 INFO rag.llm: groq answer request: ~3114 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[42/50] (unanswerable) What is the FBR revenue target for FY2026-27?
+2026-10-10 12:27:06,075 INFO rag.llm: groq answer request: ~3096 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:28:06,298 INFO rag.llm: groq answer request: ~3096 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[43/50] (unanswerable) How much did the government spend on flood relief in FY2026?
+2026-10-10 12:28:38,117 INFO rag.llm: groq answer request: ~3120 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:29:38,312 INFO rag.llm: groq answer request: ~3120 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[44/50] (unanswerable) What is the monthly salary of a Drawing and Disbursing Officer?
+2026-10-10 12:30:10,178 INFO rag.llm: groq answer request: ~3140 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:31:10,346 INFO rag.llm: groq answer request: ~3140 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[45/50] (unanswerable) When will the General Financial Rules 2025 be next revised?
+2026-10-10 12:31:42,051 INFO rag.llm: groq answer request: ~3109 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:32:42,236 INFO rag.llm: groq answer request: ~3109 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[46/50] (unanswerable) How many people died in the 1970 Bhola cyclone?
+2026-10-10 12:33:14,131 INFO rag.llm: groq answer request: ~2597 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:34:14,357 INFO rag.llm: groq answer request: ~2597 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[47/50] (unanswerable) Who was the governor of East Pakistan in 1969?
+2026-10-10 12:34:45,975 INFO rag.llm: groq answer request: ~3034 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:35:46,163 INFO rag.llm: groq answer request: ~3034 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[48/50] (unanswerable) Which courier company handled these shipments?
+2026-10-10 12:36:18,104 INFO rag.llm: groq answer request: ~3111 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:37:18,228 INFO rag.llm: groq answer request: ~3111 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[49/50] (unanswerable) What is the delivery charge per kilogram for shipments to Karachi?
+2026-10-10 12:37:49,958 INFO rag.llm: groq answer request: ~2961 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:38:50,152 INFO rag.llm: groq answer request: ~2961 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+[50/50] (unanswerable) What was Pakistan's GDP growth in FY2027?
+2026-10-10 12:39:22,201 INFO rag.llm: groq answer request: ~3061 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 12:40:22,435 INFO rag.llm: groq answer request: ~3061 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kwd90tesehdvsznb2tymnfe5` service tier `on_demand` on tokens per day 
+
+type             n   retrieval hit rate (baseline -> now)     answer accuracy (baseline -> now)
+----------------------------------------------------------------------------------------------------
+factual         18    33.3% (6/18) -> 100.0% (10/10)           33.3% (6/18) ->  90.0% (9/10)
+table            3     0.0% (0/3) -> n/a                        0.0% (0/3) -> n/a
+paraphrased      9    33.3% (3/9) -> 100.0% (1/1)              44.4% (4/9) -> 100.0% (1/1)
+aggregation     10   n/a -> n/a                                 0.0% (0/10) ->   0.0% (0/1)
+unanswerable    10   n/a -> n/a                                90.0% (9/10) -> n/a
+----------------------------------------------------------------------------------------------------
+overall         50    30.0% (9/30) -> 100.0% (11/11)           38.0% (19/50) ->  83.3% (10/12)
+
+38 question(s) errored and are excluded from accuracy
+
+Saved 50 results to /app/eval/results/after_ocr.jsonl
+exit=0

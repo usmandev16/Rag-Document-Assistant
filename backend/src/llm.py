@@ -31,8 +31,17 @@ SYSTEM_PROMPT = (
     "Resolve follow-up references (like \"it\", \"she\", \"that\") from the "
     "conversation so far. If the answer is not in the context or the "
     "conversation, respond exactly with \"I don't know.\" Do not use outside "
-    "knowledge. " + STYLE_RULE
+    "knowledge. The context passages are numbered [1], [2], and so on. After "
+    "each fact, cite the passage it came from by its number in square "
+    "brackets, e.g. [2]. Cite only passages you actually used, never cite "
+    "the conversation, and use no citations when you answer \"I don't know.\" "
+    + STYLE_RULE
 )
+
+# Citation markers like [1] or [1, 3] in a model answer. gpt-oss often writes
+# full-width 【1】 or browser-style 【1†L31-L38】 instead; accept all of them,
+# and keep_cited rewrites them to plain [n].
+CITATION_RE = re.compile(r"[\[【](\d+(?:\s*,\s*\d+)*)(?:†[^\]】]*)?[\]】]")
 
 WEB_SYSTEM_PROMPT = (
     "You are a helpful assistant chatting with the user. You may be given "
@@ -107,13 +116,15 @@ def _history_messages(history: list[dict] | None) -> list[dict]:
     if not history:
         return []
     recent = history[-MAX_HISTORY_MESSAGES:]
-    return [{"role": turn["role"], "content": turn["content"]} for turn in recent]
+    # Old answers' [n] markers point at a previous turn's passages; strip them
+    # so they can't be confused with this turn's numbering.
+    return [{"role": turn["role"], "content": CITATION_RE.sub("", turn["content"])} for turn in recent]
 
 
 async def answer_question(
     question: str, context_chunks: list[str], history: list[dict] | None = None
 ) -> tuple[str, int]:
-    context = "\n\n---\n\n".join(context_chunks)
+    context = "\n\n---\n\n".join(f"[{i}] {chunk}" for i, chunk in enumerate(context_chunks, 1))
     user_prompt = f"Context:\n{context}\n\nQuestion: {question}"
 
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -145,6 +156,26 @@ async def generate_title(question: str, answer: str) -> tuple[str, int]:
     )
     title = (response.choices[0].message.content or "").strip().strip('"')
     return title[:48], _tokens(response)
+
+
+def keep_cited(answer: str, passages: list) -> tuple[str, list]:
+    """Keep only the passages the answer cites, renumbered 1..n in the order
+    they're first cited, and rewrite the answer's markers to match — so the
+    answer's [1] is the first entry in the sources list. Out-of-range markers
+    are dropped."""
+    order: list[int] = []
+    for match in CITATION_RE.finditer(answer):
+        for n in (int(x) for x in match.group(1).split(",")):
+            if 1 <= n <= len(passages) and n not in order:
+                order.append(n)
+    renumber = {old: new for new, old in enumerate(order, 1)}
+
+    def rewrite(match: re.Match) -> str:
+        nums = [renumber[int(x)] for x in match.group(1).split(",") if int(x) in renumber]
+        return "".join(f"[{n}]" for n in nums)
+
+    answer = re.sub(r" +([.,;:])", r"\1", CITATION_RE.sub(rewrite, answer))
+    return answer.strip(), [passages[n - 1] for n in order]
 
 
 def _extract_search_trace(message) -> dict:

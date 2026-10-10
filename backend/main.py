@@ -14,6 +14,7 @@ from src.llm import (
     answer_with_web_search,
     estimate_tokens,
     generate_title,
+    keep_cited,
     needs_web_search,
 )
 from src.chat_store import (
@@ -337,12 +338,16 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         return await respond(groq_error_reply(exc))
     await add_tokens(session_id, tokens)
 
+    # Only the chunks the answer actually cites, numbered [1], [2]... to match
+    # the markers in the answer. An "I don't know." cites nothing, so no sources.
+    answer, cited = keep_cited(answer, results)
     sources = [
         {
+            "number": number,
             "source": meta.get("source", "unknown"),
             "chunk_index": meta.get("chunk_index"),
             "text": doc[:300] + ("..." if len(doc) > 300 else ""),
         }
-        for doc, meta in results
+        for number, (doc, meta) in enumerate(cited, 1)
     ]
     return await respond({"answer": answer, "sources": sources}, title=await title_for(answer))

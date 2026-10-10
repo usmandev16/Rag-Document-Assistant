@@ -31,8 +31,12 @@ def ingest_documents(chat_id: str, session_id: str, files: list[dict]) -> dict:
     """
     indexed = []
     for file in files:
-        chunks = extract_chunks(file["name"], base64.b64decode(file["data"]))
-        add_chunks(chunks, source=file["name"], chat_id=chat_id, session_id=session_id)
+        pieces = extract_chunks(file["name"], base64.b64decode(file["data"]))
+        chunks = [text for text, _ in pieces]
+        add_chunks(
+            chunks, source=file["name"], chat_id=chat_id, session_id=session_id,
+            extra_metadata=[meta for _, meta in pieces],
+        )
         preview = chunks[0][:140] + ("..." if len(chunks[0]) > 140 else "") if chunks else ""
         indexed.append({
             "name": file["name"],

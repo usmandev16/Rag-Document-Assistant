@@ -53,8 +53,9 @@ def _split(metadata) -> tuple[str, dict]:
     """Pinecone has no separate document field — the chunk text rides in
     metadata. Split it back out so callers keep getting (doc, meta) pairs."""
     meta = dict(metadata or {})
-    if "chunk_index" in meta:
-        meta["chunk_index"] = int(meta["chunk_index"])  # Pinecone returns numbers as floats
+    for key in ("chunk_index", "page"):
+        if key in meta:
+            meta[key] = int(meta[key])  # Pinecone returns numbers as floats
     return meta.pop("text", ""), meta
 
 
@@ -96,7 +97,14 @@ def _passes(meta: dict, flt: dict) -> bool:
     return True
 
 
-def add_chunks(chunks: list[str], source: str, chat_id: str, session_id: str) -> None:
+def add_chunks(
+    chunks: list[str],
+    source: str,
+    chat_id: str,
+    session_id: str,
+    extra_metadata: list[dict] | None = None,
+) -> None:
+    """extra_metadata: optional per-chunk fields, e.g. {"page": 3, "ocr": True}."""
     if not chunks:
         return
     embeddings = embed_texts(chunks)
@@ -119,6 +127,7 @@ def add_chunks(chunks: list[str], source: str, chat_id: str, session_id: str) ->
                 "uploaded_ts": int(now.timestamp()),
                 "chat_id": chat_id,
                 "session_id": session_id,
+                **(extra_metadata[i] if extra_metadata else {}),
             },
         }
         for i, (chunk, embedding) in enumerate(zip(chunks, embeddings))

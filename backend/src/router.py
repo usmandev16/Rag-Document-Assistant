@@ -137,8 +137,9 @@ async def answer(state: RouteState) -> RouteState:
     result = state["result"]
     prompt = (
         "Answer the user's question using only this result, which was computed with "
-        "pandas over every row of the spreadsheet. Give the number(s) plainly and cite "
-        f"the file as [1] ({result['source']}). If the result does not answer the "
+        "pandas over every row of the spreadsheet. Answer in one full sentence that "
+        "includes the number(s), e.g. \"Lahore received the most shipments (36).\", and "
+        f"cite the file as [1] ({result['source']}). If the result does not answer the "
         'question exactly, reply exactly "I don\'t know." ' + STYLE_RULE + "\n\n"
         f"Question: {state['question']}\n"
         f"Query plan: {json.dumps(state['plan'], ensure_ascii=False)}\n"

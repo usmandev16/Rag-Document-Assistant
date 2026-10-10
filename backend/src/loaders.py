@@ -5,6 +5,8 @@ import pandas as pd
 from docx import Document
 from pypdf import PdfReader
 
+from src.chunking import chunk_text
+
 _DATE_NAME_RE = re.compile(r"date|time", re.IGNORECASE)
 
 
@@ -23,22 +25,36 @@ def _fix_excel_serial_dates(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _dataframe_to_text(df: pd.DataFrame) -> str:
-    """Render a table so every value stays attached to its column header.
+ROWS_PER_CHUNK = 25
 
-    Each row becomes "Col A: v1 | Col B: v2 | ...", one row per paragraph
-    (blank-line separated) so the chunker (which only ever splits a
-    paragraph that alone exceeds chunk_size) packs whole rows into chunks
-    instead of cutting a row — and the ID inside it — in half.
+
+def _dataframe_chunks(df: pd.DataFrame, label: str = "") -> list[str]:
+    """Split a table into chunks of ROWS_PER_CHUNK whole rows, each starting
+    with the header row ("Col A | Col B | ...") so every chunk is
+    self-describing. Rows are never cut, so an ID inside one stays intact.
+    Header-once instead of "Col: value" per cell keeps chunks much smaller
+    in tokens (Groq free tier: 8k tokens/minute).
     """
-    df = _fix_excel_serial_dates(df.copy())
-    df = df.fillna("")
-    columns = [str(c) for c in df.columns]
-    lines = []
-    for _, row in df.iterrows():
-        cells = [f"{col}: {row[orig]}" for col, orig in zip(columns, df.columns)]
-        lines.append(" | ".join(cells))
-    return "\n\n".join(lines)
+    df = _fix_excel_serial_dates(df.copy()).fillna("")
+    header = " | ".join(str(c) for c in df.columns)
+    rows = [" | ".join(str(v) for v in row) for row in df.itertuples(index=False)]
+    prefix = f"{label}\n" if label else ""
+    return [
+        f"{prefix}{header}\n" + "\n".join(rows[i:i + ROWS_PER_CHUNK])
+        for i in range(0, len(rows), ROWS_PER_CHUNK)
+    ]
+
+
+def extract_chunks(file_name: str, file_bytes: bytes) -> list[str]:
+    """File -> chunks. Spreadsheets are chunked by rows (header repeated);
+    everything else goes through the paragraph-packing text chunker."""
+    name = file_name.lower()
+    if name.endswith(".xlsx"):
+        sheets = pd.read_excel(BytesIO(file_bytes), sheet_name=None)
+        return [c for sheet, df in sheets.items() for c in _dataframe_chunks(df, f"# Sheet: {sheet}")]
+    if name.endswith(".csv"):
+        return _dataframe_chunks(pd.read_csv(BytesIO(file_bytes)))
+    return chunk_text(extract_text(file_name, file_bytes), chunk_size=800, overlap=150)
 
 
 def extract_text(file_name: str, file_bytes: bytes) -> str:
@@ -50,14 +66,4 @@ def extract_text(file_name: str, file_bytes: bytes) -> str:
     if name.endswith(".docx"):
         document = Document(BytesIO(file_bytes))
         return "\n\n".join(p.text for p in document.paragraphs if p.text)
-    if name.endswith(".xlsx"):
-        sheets = pd.read_excel(BytesIO(file_bytes), sheet_name=None)
-        parts = []
-        for sheet_name, df in sheets.items():
-            parts.append(f"# Sheet: {sheet_name}")
-            parts.append(_dataframe_to_text(df))
-        return "\n\n".join(parts)
-    if name.endswith(".csv"):
-        df = pd.read_csv(BytesIO(file_bytes))
-        return _dataframe_to_text(df)
     return file_bytes.decode("utf-8", errors="ignore")

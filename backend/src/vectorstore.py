@@ -7,7 +7,7 @@ from pinecone import NotFoundError, Pinecone
 
 from src.embeddings import embed_texts
 
-INDEX_NAME = os.environ.get("PINECONE_INDEX", "rag-doc-chat")
+INDEX_NAME = os.environ.get("PINECONE_INDEX", "rag-docs")
 DIMENSION = 384  # all-MiniLM-L6-v2 output size
 
 _index = None
@@ -58,12 +58,51 @@ def _split(metadata) -> tuple[str, dict]:
     return meta.pop("text", ""), meta
 
 
+DateRange = tuple[datetime | None, datetime | None]
+
+
+def doc_type_for(source: str) -> str:
+    """pdf / docx / xlsx / csv from the extension; anything else is read as
+    plain text by loaders.extract_text, so it's tagged "txt"."""
+    ext = os.path.splitext(source)[1].lstrip(".").lower()
+    return ext if ext in {"pdf", "docx", "xlsx", "csv"} else "txt"
+
+
+def build_filter(chat_id: str, doc_type: str | None = None, date_range: DateRange | None = None) -> dict:
+    """Pinecone metadata filter; multiple top-level keys are ANDed."""
+    flt: dict = {"chat_id": {"$eq": chat_id}}
+    if doc_type:
+        flt["doc_type"] = {"$eq": doc_type}
+    start, end = date_range or (None, None)
+    ts_range = {}
+    if start:
+        ts_range["$gte"] = int(start.timestamp())
+    if end:
+        ts_range["$lte"] = int(end.timestamp())
+    if ts_range:
+        flt["uploaded_ts"] = ts_range
+    return flt
+
+
+def _passes(meta: dict, flt: dict) -> bool:
+    """Same filter, applied in Python to chunks that didn't come from a
+    Pinecone query (the exact-ID fallback). Supports only the operators
+    build_filter emits."""
+    checks = {"$eq": lambda v, x: v == x, "$gte": lambda v, x: v >= x, "$lte": lambda v, x: v <= x}
+    for field, conditions in flt.items():
+        value = meta.get(field)
+        if value is None or not all(checks[op](value, arg) for op, arg in conditions.items()):
+            return False
+    return True
+
+
 def add_chunks(chunks: list[str], source: str, chat_id: str, session_id: str) -> None:
     if not chunks:
         return
     embeddings = embed_texts(chunks)
     batch = uuid.uuid4().hex
-    uploaded_at = datetime.now().isoformat()
+    now = datetime.now()
+    doc_type = doc_type_for(source)
     vectors = [
         {
             # Plain ASCII ids: filenames can hold characters Pinecone ids reject.
@@ -73,7 +112,11 @@ def add_chunks(chunks: list[str], source: str, chat_id: str, session_id: str) ->
                 "text": chunk,
                 "source": source,
                 "chunk_index": i,
-                "uploaded_at": uploaded_at,
+                "doc_type": doc_type,
+                "uploaded_at": now.isoformat(),  # for display
+                # Pinecone's $gte/$lte only compare numbers, so date-range
+                # filtering needs epoch seconds, not the ISO string above.
+                "uploaded_ts": int(now.timestamp()),
                 "chat_id": chat_id,
                 "session_id": session_id,
             },
@@ -109,22 +152,31 @@ def _find_exact_matches(question: str, chat_id: str) -> list[tuple[str, dict]]:
     return [(doc, meta) for doc, meta in _all_chunks(chat_id) if any(token in doc for token in tokens)]
 
 
-def query_chunks(question: str, chat_id: str, n_results: int = 4) -> list[tuple[str, dict]]:
+def query_chunks(
+    question: str,
+    chat_id: str,
+    n_results: int = 4,
+    doc_type: str | None = None,
+    date_range: DateRange | None = None,
+) -> list[tuple[str, dict]]:
+    """date_range = (start, end); either end may be None for open-ended."""
+    flt = build_filter(chat_id, doc_type, date_range)
     query_embedding = embed_texts([question])[0]
     results = get_index().query(
         vector=query_embedding,
         top_k=n_results,
         namespace=chat_id,
-        # Belt and braces: the namespace already isolates the chat.
-        filter={"chat_id": {"$eq": chat_id}},
+        # chat_id is belt and braces (the namespace already isolates the
+        # chat); doc_type / uploaded_ts narrow it further when given.
+        filter=flt,
         include_metadata=True,
     )
-    pairs = [_split(match.metadata) for match in results.matches]
+    similar = [_split(match.metadata) for match in results.matches]
 
-    for doc, meta in _find_exact_matches(question, chat_id):
-        if not any(doc == existing for existing, _ in pairs):
-            pairs.append((doc, meta))
-
+    # Exact-ID matches go first: they're the most precise hits, and callers
+    # trim this list to a token budget from the front.
+    pairs = [(doc, meta) for doc, meta in _find_exact_matches(question, chat_id) if _passes(meta, flt)]
+    pairs += [(doc, meta) for doc, meta in similar if not any(doc == existing for existing, _ in pairs)]
     return pairs
 
 

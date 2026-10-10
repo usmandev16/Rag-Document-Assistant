@@ -45,14 +45,14 @@ Nothing is stored on the API's local disk, so any number of API workers and Cele
 2. The worker parses documents: pypdf for PDFs, python-docx for Word, and pandas for Excel and CSV.
 3. Text is split into overlapping, paragraph-packed chunks (about 800 characters, 150 overlap).
 4. Each chunk is embedded with a local Hugging Face model (all-MiniLM-L6-v2, 384 dimensions).
-5. Vectors are upserted into Pinecone, in a namespace per chat, with metadata `text`, `source`, `chunk_index`, `uploaded_at`, `chat_id`, `session_id`.
+5. Vectors are upserted into Pinecone, in a namespace per chat, with metadata `text`, `source`, `chunk_index`, `doc_type` (pdf/docx/xlsx/csv/txt, from the file extension), `uploaded_at` (ISO string, for display), `uploaded_ts` (epoch seconds, for range filters), `chat_id`, `session_id`.
 6. The frontend polls `GET /api/upload/status/{task_id}` until it reports `success`.
 
 **Query (per question):**
 
 1. The request passes the per-session rate limit and token budget checks (Redis).
 2. The question is embedded with the same model.
-3. Pinecone returns the nearest chunks by cosine similarity, scoped to the chat's namespace and filtered on `chat_id`.
+3. Pinecone returns the nearest chunks by cosine similarity, scoped to the chat's namespace and filtered on `chat_id`, plus optional `doc_type` and upload-date filters when the request sets them.
 4. The retrieved chunks and the question are composed into a grounded prompt.
 5. Groq generates the answer using only that context. Token usage is recorded in Redis.
 6. The answer is returned with its source document and section shown.
@@ -68,7 +68,7 @@ Nothing is stored on the API's local disk, so any number of API workers and Cele
 | Loading | pypdf, python-docx, pandas | Standard, dependable parsers for each supported format; pandas keeps spreadsheet rows intact. |
 | Embeddings | Hugging Face all-MiniLM-L6-v2 (runs locally) | Small (384-dim), fast on CPU, and free per call, since Groq has no embedding endpoint. |
 | Vector store | Pinecone (serverless) | Managed and network-accessible, so every API and worker process reads and writes the same index concurrently. |
-| Generation | Groq API: llama-3.3-70b-versatile (documents), compound-beta (web search) | Low-latency hosted inference; compound-beta adds built-in live web search. |
+| Generation | Groq API: openai/gpt-oss-120b (documents, and web search via its built-in `browser_search` tool) | Low-latency hosted inference; one model covers both grounded answers and live web search. Override with `GROQ_MODEL`. |
 
 ## Scaling & Production Architecture
 
@@ -157,8 +157,9 @@ All variables go in `backend/.env`.
 | Variable | Default | Purpose |
 |---|---|---|
 | `GROQ_API_KEY` | (required) | Answer generation and web search. |
+| `GROQ_MODEL` | `openai/gpt-oss-120b` | Groq model for answers, titles, and web search. Must be one your key can access. |
 | `PINECONE_API_KEY` | (required) | Vector store. |
-| `PINECONE_INDEX` | `rag-doc-chat` | Index name. |
+| `PINECONE_INDEX` | `rag-docs` | Index name. |
 | `PINECONE_CLOUD` / `PINECONE_REGION` | `aws` / `us-east-1` | Where the serverless index is created. |
 | `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` | `localhost` / `6379` / empty | Redis connection (Celery, chats, limits). |
 | `CHAT_RATE_LIMIT_PER_MINUTE` | `20` | Chat requests per session per minute. `0` disables. |
@@ -174,7 +175,7 @@ All variables go in `backend/.env`.
 |---|---|
 | `POST /api/documents` | Returns `202 {"task_id", "status": "queued"}`. `404` if the chat isn't yours, `413` if too large, `429` if rate limited. |
 | `GET /api/upload/status/{task_id}` | `{"status": "pending" \| "started" \| "success" \| "failure"}`; on success `result` holds `{indexed, total_chunks}`. |
-| `POST /api/chat` | `429` with a `Retry-After` header (seconds) when the request or token limit is hit. |
+| `POST /api/chat` | Optional retrieval filters: `doc_type` (`pdf`, `docx`, `xlsx`, `csv`, `txt`), `uploaded_after` and `uploaded_before` (ISO datetimes). `429` with a `Retry-After` header (seconds) when the request or token limit is hit. |
 
 Useful checks:
 
@@ -208,10 +209,11 @@ redis-cli keys 'tok:*'            # token usage buckets
 - **No response caching yet.** Repeated questions still pay for a full retrieval and LLM call; the Redis answer cache is planned.
 - **Uploads pass through Redis.** Files travel base64-encoded to the worker, which is fine for documents of a few MB but not for very large files.
 - **Search is eventually consistent.** A document can take a few seconds after ingestion finishes before Pinecone returns it in search.
+- **Filters only see newly indexed chunks.** Chunks indexed before `doc_type`/`uploaded_ts` were added lack those fields, so a filtered query skips them. Chats expire after 6 hours of inactivity, so this clears on its own.
 - **Some lookups scan the whole chat.** The ID exact-match fallback and the document list read every chunk in a chat (O(n)).
 - **Chat history is ephemeral.** It lives in Redis with a 6-hour inactivity cleanup; there is no durable history store yet.
 - **No real login or accounts.** Isolation is per browser tab.
-- **Web search is tied to Groq.** It depends on compound-beta's built-in search, so a fully local deployment would need a custom search-tool layer to replace it.
+- **Web search is tied to Groq.** It depends on Groq's built-in `browser_search` tool, so a fully local deployment would need a custom search-tool layer to replace it.
 
 ## Roadmap
 

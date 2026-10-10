@@ -1,13 +1,21 @@
 import asyncio
 import base64
 import os
+from datetime import datetime
+from typing import Literal
 
 from celery.result import AsyncResult
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from src.llm import answer_question, answer_with_web_search, generate_title, needs_web_search
+from src.llm import (
+    answer_question,
+    answer_with_web_search,
+    estimate_tokens,
+    generate_title,
+    needs_web_search,
+)
 from src.chat_store import (
     append_messages,
     create_chat,
@@ -30,6 +38,9 @@ from src.vectorstore import delete_chat_chunks, has_chunks, list_documents, quer
 from src.worker import celery_app, ingest_documents
 
 MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_MB", "20")) * 1024 * 1024
+# Retrieved context sent to the LLM per question. The Groq free tier allows
+# 8,000 tokens per minute, and the prompt, history, and answer need room too.
+MAX_CONTEXT_TOKENS = int(os.environ.get("MAX_CONTEXT_TOKENS", "3000"))
 
 GREETINGS = {
     "hi", "hello", "hey", "hii", "hiya", "yo", "howdy",
@@ -61,6 +72,10 @@ class ChatRequest(BaseModel):
     question: str
     history: list[ChatMessage] = []
     chat_id: str | None = None
+    # Optional retrieval filters, ANDed with the chat_id filter in Pinecone.
+    doc_type: Literal["pdf", "docx", "xlsx", "csv", "txt"] | None = None
+    uploaded_after: datetime | None = None
+    uploaded_before: datetime | None = None
 
 
 def get_session_id(x_session_id: str | None = Header(default=None)) -> str:
@@ -100,16 +115,39 @@ async def wipe_session(session_id: str) -> None:
 RATE_LIMIT_MARKERS = ("rate_limit_exceeded", "tokens per minute", "Request too large")
 
 
-def groq_error_answer(exc: Exception) -> str:
-    """A generic "couldn't reach Groq" message hides what's actually wrong
-    when it's a rate limit, which needs a different response from the user
-    (wait, or ask something shorter) than a real connectivity failure."""
-    if any(marker in str(exc) for marker in RATE_LIMIT_MARKERS):
-        return (
-            "This question needs more context than the current rate limit allows "
-            "right now. Try a shorter question, or wait a minute and try again."
-        )
-    return "Sorry, I couldn't reach Groq to generate an answer."
+def groq_error_reply(exc: Exception) -> dict:
+    """Map a Groq failure to the chat reply. Only a 401 points at the API key
+    (the frontend shows the key hint when error_status is 401); a 413/429 is
+    a size or rate limit, not a key problem, so it gets a plain retry message
+    and no error box."""
+    status = getattr(exc, "status_code", None)
+    if status in (413, 429) or any(marker in str(exc) for marker in RATE_LIMIT_MARKERS):
+        return {"answer": "Request too large or rate limited, try again shortly."}
+    reply = {"answer": "Sorry, I couldn't reach Groq to generate an answer.", "error": str(exc)}
+    if status == 401:
+        reply["error_status"] = 401
+    return reply
+
+
+def context_line(doc: str, meta: dict) -> str:
+    return f"[From {meta.get('source', 'document')}]\n{doc}"
+
+
+def fit_to_budget(results: list[tuple[str, dict]]) -> list[tuple[str, dict]]:
+    """Keep retrieved chunks in rank order until their estimated tokens reach
+    MAX_CONTEXT_TOKENS; drop the rest. The top chunk is always kept (cut to
+    the budget if it alone is too big) so a question never loses all context.
+    Returns the chunks actually sent, so citations can only point at those."""
+    kept, used = [], 0
+    for doc, meta in results:
+        cost = estimate_tokens(context_line(doc, meta))
+        if used + cost > MAX_CONTEXT_TOKENS:
+            if not kept:
+                kept.append((doc[: MAX_CONTEXT_TOKENS * 4], meta))
+            break
+        kept.append((doc, meta))
+        used += cost
+    return kept
 
 
 def is_greeting(text: str) -> bool:
@@ -248,15 +286,9 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
     has_docs = await asyncio.to_thread(has_chunks, chat_id)
     history = req.history
     search_query = build_retrieval_query(req.question, history)
-    # The model's 128k-token context window is not the real ceiling here —
-    # this Groq account's "on_demand" service tier caps requests at 12000
-    # tokens per minute. ~215 tokens/chunk observed, so 40 chunks is ~8600
-    # tokens, leaving headroom for system prompt, history, and output while
-    # still comfortably under the limit. A large document (e.g. 200+ pages)
-    # produces far more chunks than this can ever cover in one question —
-    # that's a hard ceiling from the rate tier, not something this number
-    # alone fixes; see the "Limitations" note on the Technical Overview page.
-    # Pinecone returns fewer than top_k when the chat has fewer chunks.
+    # Candidates to retrieve; fit_to_budget then keeps only as many as fit
+    # MAX_CONTEXT_TOKENS (the real ceiling: Groq free tier is 8,000 tokens
+    # per minute). Pinecone returns fewer than top_k when the chat has fewer.
     n_ctx = 40
 
     if is_greeting(req.question):
@@ -267,8 +299,12 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         )
         return await respond({"answer": answer})
 
-    results = await asyncio.to_thread(query_chunks, search_query, chat_id, n_ctx) if has_docs else []
-    context_chunks = [f"[From {meta.get('source', 'document')}]\n{doc}" for doc, meta in results]
+    date_range = (req.uploaded_after, req.uploaded_before)
+    results = await asyncio.to_thread(
+        query_chunks, search_query, chat_id, n_ctx, req.doc_type, date_range
+    ) if has_docs else []
+    results = fit_to_budget(results)
+    context_chunks = [context_line(doc, meta) for doc, meta in results]
 
     if needs_web_search(req.question):
         try:
@@ -276,7 +312,7 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
                 req.question, context_chunks, [m.model_dump() for m in history]
             )
         except Exception as exc:
-            return await respond({"answer": groq_error_answer(exc), "error": str(exc)})
+            return await respond(groq_error_reply(exc))
         await add_tokens(session_id, tokens)
         searched_at = trace.pop("searched_at", None)
         return await respond({
@@ -288,12 +324,17 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         }, title=await title_for(answer))
 
     if not results:
-        return await respond({"answer": "I don't know. No documents have been indexed yet."})
+        filtered = req.doc_type or req.uploaded_after or req.uploaded_before
+        return await respond({"answer": (
+            "I don't know. No documents match those filters."
+            if has_docs and filtered
+            else "I don't know. No documents have been indexed yet."
+        )})
 
     try:
         answer, tokens = await answer_question(req.question, context_chunks, [m.model_dump() for m in history])
     except Exception as exc:
-        return await respond({"answer": groq_error_answer(exc), "error": str(exc)})
+        return await respond(groq_error_reply(exc))
     await add_tokens(session_id, tokens)
 
     sources = [

@@ -243,7 +243,7 @@ export default function Homepage({ onGetStarted }) {
               [Layers, "RAG", "Grounds every answer in the actual documents."],
               [Cpu, "all-MiniLM-L6-v2", "Turns documents into vectors on the server, in-house."],
               [Database, "Pinecone", "Stores the vectors and finds the most relevant pieces."],
-              [Zap, "Groq (Llama)", "Fast answer generation."],
+              [Zap, "Groq (gpt-oss-120b)", "Fast answer generation."],
               [Globe, "Internet search", "For live market comparison."],
             ].map(([Icon, name, desc], i) => (
               <div

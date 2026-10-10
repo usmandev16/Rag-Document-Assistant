@@ -17,6 +17,8 @@ services:
       WEB_CONCURRENCY: 2        # uvicorn workers; each loads the embedding model
     ports:
       - "8000:8000"
+    volumes:
+      - hf-cache:/root/.cache/huggingface
     depends_on:
       - redis
 
@@ -31,3 +33,4 @@ services:
 
 volumes:
   redis-data:
+  hf-cache:

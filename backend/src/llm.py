@@ -1,14 +1,24 @@
 import json
+import logging
 import os
+import re
 from datetime import datetime
 
 from groq import AsyncGroq
 
-MODEL_NAME = "llama-3.3-70b-versatile"
-SEARCH_MODEL_NAME = "compound-beta"
+# llama-3.3-70b-versatile and compound-beta aren't available on this Groq
+# account; gpt-oss-120b handles both answers and (via its built-in
+# browser_search tool) web search. Override with GROQ_MODEL in .env.
+MODEL_NAME = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
+WEB_SEARCH_TOOL = {"type": "browser_search"}
 
-# How many prior chat turns to feed back into the model as memory.
-MAX_HISTORY_MESSAGES = 8
+# browser_search answers cite inline like 【1†L4-L11】; the UI shows sources
+# separately, so strip them.
+_CITATION_RE = re.compile(r"【[^】]*】")
+
+# How many prior chat messages to feed back into the model as memory. Kept
+# small: the Groq free tier allows 8,000 tokens per minute.
+MAX_HISTORY_MESSAGES = 4
 
 STYLE_RULE = (
     "Write in plain text: no emoji, and no em dashes (use a comma or period "
@@ -60,6 +70,38 @@ def _tokens(response) -> int:
     return getattr(response.usage, "total_tokens", 0) or 0
 
 
+# Own handler so the per-request token log shows under uvicorn and celery
+# without turning on INFO logging for every library.
+log = logging.getLogger("rag.llm")
+if not log.handlers:
+    _handler = logging.StreamHandler()
+    _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
+    log.addHandler(_handler)
+    log.setLevel(logging.INFO)
+    log.propagate = False
+
+
+def estimate_tokens(text: str) -> int:
+    """Rough token count, ~4 characters per token. Good enough to stay under
+    the per-minute limit without pulling in a tokenizer dependency."""
+    return len(text) // 4
+
+
+async def _create(kind: str, **kwargs):
+    """Every Groq call goes through here so each request's token count is
+    logged: an estimate before sending (so a 413 still leaves a record), and
+    Groq's actual usage after."""
+    estimate = sum(estimate_tokens(m["content"]) for m in kwargs["messages"])
+    log.info("groq %s request: ~%d input tokens (estimate)", kind, estimate)
+    response = await _get_client().chat.completions.create(model=MODEL_NAME, **kwargs)
+    usage = response.usage
+    log.info(
+        "groq %s usage: prompt=%s completion=%s total=%s",
+        kind, usage.prompt_tokens, usage.completion_tokens, usage.total_tokens,
+    )
+    return response
+
+
 def _history_messages(history: list[dict] | None) -> list[dict]:
     """Turn recent chat turns into Groq messages, capped to the last few turns."""
     if not history:
@@ -78,11 +120,7 @@ async def answer_question(
     messages += _history_messages(history)
     messages.append({"role": "user", "content": user_prompt})
 
-    response = await _get_client().chat.completions.create(
-        model=MODEL_NAME,
-        messages=messages,
-        temperature=0,
-    )
+    response = await _create("answer", messages=messages, temperature=0)
     return response.choices[0].message.content, _tokens(response)
 
 
@@ -95,18 +133,22 @@ async def generate_title(question: str, answer: str) -> tuple[str, int]:
         "3 to 6 words, title case, no quotes, no trailing punctuation.\n\n"
         f"User: {question}\nAssistant: {answer}\n\nTitle:"
     )
-    response = await _get_client().chat.completions.create(
-        model=MODEL_NAME,
+    response = await _create(
+        "title",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
-        max_tokens=20,
+        # gpt-oss reasons before it answers: a tight max_tokens (the old 20)
+        # gets spent on reasoning and returns an empty title. Keep reasoning
+        # low and the cap generous; the title is trimmed to 48 chars anyway.
+        reasoning_effort="low",
+        max_tokens=300,
     )
     title = (response.choices[0].message.content or "").strip().strip('"')
     return title[:48], _tokens(response)
 
 
 def _extract_search_trace(message) -> dict:
-    """Pull the actual web searches the model ran out of the compound-beta
+    """Pull the actual web searches the model ran out of the browser_search
     response: the exact queries, and the ranked sources (title, url, relevance
     score) it read. This is what turns the feature from a black box into
     something the user can verify."""
@@ -125,13 +167,15 @@ def _extract_search_trace(message) -> dict:
 
         results = getattr(tool.search_results, "results", None) if tool.search_results else None
         for result in results or []:
-            url = result.url
+            url = getattr(result, "url", None)
+            if not url:
+                continue  # page-open steps can carry page text without a url
             score = getattr(result, "score", None)
             if url in sources:
                 if score is not None and (sources[url]["score"] or 0) < score:
                     sources[url]["score"] = score
             else:
-                sources[url] = {"title": result.title, "url": url, "score": score}
+                sources[url] = {"title": getattr(result, "title", None) or url, "url": url, "score": score}
 
     ranked = sorted(sources.values(), key=lambda s: s["score"] or 0, reverse=True)[:8]
     return {"queries": queries, "sources": ranked}
@@ -150,14 +194,11 @@ async def answer_with_web_search(
     messages += _history_messages(history)
     messages.append({"role": "user", "content": user_prompt})
 
-    response = await _get_client().chat.completions.create(
-        model=SEARCH_MODEL_NAME,
-        messages=messages,
-        temperature=0,
-    )
+    response = await _create("web_search", messages=messages, temperature=0, tools=[WEB_SEARCH_TOOL])
     searched_at = datetime.now()
     message = response.choices[0].message
 
     trace = _extract_search_trace(message)
     trace["searched_at"] = searched_at
-    return message.content, trace, _tokens(response)
+    answer = _CITATION_RE.sub("", message.content or "").strip()
+    return answer, trace, _tokens(response)

@@ -177,7 +177,7 @@ export default function TechnicalOverview({ onBack }) {
                 between conversations.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {["Python", "FastAPI", "React", "Pinecone", "Redis + Celery", "Hugging Face embeddings", "Groq (Llama 3.3 + compound-beta)"].map((s) => (
+                {["Python", "FastAPI", "React", "Pinecone", "Redis + Celery", "Hugging Face embeddings", "Groq (gpt-oss-120b + browser search)"].map((s) => (
                   <span key={s} className="rounded-full border border-rule bg-coral-50 px-3 py-1 font-mono text-xs text-coral-600">
                     {s}
                   </span>
@@ -207,7 +207,7 @@ export default function TechnicalOverview({ onBack }) {
                   <PipelineStep icon={HelpCircle} n="1">The question is embedded with the same model.</PipelineStep>
                   <PipelineStep icon={Search} n="2">Pinecone returns the nearest chunks by vector similarity.</PipelineStep>
                   <PipelineStep icon={FileCode2} n="3">The retrieved chunks and the question are composed into a grounded prompt.</PipelineStep>
-                  <PipelineStep icon={Sparkles} n="4">Groq (llama-3.3-70b-versatile, or compound-beta for web search) generates the answer using only that context.</PipelineStep>
+                  <PipelineStep icon={Sparkles} n="4">Groq (gpt-oss-120b, with its browser search tool for web questions) generates the answer using only that context.</PipelineStep>
                   <PipelineStep icon={FileOutput} n="5" last>The answer is returned with the source document and section shown.</PipelineStep>
                 </div>
               </Card>
@@ -236,8 +236,8 @@ export default function TechnicalOverview({ onBack }) {
                   question only ever searches the documents uploaded to that specific chat.
                 </DefItem>
                 <DefItem term="Groq API (generation)">
-                  Two models are used depending on the question: llama-3.3-70b-versatile for grounded
-                  answers from the documents, and compound-beta for answers that need live web search.
+                  One model, gpt-oss-120b, handles both: grounded
+                  answers from the documents, and answers that need live web search via its built-in browser search tool.
                   Groq was chosen for fast inference and a free tier, so the system stays lightweight
                   with no large model to self-host.
                 </DefItem>
@@ -277,7 +277,7 @@ export default function TechnicalOverview({ onBack }) {
                   key, they just pass the question and retrieved chunks in and get an answer back.
                   Because the Groq client is OpenAI-compatible, swapping in a local model for a fully
                   private deployment means changing one file, not the pipeline. The web-search path is
-                  the exception: it relies on Groq's compound-beta model and its built-in search, so a
+                  the exception: it relies on Groq's built-in browser search tool, so a
                   fully local version would need its own search-and-tool-calling layer.
                 </DefItem>
                 <DefItem term="Exact-match fallback for IDs and numbers">
@@ -353,7 +353,7 @@ export default function TechnicalOverview({ onBack }) {
                 {[
                   "The current build uses the Groq API for generation, chosen for speed and to stay lightweight.",
                   "The embedding and retrieval stages run locally on the server.",
-                  "The document-grounded generation step is pluggable: swapping Groq for a local model keeps all document data on the company's own server, enabling a fully private deployment for the document Q&A. The web-search feature is the exception, since it depends on Groq's compound-beta and its built-in search (noted under limitations).",
+                  "The document-grounded generation step is pluggable: swapping Groq for a local model keeps all document data on the company's own server, enabling a fully private deployment for the document Q&A. The web-search feature is the exception, since it depends on Groq's built-in browser search tool (noted under limitations).",
                 ].map((t) => (
                   <li key={t} className="flex gap-3 text-[15px] leading-relaxed text-muted">
                     <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-coral-500" />
@@ -373,7 +373,7 @@ export default function TechnicalOverview({ onBack }) {
                   "Chat history is stored in a single JSON file. Fine for a demo, but a proper database would be needed for concurrent multi-user use.",
                   "Models are used as-is, with no fine-tuning; the focus is retrieval and grounding, not model training.",
                   "Next steps: evaluation on a labelled question set, re-ranking of retrieved chunks, a proper database and auth layer, and a local-model deployment path.",
-                  "The fully-private local swap applies to the document-grounded answers. The web-search feature depends on Groq's compound-beta and its built-in search, so a fully local deployment would need a custom search-tool layer to replace it.",
+                  "The fully-private local swap applies to the document-grounded answers. The web-search feature depends on Groq's built-in browser search tool, so a fully local deployment would need a custom search-tool layer to replace it.",
                 ].map((t) => (
                   <li key={t} className="flex gap-3 text-[15px] leading-relaxed text-muted">
                     <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-faint" />

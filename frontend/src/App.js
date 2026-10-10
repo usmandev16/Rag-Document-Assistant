@@ -170,7 +170,11 @@ function Message({ message }) {
           </div>
         )}
         {message.content && <div className="msg-content">{message.content}</div>}
-        {message.error && <div className="error-box">⚠️ Check that GROQ_API_KEY is set and valid. ({message.error})</div>}
+        {message.error && (
+          <div className="error-box">
+            ⚠️ {message.error_status === 401 ? "Check that GROQ_API_KEY is set and valid. " : ""}({message.error})
+          </div>
+        )}
         {message.sources && message.sources.length > 0 && <SourcesPanel sources={message.sources} />}
         {message.web_search && <WebSearchPanel meta={message.web_search} />}
         {!isUser && <MessageActions />}

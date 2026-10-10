@@ -8,8 +8,7 @@ from datetime import datetime
 
 from celery import Celery
 
-from src.chunking import chunk_text
-from src.loaders import extract_text
+from src.loaders import extract_chunks
 from src.redis_client import REDIS_URL
 from src.vectorstore import add_chunks
 
@@ -32,8 +31,7 @@ def ingest_documents(chat_id: str, session_id: str, files: list[dict]) -> dict:
     """
     indexed = []
     for file in files:
-        raw_text = extract_text(file["name"], base64.b64decode(file["data"]))
-        chunks = chunk_text(raw_text, chunk_size=800, overlap=150)
+        chunks = extract_chunks(file["name"], base64.b64decode(file["data"]))
         add_chunks(chunks, source=file["name"], chat_id=chat_id, session_id=session_id)
         preview = chunks[0][:140] + ("..." if len(chunks[0]) > 140 else "") if chunks else ""
         indexed.append({

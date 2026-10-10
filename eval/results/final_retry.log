@@ -1,0 +1,151 @@
+=== build
+ Image ragdocchat-worker Building 
+ Image ragdocchat-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 975B done
+#1 DONE 0.0s
+
+#2 [worker internal] load build definition from Dockerfile
+#2 transferring dockerfile: 745B 0.0s done
+#2 DONE 0.1s
+
+#3 [api internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 4.2s
+
+#4 [worker internal] load .dockerignore
+#4 transferring context:
+#4 transferring context: 82B 0.2s done
+#4 transferring context: 82B 0.2s done
+#4 DONE 0.7s
+
+#4 [worker internal] load .dockerignore
+#4 DONE 0.7s
+
+#5 [worker 1/6] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.5s done
+#5 DONE 0.5s
+
+#6 [worker internal] load build context
+#6 transferring context: 76.63kB 0.4s done
+#6 DONE 1.0s
+
+#7 [worker 2/6] WORKDIR /app
+#7 CACHED
+
+#8 [worker 3/6] RUN apt-get update     && apt-get install -y --no-install-recommends tesseract-ocr     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [worker 4/6] COPY requirements.txt .
+#9 CACHED
+
+#10 [worker 5/6] RUN pip install --no-cache-dir -r requirements.txt
+#10 CACHED
+
+#11 [worker 6/6] COPY . .
+#11 CACHED
+
+#7 [api 2/6] WORKDIR /app
+#7 CACHED
+
+#8 [api 3/6] RUN apt-get update     && apt-get install -y --no-install-recommends tesseract-ocr     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [api 4/6] COPY requirements.txt .
+#9 CACHED
+
+#10 [api 5/6] RUN pip install --no-cache-dir -r requirements.txt
+#10 CACHED
+
+#11 [api 6/6] COPY . .
+#11 CACHED
+
+#12 [worker] exporting to image
+#12 exporting layers
+#12 exporting layers 0.0s done
+#12 exporting manifest sha256:d505d133a00b44d10eea92f3efe2ade8b2c13e323bdbcfda99956d62d2444085 0.1s done
+#12 exporting config sha256:833bcf705c9c6c26a0c504023d32b32fcea9bbe9ae4e8fca1d98c703934fe65c
+#12 exporting config sha256:833bcf705c9c6c26a0c504023d32b32fcea9bbe9ae4e8fca1d98c703934fe65c 0.1s done
+#12 exporting attestation manifest sha256:48ae81f2b85c7195351c308a46ca7113f4839081542755a3e367a95c9bb89961
+#12 exporting attestation manifest sha256:48ae81f2b85c7195351c308a46ca7113f4839081542755a3e367a95c9bb89961 0.4s done
+#12 exporting manifest list sha256:7900292e7dd668fe0fa6d112e65de3b35e8bfdd3f2ea4b6fac76788ed682a455
+#12 exporting manifest list sha256:7900292e7dd668fe0fa6d112e65de3b35e8bfdd3f2ea4b6fac76788ed682a455 0.5s done
+#12 naming to docker.io/library/ragdocchat-worker:latest 0.1s done
+#12 unpacking to docker.io/library/ragdocchat-worker:latest
+#12 ...
+
+#13 [api] exporting to image
+#13 exporting layers done
+#13 exporting manifest sha256:2afa76decb318641069516921faa5f55cec3b1f224d98e977ce549424f2cd172 0.1s done
+#13 exporting config sha256:8c50d671c4e794295b1b1b2dfaff443973d7447bc047ba4e4c14034cc70335fb 0.1s done
+#13 exporting attestation manifest sha256:8e4f572f94045b6c6a9c768ad87d78db939d5f4126a63e9b01b383cd065a719c 0.4s done
+#13 exporting manifest list sha256:88295237539a6dd20c957a599bbf8df377cee52d43b08c659eb804df7e0ff1f4 0.5s done
+#13 naming to docker.io/library/ragdocchat-api:latest 0.1s done
+#13 unpacking to docker.io/library/ragdocchat-api:latest 0.1s done
+#13 DONE 1.7s
+
+#12 [worker] exporting to image
+#12 unpacking to docker.io/library/ragdocchat-worker:latest 0.1s done
+#12 DONE 1.8s
+
+#14 [api] resolving provenance for metadata file
+#14 ...
+
+#15 [worker] resolving provenance for metadata file
+#15 DONE 0.4s
+
+#14 [api] resolving provenance for metadata file
+#14 DONE 1.3s
+ Image ragdocchat-api Built 
+ Image ragdocchat-worker Built 
+=== reingest
+ Container ragdocchat-redis-1 Starting 
+ Container ragdocchat-redis-1 Started 
+ Container ragdocchat-worker-run-bd3ce9b226c4 Creating 
+ Container ragdocchat-worker-run-bd3ce9b226c4 Created 
+Re-ingesting 'shipments_clean.xlsx': deleted 6 old chunks
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights:  47%|████▋     | 48/103 [00:00<00:00, 475.87it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 753.03it/s]
+  shipments_clean.xlsx: 6 chunks
+parquet sheets: ['shipments_clean.xlsx / Sheet1']
+=== retry
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-25fdd4b68e20 Creating 
+ Container ragdocchat-worker-run-25fdd4b68e20 Created 
+Retrying 41 errored question(s) from final.jsonl
+[1/41] (factual) What were net FDI inflows in the first half of FY2026?
+2026-10-10 15:49:57,589 INFO rag.llm: groq route request: ~150 input tokens (estimate)
+2026-10-10 15:49:58,599 INFO rag.llm: groq route usage: prompt=249 completion=38 total=287
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights:  48%|████▊     | 49/103 [00:00<00:00, 480.82it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 756.13it/s]
+2026-10-10 15:50:54,853 INFO rag.llm: groq answer request: ~3173 input tokens (estimate)
+2026-10-10 15:50:56,020 INFO rag.llm: groq answer usage: prompt=3182 completion=219 total=3401
+  judge model 'llama-3.1-8b-instant' unavailable, using 'openai/gpt-oss-20b'
+  hit=True correct=True answer='Net FDI inflows were USD\u202f808.1\u202fmillion[1][2]'
+[2/41] (factual) Who submitted the Mid-Year Budget Review Report to the Speaker?
+2026-10-10 15:51:27,083 INFO rag.llm: groq route request: ~152 input tokens (estimate)
+2026-10-10 15:51:28,120 INFO rag.llm: groq route usage: prompt=245 completion=38 total=283
+2026-10-10 15:51:29,579 INFO rag.llm: groq answer request: ~3165 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 15:52:29,930 INFO rag.llm: groq answer request: ~3165 input tokens (estimate)
+2026-10-10 15:52:30,865 INFO rag.llm: groq answer usage: prompt=2913 completion=181 total=3094
+  hit=True correct=True answer='Senator\u202fMuhammad\u202fAurangzeb, the Federal Minister for Finance and Revenue, submitted the Mid‑Year Bud'
+[3/41] (table) How much Petroleum Levy was collected in July-December FY2025-26?
+2026-10-10 15:53:01,390 INFO rag.llm: groq route request: ~153 input tokens (estimate)
+2026-10-10 15:53:02,070 INFO rag.llm: groq route usage: prompt=249 completion=41 total=290
+2026-10-10 15:53:03,559 INFO rag.llm: groq answer request: ~3047 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-10 15:54:03,701 INFO rag.llm: groq answer request: ~3047 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m4jxrx9med2rwf30gvghxwj3` service tier `on_demand` on tokens per day 
+
+Daily token limit reached; stopping. Re-run later with --retry-errors --out final
+
+Comparing the 11 questions that finished; 39 errored and are left out on both sides.
+
+type             n   retrieval hit rate (baseline -> now)     answer accuracy (baseline -> now)
+----------------------------------------------------------------------------------------------------
+factual         11     0.0% (0/11) ->  81.8% (9/11)             0.0% (0/11) ->  81.8% (9/11)
+----------------------------------------------------------------------------------------------------
+overall         11     0.0% (0/11) ->  81.8% (9/11)             0.0% (0/11) ->  81.8% (9/11)
+
+Saved 11 results to /app/eval/results/final.jsonl
+exit=0

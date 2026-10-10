@@ -28,6 +28,7 @@ import json
 import os
 import re
 import sys
+import statistics
 import time
 from pathlib import Path
 
@@ -148,26 +149,28 @@ async def run_pipeline(question: str) -> dict:
     router_tokens = routed["tokens"]
     # Set when the router picked "spreadsheet" but the plan was rejected and it
     # fell back to the documents path.
-    fallback = {"router_fallback": routed["error"]} if routed.get("error") else {}
+    extra = {"router_fallback": routed["error"]} if routed.get("error") else {}
 
+    started = time.perf_counter()
     results = fit_to_budget(await asyncio.to_thread(query_chunks, question, NAMESPACE, N_CTX))
+    extra["retrieval_ms"] = round((time.perf_counter() - started) * 1000)
     context = [context_line(doc, meta) for doc, meta in results]
     chunks_sent = [{"source": m.get("source"), "chunk_index": m.get("chunk_index"), "page": m.get("page"),
                     "ocr": m.get("ocr"), "text": d} for d, m in results]
 
     if needs_web_search(question):
         answer, _trace, tokens = await with_retry(lambda: answer_with_web_search(question, context, []))
-        return {**fallback, "route": "web_search", "chunks_sent": chunks_sent, "answer": answer, "citations": [], "tokens": router_tokens + tokens}
+        return {**extra, "route": "web_search", "chunks_sent": chunks_sent, "answer": answer, "citations": [], "tokens": router_tokens + tokens}
 
     if not results:
-        return {**fallback, "route": "document", "chunks_sent": [], "answer": "I don't know. No documents have been indexed yet.",
+        return {**extra, "route": "document", "chunks_sent": [], "answer": "I don't know. No documents have been indexed yet.",
                 "citations": [], "tokens": router_tokens}
 
     raw, tokens = await with_retry(lambda: answer_question(question, context, []))
     answer, cited = keep_cited(raw, results)
     citations = [{"number": i, "source": m.get("source"), "chunk_index": m.get("chunk_index"), "page": m.get("page")}
                  for i, (_, m) in enumerate(cited, 1)]
-    return {**fallback, "route": "document", "chunks_sent": chunks_sent, "answer": answer, "citations": citations,
+    return {**extra, "route": "document", "chunks_sent": chunks_sent, "answer": answer, "citations": citations,
             "tokens": router_tokens + tokens}
 
 
@@ -299,7 +302,9 @@ async def main() -> None:
         record = {"id": row["id"], "type": qtype, "question": question,
                   "expected_answer": expected, "evidence": evidence}
         try:
+            started = time.perf_counter()
             record.update(await run_pipeline(question))
+            record["total_ms"] = round((time.perf_counter() - started) * 1000)
             sent = [compact(c["text"]) for c in record["chunks_sent"]]
             record["retrieval_hit"] = None if evidence is None else any(compact(evidence) in s for s in sent)
 
@@ -339,6 +344,13 @@ async def main() -> None:
                   f"{len(results) - len(finished)} errored and are left out on both sides.")
         results = [r for r in results if r["id"] in finished]
     summarize(results, baseline, args.compare)
+    # Latency of documents-path questions. total_ms includes the router and LLM
+    # calls (and any 429 retry waits); retrieval_ms is search + token budget only.
+    docs = [r for r in results if r.get("retrieval_ms") is not None]
+    if docs:
+        print(f"\nDocuments path, {len(docs)} questions: p50 retrieval "
+              f"{statistics.median(r['retrieval_ms'] for r in docs):.0f} ms, "
+              f"p50 end-to-end {statistics.median(r['total_ms'] for r in docs):.0f} ms")
     print(f"\nSaved {len(results)} results to {results_path}")
 
 

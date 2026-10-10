@@ -1,0 +1,39 @@
+2026-10-10 17:49:10,518 INFO rag.rerank: reranked 37 chunks in 31577 ms
+2026-10-10 17:49:14,131 INFO rag.rerank: reranked 32 chunks in 2292 ms
+2026-10-10 17:49:16,494 INFO rag.rerank: reranked 27 chunks in 1876 ms
+2026-10-10 17:49:18,943 INFO rag.rerank: reranked 33 chunks in 1971 ms
+2026-10-10 17:49:21,050 INFO rag.rerank: reranked 30 chunks in 1586 ms
+2026-10-10 17:49:23,343 INFO rag.rerank: reranked 37 chunks in 2025 ms
+2026-10-10 17:49:26,107 INFO rag.rerank: reranked 30 chunks in 2289 ms
+2026-10-10 17:49:28,403 INFO rag.rerank: reranked 28 chunks in 1982 ms
+2026-10-10 17:49:30,880 INFO rag.rerank: reranked 27 chunks in 1959 ms
+2026-10-10 17:49:34,347 INFO rag.rerank: reranked 35 chunks in 3190 ms
+2026-10-10 17:49:36,624 INFO rag.rerank: reranked 28 chunks in 1963 ms
+2026-10-10 17:49:39,768 INFO rag.rerank: reranked 34 chunks in 2880 ms
+2026-10-10 17:49:42,925 INFO rag.rerank: reranked 29 chunks in 2815 ms
+2026-10-10 17:49:45,792 INFO rag.rerank: reranked 29 chunks in 2576 ms
+2026-10-10 17:49:48,419 INFO rag.rerank: reranked 27 chunks in 2367 ms
+2026-10-10 17:49:50,490 INFO rag.rerank: reranked 34 chunks in 1795 ms
+2026-10-10 17:49:52,239 INFO rag.rerank: reranked 28 chunks in 1472 ms
+2026-10-10 17:49:54,265 INFO rag.rerank: reranked 37 chunks in 1754 ms
+2026-10-10 17:49:56,520 INFO rag.rerank: reranked 36 chunks in 1978 ms
+2026-10-10 17:49:58,687 INFO rag.rerank: reranked 37 chunks in 1910 ms
+2026-10-10 17:50:00,497 INFO rag.rerank: reranked 33 chunks in 1557 ms
+2026-10-10 17:50:02,464 INFO rag.rerank: reranked 33 chunks in 1703 ms
+2026-10-10 17:50:06,778 INFO rag.rerank: reranked 36 chunks in 4038 ms
+2026-10-10 17:50:13,618 INFO rag.rerank: reranked 35 chunks in 6357 ms
+2026-10-10 17:50:18,361 INFO rag.rerank: reranked 37 chunks in 3265 ms
+2026-10-10 17:50:21,940 INFO rag.rerank: reranked 32 chunks in 3104 ms
+2026-10-10 17:50:24,977 INFO rag.rerank: reranked 33 chunks in 2565 ms
+2026-10-10 17:50:27,525 INFO rag.rerank: reranked 39 chunks in 2027 ms
+2026-10-10 17:50:29,509 INFO rag.rerank: reranked 32 chunks in 1511 ms
+2026-10-10 17:50:32,607 INFO rag.rerank: reranked 33 chunks in 2594 ms
+2026-10-10 17:50:35,509 INFO rag.rerank: reranked 37 chunks in 2589 ms
+Retrieval hit rate (hybrid -> rerank):
+  factual      17/18 -> 17/18
+  table        3/3 -> 3/3
+  paraphrased  7/9 -> 8/9
+  overall      27/30 -> 28/30
+  changed: {'q024': (False, True)}
+Retrieval latency over 30 questions: hybrid: p50 296 ms, p95 510 ms  ->  rerank: p50 2510 ms, p95 4314 ms, max 6841 ms
+Saved /app/eval/results/retrieval_rerank.json

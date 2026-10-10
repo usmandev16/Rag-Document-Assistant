@@ -1,10 +1,12 @@
-"""Time the documents-path retrieval (no LLM calls, no Groq tokens).
+"""Retrieval-only eval: hit rate and latency of the documents path, no LLM.
 
-Runs query_chunks + the token budget for the factual/table/paraphrased
-questions in the eval namespace and prints p50/p95. Use it before and after a
-retrieval change to compare latency.
+For the factual/table/paraphrased questions it runs query_chunks + the token
+budget (exactly what the LLM would be sent), checks whether each question's
+evidence is in those chunks (same check as run_eval.py), and times it. No Groq
+calls, so it costs no tokens. Saves eval/results/retrieval_<label>.json.
 
-    docker compose run --rm -T -v "./eval:/app/eval" worker python eval/time_retrieval.py --label before
+    docker compose run --rm -T -v "./eval:/app/eval" worker \\
+        python eval/time_retrieval.py --label rerank --compare hybrid
 """
 import argparse
 import json
@@ -14,34 +16,65 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "backend" if (ROOT / "backend").is_dir() else ROOT))
+sys.path.insert(0, str(ROOT / "eval"))
 
+import run_eval as ev  # noqa: E402  (also puts the backend on sys.path)
 from main import fit_to_budget  # noqa: E402
 from src.vectorstore import query_chunks  # noqa: E402
 
-NAMESPACE = "eval-test-user"
-TYPES = {"factual", "table", "paraphrased"}
+TYPES = ["factual", "table", "paraphrased"]
+
+
+def p95(values: list[float]) -> float:
+    values = sorted(values)
+    return values[min(len(values) - 1, int(round(0.95 * len(values))) - 1)]
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--label", default="run")
+    parser.add_argument("--label", default="run", help="saved as eval/results/retrieval_<label>.json")
+    parser.add_argument("--compare", help="label of an earlier run to compare against")
     args = parser.parse_args()
 
-    rows = [json.loads(line) for line in (ROOT / "eval" / "dataset.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
-    questions = [r["question"] for r in rows if r["type"] in TYPES]
+    rows = [r for r in ev.load_dataset(None) if r["type"] in TYPES]
+    query_chunks("warm-up", ev.NAMESPACE, ev.N_CTX)  # load models / build indexes outside the timing
 
-    query_chunks("warm-up", NAMESPACE, 40)  # load models / open connections outside the timing
-    times = []
-    for q in questions:
+    results = []
+    for r in rows:
         start = time.perf_counter()
-        fit_to_budget(query_chunks(q, NAMESPACE, 40))
-        times.append((time.perf_counter() - start) * 1000)
+        sent = fit_to_budget(query_chunks(r["question"], ev.NAMESPACE, ev.N_CTX))
+        ms = (time.perf_counter() - start) * 1000
+        hit = None if r.get("evidence") is None else any(ev.compact(r["evidence"]) in ev.compact(d) for d, _ in sent)
+        results.append({"id": r["id"], "type": r["type"], "hit": hit, "ms": round(ms), "chunks_sent": len(sent)})
 
-    times.sort()
-    p95 = times[min(len(times) - 1, int(round(0.95 * len(times))) - 1)]
-    print(f"[{args.label}] retrieval latency over {len(times)} questions: "
-          f"p50 {statistics.median(times):.0f} ms, p95 {p95:.0f} ms, max {times[-1]:.0f} ms")
+    out = ev.RESULTS_DIR / f"retrieval_{args.label}.json"
+    out.write_text(json.dumps(results, indent=1), encoding="utf-8")
+
+    base = None
+    if args.compare:
+        base = {r["id"]: r for r in json.loads((ev.RESULTS_DIR / f"retrieval_{args.compare}.json").read_text(encoding="utf-8"))}
+
+    def hits(rs: list[dict]) -> str:
+        scored = [r["hit"] for r in rs if r["hit"] is not None]
+        return f"{sum(scored)}/{len(scored)}"
+
+    arrow = f"{args.compare} -> {args.label}" if base else args.label
+    print(f"\nRetrieval hit rate ({arrow}):")
+    for t in TYPES + ["overall"]:
+        rs = results if t == "overall" else [r for r in results if r["type"] == t]
+        before = f"{hits([base[r['id']] for r in rs])} -> " if base else ""
+        print(f"  {t:<12} {before}{hits(rs)}")
+    if base:
+        changed = {r["id"]: (base[r["id"]]["hit"], r["hit"]) for r in results if base[r["id"]]["hit"] != r["hit"]}
+        print(f"  changed: {changed or 'none'}")
+
+    ms = [r["ms"] for r in results]
+    line = f"p50 {statistics.median(ms):.0f} ms, p95 {p95(ms):.0f} ms, max {max(ms):.0f} ms"
+    if base:
+        bms = [b["ms"] for b in base.values()]
+        line = f"{args.compare}: p50 {statistics.median(bms):.0f} ms, p95 {p95(bms):.0f} ms  ->  {args.label}: {line}"
+    print(f"Retrieval latency over {len(ms)} questions: {line}")
+    print(f"Saved {out}")
 
 
 if __name__ == "__main__":

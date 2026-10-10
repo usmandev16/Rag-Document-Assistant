@@ -7,11 +7,16 @@ from pinecone import NotFoundError, Pinecone
 
 from src import lexical
 from src.embeddings import embed_texts
+from src.reranker import rerank
 
 INDEX_NAME = os.environ.get("PINECONE_INDEX", "rag-docs")
 DIMENSION = 384  # all-MiniLM-L6-v2 output size
 HYBRID_K = 20   # results from each of dense and BM25 before fusion
 RRF_K = 60      # Reciprocal Rank Fusion constant
+# Fused candidates the cross-encoder reorders (up to 2 x HYBRID_K). Off by
+# default: on CPU it fixed 1 of 30 eval questions but took p50 retrieval from
+# ~300 ms to 2.5-3.4 s. Set RERANK_TOP_K=40 on faster hardware / a GPU.
+RERANK_K = int(os.environ.get("RERANK_TOP_K", "0"))
 
 _index = None
 _ID_TOKEN_RE = re.compile(r"\b\d{5,}\b")
@@ -211,6 +216,10 @@ def query_chunks(
     # trim this list to a token budget from the front.
     exact = [(doc, meta) for doc, meta in _find_exact_matches(question, chat_id) if _passes(meta, flt)]
     rest = [(doc, meta) for doc, meta in fused if not any(doc == existing for existing, _ in exact)]
+    # The cross-encoder reorders the top fused candidates; callers apply the
+    # token budget to this order, so the most relevant chunks are the ones sent.
+    if RERANK_K > 0:
+        rest = rerank(question, rest[:RERANK_K]) + rest[RERANK_K:]
     return exact + rest[:n_results]
 
 

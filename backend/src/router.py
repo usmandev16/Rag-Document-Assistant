@@ -4,7 +4,12 @@
        |
        +--spreadsheet--> plan --> execute --ok--> answer --> END
                                      |
-                                     +--invalid plan--> END ("I don't know.")
+                                     +--rejected plan--> fallback --> END (route = "documents")
+
+A rejected plan (not answerable, unknown column, bad op, ...) usually means the
+classifier was wrong: "How much did FBR collect?" sounds like a total but is a
+fact in a PDF. So it falls back to the documents pipeline instead of answering
+"I don't know."
 
 The LLM classifies with only the question plus sheet names and columns, then
 returns a JSON query plan. sheets.validate_plan / execute_plan run it with
@@ -29,7 +34,7 @@ class RouteState(TypedDict, total=False):
     plan: dict
     entry: dict           # the validated sheet
     result: dict          # computed by pandas
-    error: str            # why the plan was rejected
+    error: str            # why the plan was rejected (route then falls back to "documents")
     answer: str
     tokens: int
 
@@ -92,7 +97,10 @@ async def classify(state: RouteState) -> RouteState:
     prompt = (
         "Decide how to answer the user's question.\n"
         '"spreadsheet": it needs counting, totals, averages, maximum/minimum, or filtering '
-        "rows across one of the spreadsheets below.\n"
+        "rows across one of the spreadsheets below, AND it is about data in that sheet's "
+        "columns (it names or clearly refers to them or their values). A question that "
+        "merely sounds like a total (e.g. revenue collected, amounts spent) but isn't "
+        'about these columns is "documents".\n'
         '"documents": anything else, including looking up a single fact, or questions the '
         "spreadsheet columns can't answer.\n\n"
         f"Spreadsheets:\n{listing}\n\nQuestion: {state['question']}"
@@ -124,13 +132,18 @@ async def plan(state: RouteState) -> RouteState:
 async def execute(state: RouteState) -> RouteState:
     plan_ = state["plan"]
     if not plan_.get("answerable"):
-        return {"error": "plan marked not answerable", "answer": DONT_KNOW}
+        return {"error": "plan marked not answerable"}
     try:
         entry = sheets.validate_plan(plan_, state["sheets"])
         result = sheets.execute_plan(state["chat_id"], entry, plan_)
     except sheets.PlanError as exc:
-        return {"error": str(exc), "answer": DONT_KNOW}
+        return {"error": str(exc)}
     return {"entry": entry, "result": result}
+
+
+async def fallback(state: RouteState) -> RouteState:
+    """The sheets can't answer it: hand the question to the documents pipeline."""
+    return {"route": "documents"}
 
 
 async def answer(state: RouteState) -> RouteState:
@@ -156,11 +169,13 @@ def _build():
     graph.add_node("plan", plan)
     graph.add_node("execute", execute)
     graph.add_node("answer", answer)
+    graph.add_node("fallback", fallback)
     graph.add_edge(START, "classify")
     graph.add_conditional_edges("classify", lambda s: s["route"], {"documents": END, "spreadsheet": "plan"})
     graph.add_edge("plan", "execute")
-    graph.add_conditional_edges("execute", lambda s: "fail" if s.get("error") else "ok", {"fail": END, "ok": "answer"})
+    graph.add_conditional_edges("execute", lambda s: "fail" if s.get("error") else "ok", {"fail": "fallback", "ok": "answer"})
     graph.add_edge("answer", END)
+    graph.add_edge("fallback", END)
     return graph.compile()
 
 
@@ -169,7 +184,8 @@ GRAPH = _build()
 
 async def route_question(question: str, chat_id: str) -> RouteState:
     """Run the router. route == "documents" means: use the normal RAG
-    pipeline. Chats without spreadsheets skip the LLM call entirely."""
+    pipeline (classified that way, or fell back after a rejected plan, with
+    "error" saying why). Chats without spreadsheets skip the LLM call entirely."""
     available = sheets.list_sheets(chat_id)
     if not available:
         return {"route": "documents", "tokens": 0}

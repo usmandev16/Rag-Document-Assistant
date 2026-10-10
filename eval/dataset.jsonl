@@ -28,16 +28,16 @@
 {"id": "q028", "type": "paraphrased", "question": "Can leftover budget money be carried into next year?", "expected_answer": "No, unspent balance lapses", "source_doc": "gfr2025_28032025.pdf", "evidence": "Any unspent balance shall lapse"}
 {"id": "q029", "type": "paraphrased", "question": "Which city was made the country's second capital?", "expected_answer": "Dacca (Dhaka)", "source_doc": "East Pakistan.docx", "evidence": "declared as the second capital of Pakistan"}
 {"id": "q030", "type": "paraphrased", "question": "Which foreign architect designed the parliament building in Dacca?", "expected_answer": "Louis Kahn", "source_doc": "East Pakistan.docx", "evidence": "to design the national assembly complex"}
-{"id": "q031", "type": "aggregation", "question": "How many shipments are in the shipment sheet?", "expected_answer": "126", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q032", "type": "aggregation", "question": "How many shipments have been delivered?", "expected_answer": "60", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q033", "type": "aggregation", "question": "What is the total COD amount across all shipments?", "expected_answer": "347,401.4", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q034", "type": "aggregation", "question": "Which destination city received the most shipments?", "expected_answer": "Lahore (36 shipments)", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q035", "type": "aggregation", "question": "How many shipments went to Karachi?", "expected_answer": "11", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q036", "type": "aggregation", "question": "How many shipments are NON-COD?", "expected_answer": "9", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q037", "type": "aggregation", "question": "What is the highest single COD amount?", "expected_answer": "10,750", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q038", "type": "aggregation", "question": "How many shipments have status Return Submitted?", "expected_answer": "4", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q039", "type": "aggregation", "question": "How many shipments were booked on 1 September 2026?", "expected_answer": "19", "source_doc": "shipments_clean.xlsx", "evidence": null}
-{"id": "q040", "type": "aggregation", "question": "What is the total COD amount of delivered shipments only?", "expected_answer": "140,792.6", "source_doc": "shipments_clean.xlsx", "evidence": null}
+{"id": "q031", "type": "aggregation", "question": "How many shipments are in the shipment sheet?", "expected_answer": "126", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q032", "type": "aggregation", "question": "How many shipments have been delivered?", "expected_answer": "61", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q033", "type": "aggregation", "question": "What is the total COD amount across all shipments?", "expected_answer": "844,930", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q034", "type": "aggregation", "question": "Which destination city received the most shipments?", "expected_answer": "Lahore (35 shipments)", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q035", "type": "aggregation", "question": "How many shipments went to Karachi?", "expected_answer": "12", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q036", "type": "aggregation", "question": "How many shipments are NON-COD?", "expected_answer": "8", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q037", "type": "aggregation", "question": "What is the highest single COD amount?", "expected_answer": "11,880", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q038", "type": "aggregation", "question": "How many shipments have status Return Submitted?", "expected_answer": "11", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q039", "type": "aggregation", "question": "How many shipments were booked on 1 September 2026?", "expected_answer": "29", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
+{"id": "q040", "type": "aggregation", "question": "What is the total COD amount of delivered shipments only?", "expected_answer": "417,100", "source_doc": "shipments_synthetic.xlsx", "evidence": null}
 {"id": "q041", "type": "unanswerable", "question": "What was Pakistan's unemployment rate in July-December FY2026?", "expected_answer": null, "source_doc": null, "evidence": null}
 {"id": "q042", "type": "unanswerable", "question": "What is the FBR revenue target for FY2026-27?", "expected_answer": null, "source_doc": null, "evidence": null}
 {"id": "q043", "type": "unanswerable", "question": "How much did the government spend on flood relief in FY2026?", "expected_answer": null, "source_doc": null, "evidence": null}

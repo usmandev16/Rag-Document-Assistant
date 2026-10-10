@@ -5,3 +5,4 @@ __pycache__/
 frontend/node_modules/
 frontend/build/
 backend/storage/
+Test documents/shipments_clean.xlsx

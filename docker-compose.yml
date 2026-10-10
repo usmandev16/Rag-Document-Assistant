@@ -19,6 +19,7 @@ services:
       - "8000:8000"
     volumes:
       - hf-cache:/root/.cache/huggingface
+      - user-data:/app/storage      # spreadsheet parquet files, written by the worker
     depends_on:
       - redis
 
@@ -28,9 +29,12 @@ services:
     env_file: ./backend/.env
     environment:
       REDIS_HOST: redis
+    volumes:
+      - user-data:/app/storage      # shared with api, which reads the parquet files
     depends_on:
       - redis
 
 volumes:
   redis-data:
   hf-cache:
+  user-data:

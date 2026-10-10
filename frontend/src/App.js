@@ -134,7 +134,7 @@ function SourcesPanel({ sources }) {
       <div className="expander-body">
         {sources.map((s, i) => (
           <div className="source-item" key={i}>
-            <div className="source-head"><b>[{s.number ?? i + 1}] {s.source}</b> · chunk {s.chunk_index}</div>
+            <div className="source-head"><b>[{s.number ?? i + 1}] {s.source}</b>{s.chunk_index != null && ` · chunk ${s.chunk_index}`}</div>
             <div className="source-text">{s.text}</div>
           </div>
         ))}

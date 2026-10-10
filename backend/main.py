@@ -35,6 +35,8 @@ from src.rate_limit import (
     check_tokens,
     hit,
 )
+from src.router import route_question, sources_for
+from src.sheets import delete_sheets
 from src.vectorstore import delete_chat_chunks, has_chunks, list_documents, query_chunks
 from src.worker import celery_app, ingest_documents
 
@@ -97,6 +99,7 @@ async def upload_limits(session_id: str = Depends(get_session_id)) -> None:
 async def remove_chat(chat_id: str) -> None:
     # Pinecone's SDK is sync — keep it off the event loop.
     await asyncio.to_thread(delete_chat_chunks, chat_id)
+    await asyncio.to_thread(delete_sheets, chat_id)
     await delete_chat(chat_id)
 
 
@@ -299,6 +302,22 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
             else "Hello! I don't have any documents to work with yet. Upload one to get started."
         )
         return await respond({"answer": answer})
+
+    # Spreadsheet counting/totals are computed with pandas over every row
+    # (src/router.py); everything else falls through to the RAG pipeline below.
+    if req.doc_type in (None, "xlsx", "csv"):
+        try:
+            routed = await route_question(req.question, chat_id)
+        except Exception as exc:
+            return await respond(groq_error_reply(exc))
+        await add_tokens(session_id, routed.get("tokens", 0))
+        if routed["route"] == "spreadsheet":
+            answer, cited = keep_cited(routed["answer"], sources_for(routed))
+            sources = [
+                {"number": number, "source": meta["source"], "chunk_index": None, "text": doc}
+                for number, (doc, meta) in enumerate(cited, 1)
+            ]
+            return await respond({"answer": answer, "sources": sources}, title=await title_for(answer))
 
     date_range = (req.uploaded_after, req.uploaded_before)
     results = await asyncio.to_thread(

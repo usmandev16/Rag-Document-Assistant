@@ -9,6 +9,7 @@ from datetime import datetime
 from celery import Celery
 
 from src.loaders import extract_chunks
+from src.sheets import save_sheets
 from src.redis_client import REDIS_URL
 from src.vectorstore import add_chunks
 
@@ -31,7 +32,11 @@ def ingest_documents(chat_id: str, session_id: str, files: list[dict]) -> dict:
     """
     indexed = []
     for file in files:
-        pieces = extract_chunks(file["name"], base64.b64decode(file["data"]))
+        data = base64.b64decode(file["data"])
+        pieces = extract_chunks(file["name"], data)
+        # Excel/CSV: also keep the full sheet(s) as parquet for the pandas
+        # route (src/router.py); no-op for other file types.
+        save_sheets(chat_id, file["name"], data)
         chunks = [text for text, _ in pieces]
         add_chunks(
             chunks, source=file["name"], chat_id=chat_id, session_id=session_id,

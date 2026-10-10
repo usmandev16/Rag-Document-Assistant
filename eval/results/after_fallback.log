@@ -1,0 +1,256 @@
+ Image ragdocchat-worker Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 537B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 745B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 1.6s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 82B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 9.46kB 0.0s done
+#5 DONE 0.0s
+
+#6 [1/6] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#6 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.0s done
+#6 DONE 0.0s
+
+#7 [3/6] RUN apt-get update     && apt-get install -y --no-install-recommends tesseract-ocr     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [4/6] COPY requirements.txt .
+#8 CACHED
+
+#9 [2/6] WORKDIR /app
+#9 CACHED
+
+#10 [5/6] RUN pip install --no-cache-dir -r requirements.txt
+#10 CACHED
+
+#11 [6/6] COPY . .
+#11 DONE 0.1s
+
+#12 exporting to image
+#12 exporting layers 0.1s done
+#12 exporting manifest sha256:dd5867997d73fad4eb6f14b29700b3649347838b3e88325e9d8e6fa90180d4c1 0.0s done
+#12 exporting config sha256:1ba260bba18d5dba00f09ff06c0d1a6406e236c2440efb1dbae8c537de3e3a18 0.0s done
+#12 exporting attestation manifest sha256:fe67bbed4a392d2aff2f7b7ac5cfeb7e078ffda725a5e4078853754196053c20 0.0s done
+#12 exporting manifest list sha256:fa8537d6787b6813f571855359e2696f5ea874146dbe97967f66de76458cb96d 0.0s done
+#12 naming to docker.io/library/ragdocchat-worker:latest done
+#12 unpacking to docker.io/library/ragdocchat-worker:latest 0.1s done
+#12 DONE 0.3s
+
+#13 resolving provenance for metadata file
+#13 DONE 0.0s
+ Image ragdocchat-worker Built 
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-d9a4fec712c7 Creating 
+ Container ragdocchat-worker-run-d9a4fec712c7 Created 
+[1/28] (factual) What GDP growth did Pakistan record in FY2025?
+2026-10-10 16:33:54,717 INFO rag.llm: groq route request: ~205 input tokens (estimate)
+2026-10-10 16:33:55,294 INFO rag.llm: groq route usage: prompt=293 completion=30 total=323
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1144.91it/s]
+2026-10-10 16:34:44,023 INFO rag.llm: groq answer request: ~3275 input tokens (estimate)
+2026-10-10 16:34:44,845 INFO rag.llm: groq answer usage: prompt=3576 completion=114 total=3690
+  judge model 'llama-3.1-8b-instant' unavailable, using 'openai/gpt-oss-20b'
+  hit=True correct=True answer='Pakistan recorded GDP growth of 3.09\u202fpercent in FY2025[1][2]'
+[2/28] (factual) What was inflation during July-December FY2026, and what was it last year?
+2026-10-10 16:35:15,757 INFO rag.llm: groq route request: ~212 input tokens (estimate)
+2026-10-10 16:35:16,273 INFO rag.llm: groq route usage: prompt=300 completion=37 total=337
+2026-10-10 16:35:17,905 INFO rag.llm: groq answer request: ~3098 input tokens (estimate)
+2026-10-10 16:35:18,791 INFO rag.llm: groq answer usage: prompt=3463 completion=136 total=3599
+  hit=True correct=True answer='Inflation was 5.2\u202fpercent during July‑December FY2026, down from 7.2\u202fpercent the previous year[1].'
+[3/28] (factual) What was the policy rate as of December 2025?
+2026-10-10 16:35:49,249 INFO rag.llm: groq route request: ~205 input tokens (estimate)
+2026-10-10 16:35:49,777 INFO rag.llm: groq route usage: prompt=294 completion=41 total=335
+2026-10-10 16:35:51,264 INFO rag.llm: groq answer request: ~3200 input tokens (estimate)
+2026-10-10 16:35:52,196 INFO rag.llm: groq answer usage: prompt=3413 completion=178 total=3591
+  hit=True correct=True answer='The policy rate was 10.5\u202fpercent as of December\u202f2025[1]'
+[4/28] (factual) What were foreign exchange reserves at end December 2025?
+2026-10-10 16:36:22,653 INFO rag.llm: groq route request: ~208 input tokens (estimate)
+2026-10-10 16:36:23,214 INFO rag.llm: groq route usage: prompt=294 completion=30 total=324
+2026-10-10 16:36:24,648 INFO rag.llm: groq answer request: ~3224 input tokens (estimate)
+2026-10-10 16:36:25,383 INFO rag.llm: groq answer usage: prompt=3473 completion=105 total=3578
+  hit=True correct=True answer='The foreign exchange reserves were\u202fUSD\u202f20.7\u202fbillion at the end of December\u202f2025[1][2]'
+[5/28] (factual) What level did the KSE-100 index reach on December 31, 2025?
+2026-10-10 16:36:55,934 INFO rag.llm: groq route request: ~208 input tokens (estimate)
+2026-10-10 16:36:56,489 INFO rag.llm: groq route usage: prompt=301 completion=36 total=337
+2026-10-10 16:36:57,864 INFO rag.llm: groq answer request: ~2636 input tokens (estimate)
+2026-10-10 16:36:58,720 INFO rag.llm: groq answer usage: prompt=3512 completion=109 total=3621
+  hit=True correct=True answer='The KSE‑100 index reached 174,054 points as of December\u202f31,\u202f2025[1][2]'
+[6/28] (factual) What were net revenue receipts in July-December FY2026?
+2026-10-10 16:37:29,223 INFO rag.llm: groq route request: ~207 input tokens (estimate)
+2026-10-10 16:37:29,820 INFO rag.llm: groq route usage: prompt=295 completion=56 total=351
+2026-10-10 16:37:31,185 INFO rag.llm: groq answer request: ~3272 input tokens (estimate)
+2026-10-10 16:37:32,406 INFO rag.llm: groq answer usage: prompt=3872 completion=234 total=4106
+  hit=True correct=True answer='The net revenue receipts for July‑December FY\u202f2026 were Rs\u202f6,392\u202fbillion[1][2].'
+[7/28] (factual) How much did FBR collect in July-December FY2026?
+2026-10-10 16:38:03,031 INFO rag.llm: groq route request: ~206 input tokens (estimate)
+2026-10-10 16:38:03,677 INFO rag.llm: groq route usage: prompt=296 completion=64 total=360
+2026-10-10 16:38:05,129 INFO rag.llm: groq answer request: ~3256 input tokens (estimate)
+2026-10-10 16:38:06,082 INFO rag.llm: groq answer usage: prompt=3783 completion=157 total=3940
+  hit=True correct=False answer='FBR collected Rs\u202f6,161\u202fbillion in July‑December FY2026[1][2]'
+[8/28] (factual) What was spent on servicing domestic debt in July-December FY2026?
+2026-10-10 16:38:36,770 INFO rag.llm: groq route request: ~210 input tokens (estimate)
+2026-10-10 16:38:37,406 INFO rag.llm: groq route usage: prompt=297 completion=59 total=356
+2026-10-10 16:38:38,847 INFO rag.llm: groq answer request: ~3068 input tokens (estimate)
+2026-10-10 16:38:40,379 INFO rag.llm: groq answer usage: prompt=3233 completion=325 total=3558
+  hit=True correct=True answer='Rs.\u202f3,090\u202fbillion was spent on servicing domestic debt in July‑December FY2026[1]'
+[9/28] (factual) What was the total outlay of the Federal PSDP 2025-26 and when was it approved?
+2026-10-10 16:39:11,068 INFO rag.llm: groq route request: ~213 input tokens (estimate)
+2026-10-10 16:39:11,666 INFO rag.llm: groq route usage: prompt=304 completion=47 total=351
+2026-10-10 16:39:13,143 INFO rag.llm: groq answer request: ~3139 input tokens (estimate)
+2026-10-10 16:39:14,149 INFO rag.llm: groq answer usage: prompt=3647 completion=166 total=3813
+  hit=True correct=True answer='The Federal PSDP\u202f2025‑26 was approved by the National Economic Council on\u202fJune\u202f4\u202f2025, with a total '
+[10/28] (factual) What were net FDI inflows in the first half of FY2026?
+2026-10-10 16:39:44,601 INFO rag.llm: groq route request: ~207 input tokens (estimate)
+2026-10-10 16:39:45,298 INFO rag.llm: groq route usage: prompt=298 completion=43 total=341
+2026-10-10 16:39:47,054 INFO rag.llm: groq answer request: ~3173 input tokens (estimate)
+2026-10-10 16:39:48,197 INFO rag.llm: groq answer usage: prompt=3182 completion=290 total=3472
+  hit=True correct=True answer='Net FDI inflows were USD\u202f808.1\u202fmillion[1]'
+[11/28] (factual) Who submitted the Mid-Year Budget Review Report to the Speaker?
+2026-10-10 16:40:18,765 INFO rag.llm: groq route request: ~209 input tokens (estimate)
+2026-10-10 16:40:19,362 INFO rag.llm: groq route usage: prompt=294 completion=46 total=340
+2026-10-10 16:40:20,949 INFO rag.llm: groq answer request: ~3165 input tokens (estimate)
+2026-10-10 16:40:22,200 INFO rag.llm: groq answer usage: prompt=2913 completion=181 total=3094
+  hit=True correct=True answer='Senator\u202fMuhammad\u202fAurangzeb, the Federal Minister for Finance and Revenue, submitted the Mid‑Year Bud'
+[12/28] (factual) Under which law and section are the General Financial Rules 2025 made?
+2026-10-10 16:40:52,412 INFO rag.llm: groq route request: ~211 input tokens (estimate)
+2026-10-10 16:40:52,992 INFO rag.llm: groq route usage: prompt=297 completion=44 total=341
+2026-10-10 16:40:54,594 INFO rag.llm: groq answer request: ~3231 input tokens (estimate)
+2026-10-10 16:40:55,705 INFO rag.llm: groq answer usage: prompt=3039 completion=180 total=3219
+  hit=True correct=True answer='The General Financial Rules\u202f2025 are made under the Public Finance Management Act,\u202f2019, specificall'
+[13/28] (factual) From when does a sanction take effect if the order doesn't say otherwise?
+2026-10-10 16:41:26,257 INFO rag.llm: groq route request: ~212 input tokens (estimate)
+2026-10-10 16:41:27,451 INFO rag.llm: groq route usage: prompt=296 completion=41 total=337
+2026-10-10 16:41:29,123 INFO rag.llm: groq answer request: ~3218 input tokens (estimate)
+2026-10-10 16:41:29,970 INFO rag.llm: groq answer usage: prompt=2875 completion=118 total=2993
+  hit=True correct=True answer='A sanction takes effect from the date of the order conveying the sanction, unless the order specifie'
+[14/28] (factual) Under which major object is contingent expenditure classified?
+2026-10-10 16:42:00,518 INFO rag.llm: groq route request: ~209 input tokens (estimate)
+2026-10-10 16:42:00,964 INFO rag.llm: groq route usage: prompt=291 completion=53 total=344
+2026-10-10 16:42:02,385 INFO rag.llm: groq answer request: ~3065 input tokens (estimate)
+2026-10-10 16:42:03,198 INFO rag.llm: groq answer usage: prompt=2806 completion=100 total=2906
+  hit=True correct=True answer='Contingent expenditure is classified under major object\u202fA03[1]'
+[15/28] (factual) Which form is used to request goods from an internal division of the same organization?
+2026-10-10 16:42:33,950 INFO rag.llm: groq route request: ~215 input tokens (estimate)
+2026-10-10 16:42:34,540 INFO rag.llm: groq route usage: prompt=298 completion=58 total=356
+2026-10-10 16:42:36,453 INFO rag.llm: groq answer request: ~3177 input tokens (estimate)
+2026-10-10 16:42:37,325 INFO rag.llm: groq answer usage: prompt=2864 completion=101 total=2965
+  hit=True correct=True answer='The officer should use **GFR‑14** to request goods from an internal division of the same organizatio'
+[16/28] (factual) Who signed the GFR 2025 notification?
+2026-10-10 16:43:07,914 INFO rag.llm: groq route request: ~203 input tokens (estimate)
+2026-10-10 16:43:08,765 INFO rag.llm: groq route usage: prompt=292 completion=49 total=341
+2026-10-10 16:43:10,003 INFO rag.llm: groq answer request: ~2503 input tokens (estimate)
+2026-10-10 16:43:10,774 INFO rag.llm: groq answer usage: prompt=2982 completion=80 total=3062
+  hit=False correct=False answer="I don't know."
+[17/28] (factual) Between which years did East Pakistan exist as a province?
+2026-10-10 16:43:41,004 INFO rag.llm: groq route request: ~208 input tokens (estimate)
+2026-10-10 16:43:41,592 INFO rag.llm: groq route usage: prompt=293 completion=30 total=323
+2026-10-10 16:43:43,213 INFO rag.llm: groq answer request: ~2635 input tokens (estimate)
+2026-10-10 16:43:44,263 INFO rag.llm: groq answer usage: prompt=2983 completion=78 total=3061
+  hit=True correct=True answer='East Pakistan existed as a province from 1956 until 1971[1].'
+[18/28] (factual) What was East Pakistan's average economic growth between 1960 and 1965?
+2026-10-10 16:44:14,543 INFO rag.llm: groq route request: ~211 input tokens (estimate)
+2026-10-10 16:44:15,199 INFO rag.llm: groq route usage: prompt=299 completion=30 total=329
+2026-10-10 16:44:16,524 INFO rag.llm: groq answer request: ~2834 input tokens (estimate)
+2026-10-10 16:44:17,561 INFO rag.llm: groq answer usage: prompt=3158 completion=91 total=3249
+  hit=True correct=True answer='East Pakistan’s economy grew at an average of\u202f2.6\u202fpercent between\u202f1960\u202fand\u202f1965[1].'
+[19/28] (aggregation) How many shipments are in the shipment sheet?
+2026-10-10 16:44:48,299 INFO rag.llm: groq route request: ~205 input tokens (estimate)
+2026-10-10 16:44:49,801 INFO rag.llm: groq route usage: prompt=547 completion=42 total=589
+2026-10-10 16:44:50,109 INFO rag.llm: groq plan request: ~494 input tokens (estimate)
+2026-10-10 16:44:50,826 INFO rag.llm: groq plan usage: prompt=898 completion=85 total=983
+2026-10-10 16:44:50,869 INFO rag.llm: groq sheet_answer request: ~206 input tokens (estimate)
+2026-10-10 16:44:51,887 INFO rag.llm: groq sheet_answer usage: prompt=278 completion=120 total=398
+  hit=None correct=True answer='The shipment sheet contains 126 shipments [1].'
+[20/28] (aggregation) How many shipments have been delivered?
+2026-10-10 16:45:22,395 INFO rag.llm: groq route request: ~203 input tokens (estimate)
+2026-10-10 16:45:22,863 INFO rag.llm: groq route usage: prompt=289 completion=50 total=339
+2026-10-10 16:45:22,885 INFO rag.llm: groq plan request: ~492 input tokens (estimate)
+2026-10-10 16:45:23,503 INFO rag.llm: groq plan usage: prompt=896 completion=118 total=1014
+2026-10-10 16:45:23,559 INFO rag.llm: groq sheet_answer request: ~220 input tokens (estimate)
+2026-10-10 16:45:24,204 INFO rag.llm: groq sheet_answer usage: prompt=295 completion=142 total=437
+  hit=None correct=True answer='There have been 60 shipments delivered [1] (shipments_clean.xlsx).'
+[21/28] (aggregation) What is the total COD amount across all shipments?
+2026-10-10 16:45:54,851 INFO rag.llm: groq route request: ~206 input tokens (estimate)
+2026-10-10 16:45:55,776 INFO rag.llm: groq route usage: prompt=292 completion=39 total=331
+2026-10-10 16:45:55,812 INFO rag.llm: groq plan request: ~495 input tokens (estimate)
+2026-10-10 16:45:56,612 INFO rag.llm: groq plan usage: prompt=899 completion=95 total=994
+2026-10-10 16:45:56,638 INFO rag.llm: groq sheet_answer request: ~211 input tokens (estimate)
+2026-10-10 16:45:57,360 INFO rag.llm: groq sheet_answer usage: prompt=287 completion=104 total=391
+  hit=None correct=True answer='The total COD amount across all shipments is 347401.4 [1].'
+[22/28] (aggregation) Which destination city received the most shipments?
+2026-10-10 16:46:27,831 INFO rag.llm: groq route request: ~206 input tokens (estimate)
+2026-10-10 16:46:28,289 INFO rag.llm: groq route usage: prompt=290 completion=39 total=329
+2026-10-10 16:46:28,319 INFO rag.llm: groq plan request: ~495 input tokens (estimate)
+2026-10-10 16:46:29,002 INFO rag.llm: groq plan usage: prompt=897 completion=87 total=984
+2026-10-10 16:46:29,045 INFO rag.llm: groq sheet_answer request: ~349 input tokens (estimate)
+2026-10-10 16:46:29,670 INFO rag.llm: groq sheet_answer usage: prompt=507 completion=135 total=642
+  hit=None correct=True answer='Lahore received the most shipments (36) [1].'
+[23/28] (aggregation) How many shipments went to Karachi?
+2026-10-10 16:47:00,239 INFO rag.llm: groq route request: ~202 input tokens (estimate)
+2026-10-10 16:47:00,741 INFO rag.llm: groq route usage: prompt=289 completion=42 total=331
+2026-10-10 16:47:00,773 INFO rag.llm: groq plan request: ~491 input tokens (estimate)
+2026-10-10 16:47:01,461 INFO rag.llm: groq plan usage: prompt=896 completion=122 total=1018
+2026-10-10 16:47:01,483 INFO rag.llm: groq sheet_answer request: ~217 input tokens (estimate)
+2026-10-10 16:47:02,195 INFO rag.llm: groq sheet_answer usage: prompt=295 completion=111 total=406
+  hit=None correct=True answer='There were 11 shipments to Karachi [1].'
+[24/28] (aggregation) How many shipments are NON-COD?
+2026-10-10 16:47:32,678 INFO rag.llm: groq route request: ~201 input tokens (estimate)
+2026-10-10 16:47:33,338 INFO rag.llm: groq route usage: prompt=290 completion=58 total=348
+2026-10-10 16:47:33,372 INFO rag.llm: groq plan request: ~490 input tokens (estimate)
+2026-10-10 16:47:34,991 INFO rag.llm: groq plan usage: prompt=897 completion=141 total=1038
+2026-10-10 16:47:35,024 INFO rag.llm: groq sheet_answer request: ~218 input tokens (estimate)
+2026-10-10 16:47:35,740 INFO rag.llm: groq sheet_answer usage: prompt=298 completion=113 total=411
+  hit=None correct=True answer='There are 9 NON-COD shipments [1].'
+[25/28] (aggregation) What is the highest single COD amount?
+2026-10-10 16:48:06,167 INFO rag.llm: groq route request: ~203 input tokens (estimate)
+2026-10-10 16:48:06,662 INFO rag.llm: groq route usage: prompt=290 completion=38 total=328
+2026-10-10 16:48:06,681 INFO rag.llm: groq plan request: ~492 input tokens (estimate)
+2026-10-10 16:48:07,385 INFO rag.llm: groq plan usage: prompt=897 completion=96 total=993
+2026-10-10 16:48:07,405 INFO rag.llm: groq sheet_answer request: ~208 input tokens (estimate)
+2026-10-10 16:48:08,068 INFO rag.llm: groq sheet_answer usage: prompt=285 completion=146 total=431
+  hit=None correct=True answer='The highest single COD amount is 10750.0, as shown in the data [1].'
+[26/28] (aggregation) How many shipments have status Return Submitted?
+2026-10-10 16:48:38,537 INFO rag.llm: groq route request: ~205 input tokens (estimate)
+2026-10-10 16:48:39,264 INFO rag.llm: groq route usage: prompt=290 completion=51 total=341
+2026-10-10 16:48:39,279 INFO rag.llm: groq plan request: ~495 input tokens (estimate)
+2026-10-10 16:48:40,174 INFO rag.llm: groq plan usage: prompt=897 completion=128 total=1025
+2026-10-10 16:48:40,185 INFO rag.llm: groq sheet_answer request: ~223 input tokens (estimate)
+2026-10-10 16:48:40,904 INFO rag.llm: groq sheet_answer usage: prompt=297 completion=105 total=402
+  hit=None correct=True answer='There are 4 shipments with status Return Submitted [1].'
+[27/28] (aggregation) How many shipments were booked on 1 September 2026?
+2026-10-10 16:49:11,820 INFO rag.llm: groq route request: ~206 input tokens (estimate)
+2026-10-10 16:49:12,597 INFO rag.llm: groq route usage: prompt=295 completion=44 total=339
+2026-10-10 16:49:12,619 INFO rag.llm: groq plan request: ~495 input tokens (estimate)
+2026-10-10 16:49:13,232 INFO rag.llm: groq plan usage: prompt=902 completion=138 total=1040
+2026-10-10 16:49:13,245 INFO rag.llm: groq sheet_answer request: ~224 input tokens (estimate)
+2026-10-10 16:49:13,962 INFO rag.llm: groq sheet_answer usage: prompt=305 completion=117 total=422
+  hit=None correct=True answer='There were 19 shipments booked on 1 September 2026 [1].'
+[28/28] (aggregation) What is the total COD amount of delivered shipments only?
+2026-10-10 16:49:44,685 INFO rag.llm: groq route request: ~208 input tokens (estimate)
+2026-10-10 16:49:45,472 INFO rag.llm: groq route usage: prompt=549 completion=44 total=593
+2026-10-10 16:49:45,487 INFO rag.llm: groq plan request: ~497 input tokens (estimate)
+2026-10-10 16:49:46,231 INFO rag.llm: groq plan usage: prompt=900 completion=124 total=1024
+2026-10-10 16:49:46,250 INFO rag.llm: groq sheet_answer request: ~228 input tokens (estimate)
+2026-10-10 16:49:46,868 INFO rag.llm: groq sheet_answer usage: prompt=307 completion=145 total=452
+  hit=None correct=True answer='The total COD amount of delivered shipments is 140,792.6 [1].'
+
+type             n   retrieval hit rate (final -> now)        answer accuracy (final -> now)
+----------------------------------------------------------------------------------------------------
+factual         18    83.3% (15/18) ->  94.4% (17/18)          83.3% (15/18) ->  88.9% (16/18)
+aggregation     10   n/a -> n/a                               100.0% (10/10) -> 100.0% (10/10)
+----------------------------------------------------------------------------------------------------
+overall         28    83.3% (15/18) ->  94.4% (17/18)          89.3% (25/28) ->  92.9% (26/28)
+
+Saved 28 results to /app/eval/results/after_fallback.jsonl
+exit=0

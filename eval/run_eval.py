@@ -146,6 +146,9 @@ async def run_pipeline(question: str) -> dict:
                 "plan": routed.get("plan"), "result": routed.get("result"), "plan_error": routed.get("error"),
                 "tokens": routed["tokens"]}
     router_tokens = routed["tokens"]
+    # Set when the router picked "spreadsheet" but the plan was rejected and it
+    # fell back to the documents path.
+    fallback = {"router_fallback": routed["error"]} if routed.get("error") else {}
 
     results = fit_to_budget(await asyncio.to_thread(query_chunks, question, NAMESPACE, N_CTX))
     context = [context_line(doc, meta) for doc, meta in results]
@@ -154,17 +157,17 @@ async def run_pipeline(question: str) -> dict:
 
     if needs_web_search(question):
         answer, _trace, tokens = await with_retry(lambda: answer_with_web_search(question, context, []))
-        return {"route": "web_search", "chunks_sent": chunks_sent, "answer": answer, "citations": [], "tokens": router_tokens + tokens}
+        return {**fallback, "route": "web_search", "chunks_sent": chunks_sent, "answer": answer, "citations": [], "tokens": router_tokens + tokens}
 
     if not results:
-        return {"route": "document", "chunks_sent": [], "answer": "I don't know. No documents have been indexed yet.",
+        return {**fallback, "route": "document", "chunks_sent": [], "answer": "I don't know. No documents have been indexed yet.",
                 "citations": [], "tokens": router_tokens}
 
     raw, tokens = await with_retry(lambda: answer_question(question, context, []))
     answer, cited = keep_cited(raw, results)
     citations = [{"number": i, "source": m.get("source"), "chunk_index": m.get("chunk_index"), "page": m.get("page")}
                  for i, (_, m) in enumerate(cited, 1)]
-    return {"route": "document", "chunks_sent": chunks_sent, "answer": answer, "citations": citations,
+    return {**fallback, "route": "document", "chunks_sent": chunks_sent, "answer": answer, "citations": citations,
             "tokens": router_tokens + tokens}
 
 

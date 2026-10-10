@@ -108,3 +108,4 @@ redis==8.1.0
 pypdfium2==5.14.0
 pytesseract==0.3.13
 langgraph==1.2.14
+rank-bm25==0.2.2

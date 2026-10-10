@@ -5,10 +5,13 @@ from datetime import datetime
 
 from pinecone import NotFoundError, Pinecone
 
+from src import lexical
 from src.embeddings import embed_texts
 
 INDEX_NAME = os.environ.get("PINECONE_INDEX", "rag-docs")
 DIMENSION = 384  # all-MiniLM-L6-v2 output size
+HYBRID_K = 20   # results from each of dense and BM25 before fusion
+RRF_K = 60      # Reciprocal Rank Fusion constant
 
 _index = None
 _ID_TOKEN_RE = re.compile(r"\b\d{5,}\b")
@@ -135,6 +138,22 @@ def add_chunks(
     # One namespace per chat: Pinecone can't "get all where chat_id=X" like
     # Chroma could, but it can list/delete a whole namespace.
     get_index().upsert(vectors=vectors, namespace=chat_id, batch_size=100, show_progress=False)
+    # Same ids, text and metadata, kept locally for BM25 (hybrid search).
+    lexical.save_chunks(chat_id, source, [
+        {"id": v["id"], "text": v["metadata"]["text"],
+         "metadata": {k: val for k, val in v["metadata"].items() if k != "text"}}
+        for v in vectors
+    ])
+
+
+def _rrf(*rankings: list[str]) -> list[str]:
+    """Reciprocal Rank Fusion: ids ordered by sum of 1 / (RRF_K + rank) over
+    every ranking they appear in."""
+    scores: dict[str, float] = {}
+    for ranking in rankings:
+        for rank, id_ in enumerate(ranking, 1):
+            scores[id_] = scores.get(id_, 0.0) + 1 / (RRF_K + rank)
+    return sorted(scores, key=scores.__getitem__, reverse=True)
 
 
 def _all_chunks(chat_id: str) -> list[tuple[str, dict]]:
@@ -168,25 +187,31 @@ def query_chunks(
     doc_type: str | None = None,
     date_range: DateRange | None = None,
 ) -> list[tuple[str, dict]]:
-    """date_range = (start, end); either end may be None for open-ended."""
+    """Hybrid search: dense (Pinecone) and BM25 (lexical), HYBRID_K each,
+    merged with Reciprocal Rank Fusion; exact-ID matches stay on top.
+    date_range = (start, end); either end may be None for open-ended."""
     flt = build_filter(chat_id, doc_type, date_range)
     query_embedding = embed_texts([question])[0]
-    results = get_index().query(
+    dense = get_index().query(
         vector=query_embedding,
-        top_k=n_results,
+        top_k=HYBRID_K,
         namespace=chat_id,
         # chat_id is belt and braces (the namespace already isolates the
         # chat); doc_type / uploaded_ts narrow it further when given.
         filter=flt,
         include_metadata=True,
     )
-    similar = [_split(match.metadata) for match in results.matches]
+    by_id = {match.id: _split(match.metadata) for match in dense.matches}
+    keyword = lexical.search(chat_id, question, HYBRID_K, keep=lambda meta: _passes(meta, flt))
+    for hit in keyword:
+        by_id.setdefault(hit["id"], (hit["text"], hit["metadata"]))
+    fused = [by_id[id_] for id_ in _rrf([m.id for m in dense.matches], [h["id"] for h in keyword])]
 
     # Exact-ID matches go first: they're the most precise hits, and callers
     # trim this list to a token budget from the front.
-    pairs = [(doc, meta) for doc, meta in _find_exact_matches(question, chat_id) if _passes(meta, flt)]
-    pairs += [(doc, meta) for doc, meta in similar if not any(doc == existing for existing, _ in pairs)]
-    return pairs
+    exact = [(doc, meta) for doc, meta in _find_exact_matches(question, chat_id) if _passes(meta, flt)]
+    rest = [(doc, meta) for doc, meta in fused if not any(doc == existing for existing, _ in exact)]
+    return exact + rest[:n_results]
 
 
 def has_chunks(chat_id: str) -> bool:

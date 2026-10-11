@@ -23,13 +23,14 @@ recorded. Needs PINECONE_API_KEY and GROQ_API_KEY in backend/.env.
 """
 import argparse
 import asyncio
-import base64
 import json
 import os
 import re
+import shutil
 import sys
 import statistics
 import time
+import uuid
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -44,7 +45,7 @@ from src.llm import answer_question, answer_with_web_search, keep_cited, needs_w
 from src.router import route_question, sources_for  # noqa: E402
 from src.sheets import delete_sheets  # noqa: E402
 from src.vectorstore import _all_chunks, delete_chat_chunks, get_index, query_chunks  # noqa: E402
-from src.worker import ingest_documents  # noqa: E402
+from src.worker import UPLOAD_DIR, ingest_documents, upload_path  # noqa: E402
 
 DATASET = ROOT / "eval" / "dataset.jsonl"
 RESULTS_DIR = ROOT / "eval" / "results"
@@ -122,7 +123,14 @@ def ingest(only: list[str] | None = None) -> None:
         delete_chat_chunks(NAMESPACE)
         delete_sheets(NAMESPACE)
         before = 0
-    payload = [{"name": p.name, "data": base64.b64encode(p.read_bytes()).decode()} for p in files]
+    # Same hand-off as the API: copy each file into the uploads folder and pass
+    # its id; the task deletes the copies when it is done.
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    payload = []
+    for p in files:
+        file_id = uuid.uuid4().hex
+        shutil.copyfile(p, upload_path(file_id))
+        payload.append({"name": p.name, "file": file_id})
     result = ingest_documents(NAMESPACE, SESSION_ID, payload)  # runs in-process, not queued
     for doc in result["indexed"]:
         print(f"  {doc['name']}: {doc['chunks']} chunks")

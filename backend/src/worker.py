@@ -3,17 +3,27 @@
 Run:  celery -A src.worker worker --loglevel=info --concurrency=2
       (Windows local dev: add --pool=solo)
 """
-import base64
 from datetime import datetime
+from pathlib import Path
 
 from celery import Celery
 from redis import Redis
 
 from src.chat_store import docs_key
 from src.loaders import extract_chunks
-from src.sheets import save_sheets
+from src.sheets import STORAGE_DIR, save_sheets
 from src.redis_client import REDIS_URL
 from src.vectorstore import add_chunks
+
+# Uploads wait here until ingestion: the API writes them, the worker reads and
+# deletes them. On the storage volume both containers share.
+UPLOAD_DIR = STORAGE_DIR / "uploads"
+
+
+def upload_path(file_id: str) -> Path:
+    # Name only, so a queued task can never point outside the uploads folder.
+    return UPLOAD_DIR / Path(file_id).name
+
 
 celery_app = Celery("rag_doc_chat", broker=REDIS_URL, backend=REDIS_URL)
 # Celery tasks are synchronous, so they use a sync Redis client.
@@ -26,33 +36,29 @@ celery_app.conf.update(
 )
 
 
+def _ingest_file(chat_id: str, session_id: str, name: str, data: bytes) -> dict:
+    pieces = extract_chunks(name, data)
+    # Excel/CSV: also keep the full sheet(s) as parquet for the pandas
+    # route (src/router.py); no-op for other file types.
+    save_sheets(chat_id, name, data)
+    chunks = [text for text, _ in pieces]
+    add_chunks(
+        chunks, source=name, chat_id=chat_id, session_id=session_id,
+        extra_metadata=[meta for _, meta in pieces],
+    )
+    preview = chunks[0][:140] + ("..." if len(chunks[0]) > 140 else "") if chunks else ""
+    return {"name": name, "chunks": len(chunks), "preview": preview, "uploaded_at": datetime.now().isoformat()}
+
+
 @celery_app.task(name="ingest_documents")
 def ingest_documents(chat_id: str, session_id: str, files: list[dict]) -> dict:
-    """files: [{"name": str, "data": base64 str}].
-
-    file bytes travel base64 through Redis, so the API and worker
-    need no shared disk. Ceiling is large files (Redis memory); upgrade path
-    is upload to S3 and pass the object key instead.
-    """
-    indexed = []
-    for file in files:
-        data = base64.b64decode(file["data"])
-        pieces = extract_chunks(file["name"], data)
-        # Excel/CSV: also keep the full sheet(s) as parquet for the pandas
-        # route (src/router.py); no-op for other file types.
-        save_sheets(chat_id, file["name"], data)
-        chunks = [text for text, _ in pieces]
-        add_chunks(
-            chunks, source=file["name"], chat_id=chat_id, session_id=session_id,
-            extra_metadata=[meta for _, meta in pieces],
-        )
-        preview = chunks[0][:140] + ("..." if len(chunks[0]) > 140 else "") if chunks else ""
-        indexed.append({
-            "name": file["name"],
-            "chunks": len(chunks),
-            "preview": preview,
-            "uploaded_at": datetime.now().isoformat(),
-        })
+    """files: [{"name": original file name, "file": id in UPLOAD_DIR}].
+    The uploaded files are deleted afterwards, whether ingestion worked or not."""
+    try:
+        indexed = [_ingest_file(chat_id, session_id, f["name"], upload_path(f["file"]).read_bytes()) for f in files]
+    finally:
+        for f in files:
+            upload_path(f["file"]).unlink(missing_ok=True)
     total_chunks = sum(d["chunks"] for d in indexed)
     if total_chunks:
         # The chat route reads this flag instead of asking Pinecone each question.

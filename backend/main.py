@@ -1,12 +1,13 @@
 import asyncio
-import base64
 import os
+import uuid
 from datetime import datetime
 from typing import Literal
 
 from celery.result import AsyncResult
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from src.llm import (
@@ -48,9 +49,13 @@ from src.rate_limit import (
 from src.router import route_question, sources_for
 from src.sheets import delete_sheets
 from src.vectorstore import delete_chat_chunks, has_chunks, list_documents, query_chunks
-from src.worker import celery_app, ingest_documents
+from src.worker import UPLOAD_DIR, celery_app, ingest_documents, upload_path
 
 MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_MB", "20")) * 1024 * 1024
+# Content-Length counts the whole multipart body: boundaries and part headers
+# on top of the file bytes. The file bytes themselves are capped while streaming.
+MULTIPART_OVERHEAD = 64 * 1024
+UPLOAD_CHUNK_BYTES = 1024 * 1024
 # Retrieved context sent to the LLM per question. The Groq free tier allows
 # 8,000 tokens per minute, and the prompt, history, and answer need room too.
 MAX_CONTEXT_TOKENS = int(os.environ.get("MAX_CONTEXT_TOKENS", "3000"))
@@ -62,6 +67,22 @@ GREETINGS = {
 }
 
 app = FastAPI(title="RAG Doc Chat API")
+
+
+# Registered before CORS so CORS wraps it and a rejection still reaches the
+# browser with CORS headers.
+@app.middleware("http")
+async def reject_oversized_uploads(request: Request, call_next):
+    """FastAPI parses the whole multipart body before the route runs, so the
+    upload size is checked here, from Content-Length, before anything is read."""
+    if request.method == "POST" and request.url.path == "/api/documents":
+        length = request.headers.get("content-length", "")
+        if not length.isdigit():
+            return JSONResponse({"detail": "Content-Length header required."}, status_code=411)
+        if int(length) > MAX_UPLOAD_BYTES + MULTIPART_OVERHEAD:
+            return JSONResponse({"detail": f"Upload exceeds {MAX_UPLOAD_BYTES // (1024 * 1024)} MB."}, status_code=413)
+    return await call_next(request)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -257,15 +278,25 @@ async def upload_documents(
     if not await owns_chat(chat_id, session_id):
         raise HTTPException(status_code=404, detail="Chat not found")
 
-    payload, total = [], 0
-    for file in files:
-        data = await file.read()
-        total += len(data)
-        if total > MAX_UPLOAD_BYTES:
-            raise HTTPException(status_code=413, detail=f"Upload exceeds {MAX_UPLOAD_BYTES // (1024 * 1024)} MB.")
-        payload.append({"name": file.filename, "data": base64.b64encode(data).decode()})
-
-    task = await asyncio.to_thread(ingest_documents.delay, chat_id, session_id, payload)
+    # Stream each file to the shared uploads folder in chunks, with a running
+    # size cap; the task gets file ids, not file contents, and deletes them.
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    staged, total = [], 0
+    try:
+        for file in files:
+            file_id = uuid.uuid4().hex
+            staged.append({"name": file.filename, "file": file_id})
+            with upload_path(file_id).open("wb") as out:
+                while chunk := await file.read(UPLOAD_CHUNK_BYTES):
+                    total += len(chunk)
+                    if total > MAX_UPLOAD_BYTES:
+                        raise HTTPException(status_code=413, detail=f"Upload exceeds {MAX_UPLOAD_BYTES // (1024 * 1024)} MB.")
+                    out.write(chunk)
+        task = await asyncio.to_thread(ingest_documents.delay, chat_id, session_id, staged)
+    except BaseException:
+        for f in staged:  # never leave files behind for a task that won't run
+            upload_path(f["file"]).unlink(missing_ok=True)
+        raise
     return {"task_id": task.id, "status": "queued"}
 
 

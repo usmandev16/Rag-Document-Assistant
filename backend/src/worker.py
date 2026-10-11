@@ -7,13 +7,17 @@ import base64
 from datetime import datetime
 
 from celery import Celery
+from redis import Redis
 
+from src.chat_store import docs_key
 from src.loaders import extract_chunks
 from src.sheets import save_sheets
 from src.redis_client import REDIS_URL
 from src.vectorstore import add_chunks
 
 celery_app = Celery("rag_doc_chat", broker=REDIS_URL, backend=REDIS_URL)
+# Celery tasks are synchronous, so they use a sync Redis client.
+_redis = Redis.from_url(REDIS_URL, decode_responses=True)
 celery_app.conf.update(
     task_track_started=True,        # lets the status endpoint report "started"
     task_acks_late=True,            # a crashed worker's task gets redelivered
@@ -49,8 +53,12 @@ def ingest_documents(chat_id: str, session_id: str, files: list[dict]) -> dict:
             "preview": preview,
             "uploaded_at": datetime.now().isoformat(),
         })
+    total_chunks = sum(d["chunks"] for d in indexed)
+    if total_chunks:
+        # The chat route reads this flag instead of asking Pinecone each question.
+        _redis.set(docs_key(chat_id), "1")
     return {
         "indexed": indexed,
-        "total_chunks": sum(d["chunks"] for d in indexed),
+        "total_chunks": total_chunks,
         "session_id": session_id,  # status endpoint only shows results to their owner
     }

@@ -5,6 +5,7 @@ import os
 import random
 import re
 from datetime import datetime
+from contextvars import ContextVar
 from types import SimpleNamespace
 
 from groq import AsyncGroq
@@ -104,10 +105,16 @@ def estimate_tokens(text: str) -> int:
 # Load testing only (default off): every Groq call returns a fake reply after
 # 1-2 s, so load tests measure this system without spending Groq tokens.
 LLM_STUB = os.environ.get("LLM_STUB") == "1"
+# Seconds the current request spent in stubbed LLM calls, so a load test can
+# separate the system's own time from fake LLM time (see main.py).
+stub_seconds: ContextVar[list[float] | None] = ContextVar("stub_seconds", default=None)
 
 
 async def _stub_reply(kind: str, prompt: str) -> SimpleNamespace:
-    await asyncio.sleep(random.uniform(1.0, 2.0))
+    delay = random.uniform(1.0, 2.0)
+    await asyncio.sleep(delay)
+    if (spent := stub_seconds.get()) is not None:
+        spent[0] += delay  # any sleep overshoot from a busy event loop counts as system time
     if kind == "route":
         question = prompt.rsplit("Question:", 1)[-1]
         sheet_question = re.search(r"shipment|\bCOD\b", question, re.IGNORECASE)

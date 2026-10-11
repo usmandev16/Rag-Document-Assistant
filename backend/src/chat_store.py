@@ -9,8 +9,23 @@ from src.redis_client import redis
 #   chat:{id}:msgs        list  JSON messages (RPUSH = atomic append)
 #   session:{sid}:chats   set   chat ids owned by that session
 #   chats:updated         zset  chat id -> updated_at timestamp (stale sweep)
+#   chat:{id}:has_docs    str   "1"/"0": the chat has indexed documents (set by ingestion)
 NEW_TITLE = "New chat"
 UPDATED = "chats:updated"
+
+
+def docs_key(chat_id: str) -> str:
+    return f"chat:{chat_id}:has_docs"
+
+
+async def has_documents(chat_id: str) -> bool | None:
+    """True/False from the flag, or None if it was never set (older chats)."""
+    value = await redis.get(docs_key(chat_id))
+    return None if value is None else value == "1"
+
+
+async def set_has_documents(chat_id: str, value: bool) -> None:
+    await redis.set(docs_key(chat_id), "1" if value else "0")
 
 
 def _key(chat_id: str) -> str:
@@ -118,7 +133,7 @@ async def append_messages(
 async def delete_chat(chat_id: str) -> None:
     session_id = await redis.hget(_key(chat_id), "session_id")
     async with redis.pipeline(transaction=True) as pipe:
-        pipe.delete(_key(chat_id), _msgs_key(chat_id))
+        pipe.delete(_key(chat_id), _msgs_key(chat_id), docs_key(chat_id))
         pipe.zrem(UPDATED, chat_id)
         if session_id is not None:
             pipe.srem(_session_key(session_id), chat_id)

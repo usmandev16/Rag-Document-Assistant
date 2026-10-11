@@ -10,22 +10,26 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from src.llm import (
+    LLM_STUB,
     answer_question,
     answer_with_web_search,
     estimate_tokens,
     generate_title,
     keep_cited,
     needs_web_search,
+    stub_seconds,
 )
 from src.chat_store import (
     append_messages,
     create_chat,
     delete_chat,
     get_chat,
+    has_documents,
     list_chats,
     needs_title,
     owns_chat,
     session_chat_ids,
+    set_has_documents,
     stale_chat_ids,
 )
 from src.rate_limit import (
@@ -64,6 +68,17 @@ app.add_middleware(
     # Retry-After isn't CORS-safelisted; without this the browser hides it.
     expose_headers=["Retry-After"],
 )
+
+if LLM_STUB:
+    # Load tests only: report the fake LLM time, so the load test can
+    # subtract it and measure this system's own time.
+    @app.middleware("http")
+    async def report_stub_time(request, call_next):
+        spent = [0.0]
+        stub_seconds.set(spent)
+        response = await call_next(request)
+        response.headers["X-LLM-Stub-Ms"] = str(round(spent[0] * 1000))
+        return response
 
 
 class ChatMessage(BaseModel):
@@ -287,7 +302,11 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         await add_tokens(session_id, tokens)
         return title
 
-    has_docs = await asyncio.to_thread(has_chunks, chat_id)
+    has_docs = await has_documents(chat_id)
+    if has_docs is None:
+        # Chats from before the Redis flag existed: ask Pinecone once, then remember.
+        has_docs = await asyncio.to_thread(has_chunks, chat_id)
+        await set_has_documents(chat_id, has_docs)
     history = req.history
     search_query = build_retrieval_query(req.question, history)
     # Candidates to retrieve; fit_to_budget then keeps only as many as fit

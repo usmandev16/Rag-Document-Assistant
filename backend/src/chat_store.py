@@ -87,6 +87,11 @@ async def list_chats(session_id: str) -> list[dict]:
     return result
 
 
+async def recent_messages(chat_id: str, limit: int) -> list[dict]:
+    """The last `limit` stored messages of a chat, oldest first."""
+    return [json.loads(m) for m in await redis.lrange(_msgs_key(chat_id), -limit, -1)]
+
+
 async def get_chat(chat_id: str) -> dict | None:
     chat = await redis.hgetall(_key(chat_id))
     if not chat:

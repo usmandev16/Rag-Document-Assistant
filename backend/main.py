@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from src.llm import (
     LLM_STUB,
+    MAX_HISTORY_MESSAGES,
     answer_question,
     answer_with_web_search,
     estimate_tokens,
@@ -28,6 +29,7 @@ from src.chat_store import (
     list_chats,
     needs_title,
     owns_chat,
+    recent_messages,
     session_chat_ids,
     set_has_documents,
     stale_chat_ids,
@@ -92,6 +94,8 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     question: str
+    # Ignored, kept so older clients still validate: history is loaded from the
+    # stored chat instead, so a client can't inject fake earlier turns.
     history: list[ChatMessage] = []
     chat_id: str | None = None
     # Optional retrieval filters, ANDed with the chat_id filter in Pinecone.
@@ -182,11 +186,11 @@ def is_greeting(text: str) -> bool:
     return text.strip().lower().strip("!.,? ") in GREETINGS
 
 
-def build_retrieval_query(question: str, history: list[ChatMessage]) -> str:
+def build_retrieval_query(question: str, history: list[dict]) -> str:
     """Fold the previous user turn into the search query so follow-ups
     (e.g. "what about her skills?") still retrieve the right chunks."""
     last_user = next(
-        (m.content for m in reversed(history) if m.role == "user"), None
+        (m["content"] for m in reversed(history) if m["role"] == "user"), None
     )
     return f"{last_user}\n{question}" if last_user else question
 
@@ -316,7 +320,7 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         # Chats from before the Redis flag existed: ask Pinecone once, then remember.
         has_docs = await asyncio.to_thread(has_chunks, chat_id)
         await set_has_documents(chat_id, has_docs)
-    history = req.history
+    history = await recent_messages(chat_id, MAX_HISTORY_MESSAGES)
     search_query = build_retrieval_query(req.question, history)
     # Candidates to retrieve; fit_to_budget then keeps only as many as fit
     # MAX_CONTEXT_TOKENS (the real ceiling: Groq free tier is 8,000 tokens
@@ -357,7 +361,7 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
     if needs_web_search(req.question):
         try:
             answer, trace, tokens = await answer_with_web_search(
-                req.question, context_chunks, [m.model_dump() for m in history]
+                req.question, context_chunks, history
             )
         except Exception as exc:
             return await respond(groq_error_reply(exc))
@@ -380,7 +384,7 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
         )})
 
     try:
-        answer, tokens = await answer_question(req.question, context_chunks, [m.model_dump() for m in history])
+        answer, tokens = await answer_question(req.question, context_chunks, history)
     except Exception as exc:
         return await respond(groq_error_reply(exc))
     await add_tokens(session_id, tokens)

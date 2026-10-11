@@ -1,0 +1,76 @@
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-47d8fe385c5e Creating 
+ Container ragdocchat-worker-run-47d8fe385c5e Created 
+[1/10] (factual) What GDP growth did Pakistan record in FY2025?
+2026-10-11 11:50:03,090 INFO rag.llm: groq route request: ~206 input tokens (estimate)
+2026-10-11 11:50:03,855 INFO rag.llm: groq route usage: prompt=294 completion=30 total=324
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1697.91it/s]
+2026-10-11 11:50:32,732 INFO rag.llm: groq answer request: ~3201 input tokens (estimate)
+2026-10-11 11:50:33,644 INFO rag.llm: groq answer usage: prompt=3453 completion=103 total=3556
+  judge model 'llama-3.1-8b-instant' unavailable, using 'openai/gpt-oss-20b'
+  hit=True correct=True answer='Pakistan recorded a GDP growth of 3.09\u202fpercent in FY2025[1][2]'
+[2/10] (factual) What was inflation during July-December FY2026, and what was it last year?
+2026-10-11 11:51:04,160 INFO rag.llm: groq route request: ~213 input tokens (estimate)
+2026-10-11 11:51:04,757 INFO rag.llm: groq route usage: prompt=301 completion=37 total=338
+2026-10-11 11:51:05,961 INFO rag.llm: groq answer request: ~3137 input tokens (estimate)
+2026-10-11 11:51:06,972 INFO rag.llm: groq answer usage: prompt=3262 completion=194 total=3456
+  hit=True correct=True answer='Inflation was 5.2\u202fpercent during July‑December FY2026, down from 7.2\u202fpercent in the same period last'
+[3/10] (factual) What was the policy rate as of December 2025?
+2026-10-11 11:51:37,348 INFO rag.llm: groq route request: ~206 input tokens (estimate)
+2026-10-11 11:51:37,796 INFO rag.llm: groq route usage: prompt=295 completion=43 total=338
+2026-10-11 11:51:38,987 INFO rag.llm: groq answer request: ~3213 input tokens (estimate)
+2026-10-11 11:51:39,857 INFO rag.llm: groq answer usage: prompt=3269 completion=122 total=3391
+  hit=True correct=True answer='The policy rate was 10.5\u202fpercent as of December\u202f2025[1]'
+[4/10] (factual) What were foreign exchange reserves at end December 2025?
+2026-10-11 11:52:10,311 INFO rag.llm: groq route request: ~209 input tokens (estimate)
+2026-10-11 11:52:10,832 INFO rag.llm: groq route usage: prompt=295 completion=38 total=333
+2026-10-11 11:52:12,058 INFO rag.llm: groq answer request: ~3235 input tokens (estimate)
+2026-10-11 11:52:12,762 INFO rag.llm: groq answer usage: prompt=3175 completion=116 total=3291
+  hit=True correct=True answer='The foreign exchange reserves were\u202fUSD\u202f20.7\u202fbillion as of end\u202fDecember\u202f2025[1].'
+[5/10] (factual) What level did the KSE-100 index reach on December 31, 2025?
+2026-10-11 11:52:43,205 INFO rag.llm: groq route request: ~209 input tokens (estimate)
+2026-10-11 11:52:43,740 INFO rag.llm: groq route usage: prompt=302 completion=42 total=344
+2026-10-11 11:52:44,721 INFO rag.llm: groq answer request: ~3270 input tokens (estimate)
+2026-10-11 11:52:45,617 INFO rag.llm: groq answer usage: prompt=3634 completion=121 total=3755
+  hit=True correct=True answer='The KSE‑100 index reached 174,054 points as of December\u202f31,\u202f2025[1]'
+[6/10] (factual) What were net revenue receipts in July-December FY2026?
+2026-10-11 11:53:16,107 INFO rag.llm: groq route request: ~208 input tokens (estimate)
+2026-10-11 11:53:16,738 INFO rag.llm: groq route usage: prompt=296 completion=56 total=352
+2026-10-11 11:53:17,949 INFO rag.llm: groq answer request: ~3118 input tokens (estimate)
+2026-10-11 11:53:19,218 INFO rag.llm: groq answer usage: prompt=3583 completion=260 total=3843
+  hit=True correct=True answer='The net revenue receipts for July‑December FY2026 were Rs\u202f6,392\u202fbillion[1].'
+[7/10] (factual) How much did FBR collect in July-December FY2026?
+2026-10-11 11:53:49,452 INFO rag.llm: groq route request: ~207 input tokens (estimate)
+2026-10-11 11:53:50,092 INFO rag.llm: groq route usage: prompt=553 completion=69 total=622
+2026-10-11 11:53:51,258 INFO rag.llm: groq answer request: ~3194 input tokens (estimate)
+2026-10-11 11:53:51,997 INFO rag.llm: groq answer usage: prompt=3488 completion=116 total=3604
+  hit=True correct=False answer='The FBR collected Rs\u202f6,161\u202fbillion in July‑December FY2026[1].'
+[8/10] (factual) What was spent on servicing domestic debt in July-December FY2026?
+2026-10-11 11:54:22,260 INFO rag.llm: groq route request: ~211 input tokens (estimate)
+2026-10-11 11:54:22,698 INFO rag.llm: groq route usage: prompt=298 completion=57 total=355
+2026-10-11 11:54:23,926 INFO rag.llm: groq answer request: ~3198 input tokens (estimate)
+2026-10-11 11:54:25,686 INFO rag.llm: groq answer usage: prompt=3208 completion=606 total=3814
+  hit=True correct=True answer='Rs.\u202f3,090\u202fbillion was spent on servicing domestic debt in July‑December FY2026[1][2]'
+[9/10] (factual) What was the total outlay of the Federal PSDP 2025-26 and when was it approved?
+2026-10-11 11:54:56,218 INFO rag.llm: groq route request: ~214 input tokens (estimate)
+2026-10-11 11:54:56,865 INFO rag.llm: groq route usage: prompt=305 completion=57 total=362
+2026-10-11 11:54:58,074 INFO rag.llm: groq answer request: ~3281 input tokens (estimate)
+2026-10-11 11:54:58,869 INFO rag.llm: groq answer usage: prompt=3349 completion=175 total=3524
+  hit=True correct=True answer='The Federal PSDP\u202f2025‑26 had a total outlay of\u202fRs\u202f1,000\u202fbillion, and it was approved by the National'
+[10/10] (factual) What were net FDI inflows in the first half of FY2026?
+2026-10-11 11:55:29,323 INFO rag.llm: groq route request: ~208 input tokens (estimate)
+2026-10-11 11:55:29,786 INFO rag.llm: groq route usage: prompt=555 completion=37 total=592
+2026-10-11 11:55:31,190 INFO rag.llm: groq answer request: ~3186 input tokens (estimate)
+2026-10-11 11:55:32,366 INFO rag.llm: groq answer usage: prompt=3135 completion=265 total=3400
+  hit=True correct=True answer='Net FDI inflows were\u202fUSD\u202f808.1\u202fmillion\u202fin the first half of FY2026[1].'
+
+type             n   retrieval hit rate (final -> now)        answer accuracy (final -> now)
+----------------------------------------------------------------------------------------------------
+factual         10    80.0% (8/10) -> 100.0% (10/10)           80.0% (8/10) ->  90.0% (9/10)
+----------------------------------------------------------------------------------------------------
+overall         10    80.0% (8/10) -> 100.0% (10/10)           80.0% (8/10) ->  90.0% (9/10)
+
+Documents path, 10 questions: p50 retrieval 1207 ms, p50 end-to-end 2739 ms
+
+Saved 10 results to /app/eval/results/security_check.jsonl

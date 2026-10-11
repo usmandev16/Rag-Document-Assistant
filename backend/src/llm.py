@@ -59,14 +59,6 @@ WEB_SYSTEM_PROMPT = (
     "use web search for anything current or not covered by it. " + STYLE_RULE
 )
 
-MARKET_KEYWORDS = ("market",)
-
-
-def needs_web_search(question: str) -> bool:
-    lowered = question.lower()
-    return any(keyword in lowered for keyword in MARKET_KEYWORDS)
-
-
 _client: AsyncGroq | None = None
 
 

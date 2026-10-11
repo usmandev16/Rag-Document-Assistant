@@ -74,7 +74,7 @@ flowchart LR
 - **Follow-up questions aren't rewritten.** Retrieval adds the previous user message to the search query, but nothing turns "and to Lahore?" into a complete question, and the router sees only the current question.
 - **Spreadsheet answers support only count, sum, mean, max and min**, with filters and grouping. Derived values such as a per-kilogram rate aren't computed.
 - **The reranker is too slow on CPU** (p50 2.5 s), so it's off. Turn it on with `RERANK_TOP_K=40` on faster hardware.
-- **Web search is triggered only by questions containing "market"**, and it isn't covered by the eval.
+- **Web search runs only when a request sets `allow_web_search: true`.** The UI doesn't send it yet, and it isn't covered by the eval.
 - **No user accounts:** isolation is per browser session.
 
 ## Quick start

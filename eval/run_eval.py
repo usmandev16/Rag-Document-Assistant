@@ -41,7 +41,7 @@ sys.path.insert(0, str(ROOT / "backend" if (ROOT / "backend").is_dir() else ROOT
 from groq import AsyncGroq  # noqa: E402
 
 from main import context_line, fit_to_budget  # noqa: E402
-from src.llm import answer_question, answer_with_web_search, keep_cited, needs_web_search  # noqa: E402
+from src.llm import answer_question, keep_cited  # noqa: E402
 from src.router import route_question, sources_for  # noqa: E402
 from src.sheets import delete_sheets  # noqa: E402
 from src.vectorstore import _all_chunks, delete_chat_chunks, get_index, query_chunks  # noqa: E402
@@ -166,10 +166,7 @@ async def run_pipeline(question: str) -> dict:
     chunks_sent = [{"source": m.get("source"), "chunk_index": m.get("chunk_index"), "page": m.get("page"),
                     "ocr": m.get("ocr"), "text": d} for d, m in results]
 
-    if needs_web_search(question):
-        answer, _trace, tokens = await with_retry(lambda: answer_with_web_search(question, context, []))
-        return {**extra, "route": "web_search", "chunks_sent": chunks_sent, "answer": answer, "citations": [], "tokens": router_tokens + tokens}
-
+    # Web search is off unless a request sets allow_web_search; the eval never does.
     if not results:
         return {**extra, "route": "document", "chunks_sent": [], "answer": "I don't know. No documents have been indexed yet.",
                 "citations": [], "tokens": router_tokens}

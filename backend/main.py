@@ -18,7 +18,6 @@ from src.llm import (
     estimate_tokens,
     generate_title,
     keep_cited,
-    needs_web_search,
     stub_seconds,
 )
 from src.chat_store import (
@@ -123,6 +122,9 @@ class ChatRequest(BaseModel):
     doc_type: Literal["pdf", "docx", "xlsx", "csv", "txt"] | None = None
     uploaded_after: datetime | None = None
     uploaded_before: datetime | None = None
+    # Live web search runs only when the client asks for it explicitly; a
+    # word in the question can't switch it on.
+    allow_web_search: bool = False
 
 
 def get_session_id(x_session_id: str | None = Header(default=None)) -> str:
@@ -389,7 +391,7 @@ async def chat(req: ChatRequest, session_id: str = Depends(get_session_id)):
     results = fit_to_budget(results)
     context_chunks = [context_line(doc, meta) for doc, meta in results]
 
-    if needs_web_search(req.question):
+    if req.allow_web_search:
         try:
             answer, trace, tokens = await answer_with_web_search(
                 req.question, context_chunks, history

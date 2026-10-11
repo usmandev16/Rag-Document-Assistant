@@ -86,8 +86,7 @@ body {
     position: relative;
 }
 /* The chat app manages its own internal scroll regions (.sidebar,
-   .chat-scroll) and disables page-level scroll — but only while it's
-   actually mounted, so other pages (e.g. the homepage) still scroll normally. */
+   .chat-scroll), so page-level scroll is disabled. */
 body:has(.app-shell) { overflow: hidden; }
 
 #root { position: relative; z-index: 1; }

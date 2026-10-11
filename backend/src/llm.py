@@ -1,8 +1,11 @@
+import asyncio
 import json
 import logging
 import os
+import random
 import re
 from datetime import datetime
+from types import SimpleNamespace
 
 from groq import AsyncGroq
 
@@ -98,10 +101,36 @@ def estimate_tokens(text: str) -> int:
     return len(text) // 4
 
 
+# Load testing only (default off): every Groq call returns a fake reply after
+# 1-2 s, so load tests measure this system without spending Groq tokens.
+LLM_STUB = os.environ.get("LLM_STUB") == "1"
+
+
+async def _stub_reply(kind: str, prompt: str) -> SimpleNamespace:
+    await asyncio.sleep(random.uniform(1.0, 2.0))
+    if kind == "route":
+        question = prompt.rsplit("Question:", 1)[-1]
+        sheet_question = re.search(r"shipment|\bCOD\b", question, re.IGNORECASE)
+        content = json.dumps({"route": "spreadsheet" if sheet_question else "documents"})
+    elif kind == "plan":
+        sheet = re.search(r"Sheet '(.+?)' \(", prompt).group(1)  # from sheets.describe_sheet
+        content = json.dumps({"answerable": True, "sheet": sheet, "filters": [], "group_by": None,
+                              "aggregate": {"column": None, "func": "count"}})
+    elif kind == "title":
+        content = "Load test chat"
+    else:  # answer, sheet_answer, web_search
+        content = "This is a stub answer based on the provided source [1]."
+    message = SimpleNamespace(content=content, executed_tools=None)
+    usage = SimpleNamespace(prompt_tokens=0, completion_tokens=0, total_tokens=0)
+    return SimpleNamespace(choices=[SimpleNamespace(message=message)], usage=usage)
+
+
 async def _create(kind: str, **kwargs):
     """Every Groq call goes through here so each request's token count is
     logged: an estimate before sending (so a 413 still leaves a record), and
     Groq's actual usage after."""
+    if LLM_STUB:
+        return await _stub_reply(kind, kwargs["messages"][-1]["content"])
     estimate = sum(estimate_tokens(m["content"]) for m in kwargs["messages"])
     log.info("groq %s request: ~%d input tokens (estimate)", kind, estimate)
     response = await _get_client().chat.completions.create(model=MODEL_NAME, **kwargs)

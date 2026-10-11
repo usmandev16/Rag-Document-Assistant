@@ -1,0 +1,13 @@
+torch intra-op threads per call: 4
+embed question   1 parallel: p50    10.7 ms per call,   92.1 calls/s
+embed question   4 parallel: p50   105.5 ms per call,   37.2 calls/s
+embed question   8 parallel: p50   266.9 ms per call,   29.7 calls/s
+embed question  16 parallel: p50   519.1 ms per call,   30.0 calls/s
+Pinecone query   1 parallel: p50   241.1 ms per call,    4.1 calls/s
+Pinecone query   4 parallel: p50   239.4 ms per call,    8.5 calls/s
+Pinecone query   8 parallel: p50   243.2 ms per call,   19.6 calls/s
+Pinecone query  16 parallel: p50   238.9 ms per call,   39.7 calls/s
+BM25 search      1 parallel: p50     1.4 ms per call,  625.0 calls/s
+BM25 search      4 parallel: p50     3.7 ms per call,  662.1 calls/s
+BM25 search      8 parallel: p50    11.7 ms per call,  535.4 calls/s
+BM25 search     16 parallel: p50    17.6 ms per call,  609.8 calls/s

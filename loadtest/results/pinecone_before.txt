@@ -1,0 +1,1 @@
+vectors 825, namespaces 2, eval-test-user NamespaceSummary(vector_count=481)

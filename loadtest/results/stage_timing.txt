@@ -1,0 +1,6 @@
+Pinecone read units: query 1, list (has_chunks) 1
+embed question (MiniLM, CPU)     p50    36.2 ms
+Pinecone dense query (top 20)    p50   271.7 ms
+Pinecone list (has_chunks)       p50   240.3 ms
+BM25 search (top 20)             p50     4.2 ms
+Redis round trip                 p50     1.1 ms

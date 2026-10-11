@@ -7,6 +7,10 @@ from src.redis_client import redis
 
 CHAT_RATE_LIMIT_PER_MINUTE = int(os.environ.get("CHAT_RATE_LIMIT_PER_MINUTE", "20"))
 UPLOAD_RATE_LIMIT_PER_MINUTE = int(os.environ.get("UPLOAD_RATE_LIMIT_PER_MINUTE", "5"))
+# Load testing only (default off): no per-session chat limit, so a load test
+# measures the system rather than the limiter.
+if os.environ.get("LOADTEST") == "1":
+    CHAT_RATE_LIMIT_PER_MINUTE = 0
 # 0 = no cap (usage is still tracked).
 TOKEN_WINDOWS = {
     "hour": (3600, int(os.environ.get("TOKEN_LIMIT_PER_HOUR", "0"))),

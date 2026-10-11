@@ -1,0 +1,4 @@
+embed question  under load: p50    19.1 ms, max    23.6 ms
+Pinecone query  under load: p50   433.6 ms, max  1090.9 ms
+Pinecone list   under load: p50   216.2 ms, max   220.2 ms
+BM25 search     under load: p50     3.1 ms, max    69.7 ms

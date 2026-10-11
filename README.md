@@ -4,7 +4,8 @@
 
 RAG over PDF, Word and Excel with per-chat isolation (no user accounts yet). It uses OCR for scanned pages, hybrid (BM25 + dense) search, and a LangGraph router that answers spreadsheet questions with pandas instead of vector search.
 
-![Chat with numbered citations](docs/demo.png)
+<img width="1917" height="872" alt="image" src="https://github.com/user-attachments/assets/35fbc527-64f3-49fd-b085-546a0c1ed0b0" />
+
 
 ## Results
 

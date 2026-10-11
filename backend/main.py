@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Literal
 
 from celery.result import AsyncResult
-from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -33,10 +33,14 @@ from src.chat_store import (
     stale_chat_ids,
 )
 from src.rate_limit import (
+    CHAT_RATE_LIMIT_PER_IP_PER_MINUTE,
     CHAT_RATE_LIMIT_PER_MINUTE,
+    UPLOAD_RATE_LIMIT_PER_IP_PER_MINUTE,
     UPLOAD_RATE_LIMIT_PER_MINUTE,
     add_tokens,
+    check_daily_budget,
     check_tokens,
+    client_ip,
     hit,
 )
 from src.router import route_question, sources_for
@@ -97,18 +101,23 @@ class ChatRequest(BaseModel):
 
 
 def get_session_id(x_session_id: str | None = Header(default=None)) -> str:
-    # Falls back to a fixed bucket if a client ever calls the API without
-    # the header — the real frontend always sends its per-tab session id.
-    return x_session_id or "anonymous"
+    # No shared fallback bucket: requests without a session would otherwise
+    # all share one set of chats and one rate limit.
+    if not x_session_id or len(x_session_id) > 128:
+        raise HTTPException(status_code=400, detail="Missing or invalid X-Session-Id header.")
+    return x_session_id
 
 
-async def chat_limits(session_id: str = Depends(get_session_id)) -> None:
+async def chat_limits(request: Request, session_id: str = Depends(get_session_id)) -> None:
     await hit("chat", session_id, CHAT_RATE_LIMIT_PER_MINUTE)
+    await hit("chat-ip", client_ip(request), CHAT_RATE_LIMIT_PER_IP_PER_MINUTE)
     await check_tokens(session_id)
+    await check_daily_budget()
 
 
-async def upload_limits(session_id: str = Depends(get_session_id)) -> None:
+async def upload_limits(request: Request, session_id: str = Depends(get_session_id)) -> None:
     await hit("upload", session_id, UPLOAD_RATE_LIMIT_PER_MINUTE)
+    await hit("upload-ip", client_ip(request), UPLOAD_RATE_LIMIT_PER_IP_PER_MINUTE)
 
 
 async def remove_chat(chat_id: str) -> None:

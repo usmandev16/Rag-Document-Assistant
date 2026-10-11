@@ -63,8 +63,8 @@ export async function sendChat(question, history, chatId) {
     body: JSON.stringify({ question, history, chat_id: chatId }),
   });
   const body = await res.json();
-  // Rate limited: show the server's "try again in Ns" text as the reply.
-  if (res.status === 429) return { answer: body.detail, chat_id: chatId };
+  // Rate limited (429) or the daily AI budget is used up (503): show the server's message.
+  if (res.status === 429 || res.status === 503) return { answer: body.detail, chat_id: chatId };
   return body;
 }
 

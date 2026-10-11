@@ -1,16 +1,26 @@
 import os
 import time
 
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 
 from src.redis_client import redis
 
 CHAT_RATE_LIMIT_PER_MINUTE = int(os.environ.get("CHAT_RATE_LIMIT_PER_MINUTE", "20"))
 UPLOAD_RATE_LIMIT_PER_MINUTE = int(os.environ.get("UPLOAD_RATE_LIMIT_PER_MINUTE", "5"))
-# Load testing only (default off): no per-session chat limit, so a load test
+# Per client IP as well, since a client can make up a new session id at any
+# time. Higher than the per-session limits: several people can share one IP.
+CHAT_RATE_LIMIT_PER_IP_PER_MINUTE = int(os.environ.get("CHAT_RATE_LIMIT_PER_IP_PER_MINUTE", "60"))
+UPLOAD_RATE_LIMIT_PER_IP_PER_MINUTE = int(os.environ.get("UPLOAD_RATE_LIMIT_PER_IP_PER_MINUTE", "15"))
+# Load testing only (default off): no chat rate limits, so a load test
 # measures the system rather than the limiter.
 if os.environ.get("LOADTEST") == "1":
-    CHAT_RATE_LIMIT_PER_MINUTE = 0
+    CHAT_RATE_LIMIT_PER_MINUTE = CHAT_RATE_LIMIT_PER_IP_PER_MINUTE = 0
+# Only trust X-Forwarded-For behind a proxy that sets it; otherwise any client
+# could send a fake one to dodge the per-IP limit.
+TRUSTED_PROXY = os.environ.get("TRUSTED_PROXY") == "1"
+# LLM tokens for the whole service per UTC day, across all sessions (0 = off).
+# The default stays under Groq's free-tier daily limit for gpt-oss-120b (200k).
+DAILY_TOKEN_BUDGET = int(os.environ.get("DAILY_TOKEN_BUDGET", "180000"))
 # 0 = no cap (usage is still tracked).
 TOKEN_WINDOWS = {
     "hour": (3600, int(os.environ.get("TOKEN_LIMIT_PER_HOUR", "0"))),
@@ -45,8 +55,35 @@ async def hit(bucket: str, key: str, limit: int) -> None:
         raise _too_many("Too many requests.", 60 - now % 60)
 
 
+def client_ip(request: Request) -> str:
+    if TRUSTED_PROXY:
+        forwarded = request.headers.get("x-forwarded-for")
+        if forwarded:
+            # The proxy appends the address it saw, so the last entry is the
+            # real client; earlier entries can be faked by the client.
+            return forwarded.split(",")[-1].strip()
+    return request.client.host if request.client else "unknown"
+
+
 def _token_key(key: str, name: str, seconds: int, now: int) -> str:
     return f"tok:{name}:{key}:{now // seconds}"
+
+
+def _global_key(now: int) -> str:
+    # Separate prefix: a client can't pick a session id that collides with it.
+    return f"tokglobal:day:{now // 86400}"
+
+
+async def check_daily_budget() -> None:
+    if DAILY_TOKEN_BUDGET <= 0:
+        return
+    now = int(time.time())
+    if int(await redis.get(_global_key(now)) or 0) >= DAILY_TOKEN_BUDGET:
+        raise HTTPException(
+            status_code=503,
+            detail="The service is busy: today's AI usage limit has been reached. Please try again tomorrow.",
+            headers={"Retry-After": str(86400 - now % 86400)},
+        )
 
 
 async def check_tokens(key: str) -> None:
@@ -70,6 +107,8 @@ async def add_tokens(key: str, tokens: int) -> None:
             tkey = _token_key(key, name, seconds, now)
             pipe.incrby(tkey, tokens)
             pipe.expire(tkey, seconds)
+        pipe.incrby(_global_key(now), tokens)
+        pipe.expire(_global_key(now), 86400)
         await pipe.execute()
 
 

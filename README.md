@@ -8,7 +8,7 @@ RAG over PDF, Word and Excel with per-chat isolation (no user accounts yet). It 
 
 ## Results
 
-Eval of 50 questions over 4 documents, **measured at commit `721c30a`**, comparing the first version (baseline) with that version (final). Sources: [`baseline.jsonl`](eval/results/baseline.jsonl) and [`final.jsonl`](eval/results/final.jsonl).
+Eval of 50 questions over 4 documents, **measured at commit `a39e6fe`**, comparing the first version (baseline) with that version (final). Sources: [`baseline.jsonl`](eval/results/baseline.jsonl) and [`final.jsonl`](eval/results/final.jsonl).
 
 | Question type | n | Retrieval hit rate | Answer accuracy |
 |---|---|---|---|
@@ -22,7 +22,7 @@ Eval of 50 questions over 4 documents, **measured at commit `721c30a`**, compari
 - **The current version** adds the router fallback and hybrid search, and hasn't had a full 50-question re-run. Its retrieval-only run hits 27/30 ([`retrieval_default.json`](eval/results/retrieval_default.json)).
 - **The spreadsheet** behind the aggregation row has since been replaced with a synthetic one. Re-run on the synthetic sheet, aggregation scored 100% (10/10) ([`after_synthetic.jsonl`](eval/results/after_synthetic.jsonl)).
 
-**Retrieval latency, p50 over 30 questions, retrieval only (no LLM):** 550 ms → 314 ms. The drop most likely comes from fetching 20 results from Pinecone instead of 40. BM25 runs locally and adds little time. The two changes weren't measured separately. The 550 ms figure is the pre-hybrid timing recorded in commit `87b0722`; 314 ms is in [`retrieval_default.json`](eval/results/retrieval_default.json).
+**Retrieval latency, p50 over 30 questions, retrieval only (no LLM):** 550 ms → 314 ms. The drop most likely comes from fetching 20 results from Pinecone instead of 40. BM25 runs locally and adds little time. The two changes weren't measured separately. The 550 ms figure is the pre-hybrid timing recorded in commit `846d573`; 314 ms is in [`retrieval_default.json`](eval/results/retrieval_default.json).
 
 **How the eval works:** [`eval/run_eval.py`](eval/run_eval.py) runs each question through the real pipeline (router, then retrieval, token budget, LLM and citations).
 - **Retrieval hit:** the question's evidence sentence is in the chunks sent to the LLM.

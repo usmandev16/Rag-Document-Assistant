@@ -1,0 +1,282 @@
+session 2 | commit 473b6e76cdc504d113eff9008d42625b0f9b864a | API key 2 | Tue Oct 13 18:54:53 PST 2026
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-1e0739543893 Creating 
+ Container ragdocchat-worker-run-1e0739543893 Created 
+Retrying 39 errored question(s) from v2_heldout.jsonl
+[1/39] (paraphrased) If my solar system makes more electricity than I use, does the extra get carried forward to next month's bill?
+2026-10-13 13:55:05,776 INFO rag.llm: groq route request: ~312 input tokens (estimate)
+2026-10-13 13:55:07,004 INFO rag.llm: groq route usage: prompt=419 completion=37 total=456
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1840.30it/s]
+2026-10-13 13:55:38,811 INFO rag.llm: groq answer request: ~3201 input tokens (estimate)
+2026-10-13 13:55:40,121 INFO rag.llm: groq answer usage: prompt=2910 completion=267 total=3177
+  hit=True correct=True answer='Yes. When your system exports more electricity than you import, the surplus net\u202fkWh is credited to y'
+[2/39] (paraphrased) Can my utility cut off my solar system without warning?
+2026-10-13 13:56:10,610 INFO rag.llm: groq route request: ~298 input tokens (estimate)
+2026-10-13 13:56:11,384 INFO rag.llm: groq route usage: prompt=408 completion=39 total=447
+2026-10-13 13:56:12,654 INFO rag.llm: groq answer request: ~3207 input tokens (estimate)
+2026-10-13 13:56:14,019 INFO rag.llm: groq answer usage: prompt=2910 completion=332 total=3242
+  hit=False correct=True answer='Yes. A distribution company may disconnect a distributed‑generation (solar) facility without notice '
+[3/39] (paraphrased) If I plan to make my solar system bigger after it's connected, how much notice do I owe the DISCO?
+2026-10-13 13:56:44,932 INFO rag.llm: groq route request: ~309 input tokens (estimate)
+2026-10-13 13:56:45,451 INFO rag.llm: groq route usage: prompt=420 completion=34 total=454
+2026-10-13 13:56:46,866 INFO rag.llm: groq answer request: ~3135 input tokens (estimate)
+2026-10-13 13:56:49,044 INFO rag.llm: groq answer usage: prompt=3030 completion=255 total=3285
+  hit=False correct=False answer="I don't know."
+[4/39] (paraphrased) My transformer is already heavily loaded by other solar users. Can the DISCO refuse my connection?
+2026-10-13 13:57:19,518 INFO rag.llm: groq route request: ~309 input tokens (estimate)
+2026-10-13 13:57:20,093 INFO rag.llm: groq route usage: prompt=416 completion=53 total=469
+2026-10-13 13:57:21,340 INFO rag.llm: groq answer request: ~3254 input tokens (estimate)
+2026-10-13 13:57:22,238 INFO rag.llm: groq answer usage: prompt=2841 completion=208 total=3049
+  hit=True correct=True answer='Yes. If the load on a transformer that already has DG facilities reaches\u202f80\u202fpercent, the DISCO may r'
+[5/39] (paraphrased) Do I need an electrical inspector's NOC for a 100 kW net metering connection?
+2026-10-13 13:57:53,582 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 13:57:54,333 INFO rag.llm: groq route usage: prompt=417 completion=33 total=450
+2026-10-13 13:57:55,661 INFO rag.llm: groq answer request: ~3204 input tokens (estimate)
+2026-10-13 13:58:11,800 INFO rag.llm: groq answer usage: prompt=2898 completion=265 total=3163
+  hit=True correct=True answer='No, an electrical inspector’s NOC is not required for a 100\u202fkW net‑metering connection, because the '
+[6/39] (paraphrased) What happens to my bid money in the State Life tender if I win but then refuse to sign the contract?
+2026-10-13 13:58:42,567 INFO rag.llm: groq route request: ~309 input tokens (estimate)
+2026-10-13 13:58:43,404 INFO rag.llm: groq route usage: prompt=419 completion=34 total=453
+2026-10-13 13:58:44,753 INFO rag.llm: groq answer request: ~3091 input tokens (estimate)
+2026-10-13 13:58:46,264 INFO rag.llm: groq answer usage: prompt=2968 completion=484 total=3452
+  hit=False correct=True answer='If you are the successful bidder and then refuse to sign the contract, State Life Insurance Corporat'
+[7/39] (paraphrased) How long must the panels in the PPIB model documents keep producing well?
+2026-10-13 13:59:22,872 INFO rag.llm: groq route request: ~302 input tokens (estimate)
+2026-10-13 13:59:23,738 INFO rag.llm: groq route usage: prompt=413 completion=61 total=474
+2026-10-13 13:59:25,070 INFO rag.llm: groq answer request: ~3181 input tokens (estimate)
+2026-10-13 13:59:26,458 INFO rag.llm: groq answer usage: prompt=2825 completion=344 total=3169
+  hit=True correct=True answer='The panels must maintain at least 85\u202f% of their power output for 25\u202fyears (with a minimum 12‑year ma'
+[8/39] (paraphrased) How efficient do inverters need to be under the PPIB model documents?
+2026-10-13 13:59:56,957 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 13:59:57,643 INFO rag.llm: groq route usage: prompt=413 completion=61 total=474
+2026-10-13 13:59:58,911 INFO rag.llm: groq answer request: ~3045 input tokens (estimate)
+2026-10-13 14:00:00,331 INFO rag.llm: groq answer usage: prompt=2753 completion=256 total=3009
+  hit=True correct=False answer='The inverter must have a CEC efficiency of not less than\u202f98.5\u202f%[1]'
+[9/39] (paraphrased) How soon after paying the connection charges should the DISCO hook up my system under the 2015 rules?
+2026-10-13 14:00:30,592 INFO rag.llm: groq route request: ~309 input tokens (estimate)
+2026-10-13 14:00:31,223 INFO rag.llm: groq route usage: prompt=419 completion=34 total=453
+2026-10-13 14:00:32,477 INFO rag.llm: groq answer request: ~3151 input tokens (estimate)
+2026-10-13 14:00:33,801 INFO rag.llm: groq answer usage: prompt=2858 completion=499 total=3357
+  hit=True correct=True answer='The DISCO must install and commission the interconnection facility within\u202f30\u202fdays after the applican'
+[10/39] (paraphrased) net metering ka agreement kitne saal ke liye hota hai?
+2026-10-13 14:01:04,476 INFO rag.llm: groq route request: ~298 input tokens (estimate)
+2026-10-13 14:01:04,972 INFO rag.llm: groq route usage: prompt=413 completion=40 total=453
+2026-10-13 14:01:06,321 INFO rag.llm: groq answer request: ~3263 input tokens (estimate)
+2026-10-13 14:01:07,458 INFO rag.llm: groq answer usage: prompt=2898 completion=154 total=3052
+  hit=False correct=False answer="I don't know."
+[11/39] (paraphrased) State Life Sukkur wale tender mein late kaam par kitna jurmana hai?
+2026-10-13 14:01:37,874 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 14:01:39,793 INFO rag.llm: groq route usage: prompt=414 completion=38 total=452
+2026-10-13 14:01:41,090 INFO rag.llm: groq answer request: ~3198 input tokens (estimate)
+2026-10-13 14:01:42,444 INFO rag.llm: groq answer usage: prompt=3143 completion=280 total=3423
+  hit=False correct=False answer="I don't know."
+[12/39] (paraphrased) FBISE solar ke liye kitne saal ki free service milegi?
+2026-10-13 14:02:13,915 INFO rag.llm: groq route request: ~298 input tokens (estimate)
+2026-10-13 14:02:14,969 INFO rag.llm: groq route usage: prompt=413 completion=68 total=481
+2026-10-13 14:02:16,285 INFO rag.llm: groq answer request: ~3104 input tokens (estimate)
+2026-10-13 14:02:17,911 INFO rag.llm: groq answer usage: prompt=3124 completion=125 total=3249
+  hit=True correct=True answer='Five years of free service will be provided for the FBISE solar system[1][2]'
+[13/39] (paraphrased) 15 meter se choti building pe lightning arrester zaroori hai?
+2026-10-13 14:02:48,649 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 14:02:49,145 INFO rag.llm: groq route usage: prompt=413 completion=45 total=458
+2026-10-13 14:02:50,329 INFO rag.llm: groq answer request: ~3109 input tokens (estimate)
+2026-10-13 14:02:51,679 INFO rag.llm: groq answer usage: prompt=3184 completion=173 total=3357
+  hit=True correct=True answer='نہیں، 15 میٹر سے کم اونچائی والی عمارتوں کے لیے لائٹننگ اریسٹر کی ضرورت نہیں ہے۔ یہ صرف 15 میٹر سے ز'
+[14/39] (paraphrased) FBR wale solar ki delivery kitne din mein karni hai?
+2026-10-13 14:03:22,276 INFO rag.llm: groq route request: ~297 input tokens (estimate)
+2026-10-13 14:03:22,882 INFO rag.llm: groq route usage: prompt=411 completion=71 total=482
+2026-10-13 14:03:24,159 INFO rag.llm: groq answer request: ~3147 input tokens (estimate)
+2026-10-13 14:03:25,435 INFO rag.llm: groq answer usage: prompt=3076 completion=255 total=3331
+  hit=False correct=False answer="I don't know."
+[15/39] (aggregation) What is the maximum AC power recorded in Plant 1's generation data?
+2026-10-13 14:03:55,887 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 14:03:56,795 INFO rag.llm: groq route usage: prompt=412 completion=33 total=445
+2026-10-13 14:03:57,169 INFO rag.llm: groq plan request: ~851 input tokens (estimate)
+2026-10-13 14:03:57,759 INFO rag.llm: groq plan usage: prompt=1583 completion=105 total=1688
+2026-10-13 14:03:57,820 INFO rag.llm: groq sheet_answer request: ~220 input tokens (estimate)
+2026-10-13 14:03:58,792 INFO rag.llm: groq sheet_answer usage: prompt=304 completion=207 total=511
+  hit=None correct=True answer="The maximum AC power recorded in Plant\u202f1's generation data is 1410.95 [1] (Plant_1_Solar_Data.xlsx)."
+[16/39] (aggregation) How many generation readings are there for inverter 1BY6WEcLGh8j5v7 in Plant 1?
+2026-10-13 14:04:29,434 INFO rag.llm: groq route request: ~304 input tokens (estimate)
+2026-10-13 14:04:29,945 INFO rag.llm: groq route usage: prompt=423 completion=44 total=467
+2026-10-13 14:04:30,032 INFO rag.llm: groq plan request: ~854 input tokens (estimate)
+2026-10-13 14:04:31,019 INFO rag.llm: groq plan usage: prompt=1594 completion=183 total=1777
+2026-10-13 14:04:31,085 INFO rag.llm: groq sheet_answer request: ~251 input tokens (estimate)
+2026-10-13 14:04:31,969 INFO rag.llm: groq sheet_answer usage: prompt=360 completion=247 total=607
+  hit=None correct=True answer='There are 3154 generation readings for inverter 1BY6WEcLGh8j5v7 in Plant 1 [1] (Plant_1_Solar_Data.x'
+[17/39] (aggregation) What is the average DC power across all of Plant 1's generation readings?
+2026-10-13 14:05:02,430 INFO rag.llm: groq route request: ~302 input tokens (estimate)
+2026-10-13 14:05:04,102 INFO rag.llm: groq route usage: prompt=413 completion=32 total=445
+2026-10-13 14:05:04,203 INFO rag.llm: groq plan request: ~852 input tokens (estimate)
+2026-10-13 14:05:05,116 INFO rag.llm: groq plan usage: prompt=1584 completion=105 total=1689
+2026-10-13 14:05:05,129 INFO rag.llm: groq sheet_answer request: ~222 input tokens (estimate)
+2026-10-13 14:05:06,147 INFO rag.llm: groq sheet_answer usage: prompt=305 completion=164 total=469
+  hit=None correct=True answer='The average DC power across all of Plant\u202f1’s generation readings is 3147.43 [1].'
+[18/39] (aggregation) How many rows of generation data does Plant 1 have?
+2026-10-13 14:05:36,678 INFO rag.llm: groq route request: ~297 input tokens (estimate)
+2026-10-13 14:05:37,591 INFO rag.llm: groq route usage: prompt=409 completion=40 total=449
+2026-10-13 14:05:37,668 INFO rag.llm: groq plan request: ~847 input tokens (estimate)
+2026-10-13 14:05:38,328 INFO rag.llm: groq plan usage: prompt=1580 completion=137 total=1717
+2026-10-13 14:05:38,352 INFO rag.llm: groq sheet_answer request: ~228 input tokens (estimate)
+2026-10-13 14:05:39,472 INFO rag.llm: groq sheet_answer usage: prompt=316 completion=113 total=429
+  hit=None correct=True answer='Plant\u202f1 has 68,778 rows of generation data [1].'
+[19/39] (aggregation) What is the highest daily yield recorded in Plant 2?
+2026-10-13 14:06:09,730 INFO rag.llm: groq route request: ~297 input tokens (estimate)
+2026-10-13 14:06:10,469 INFO rag.llm: groq route usage: prompt=409 completion=33 total=442
+2026-10-13 14:06:10,523 INFO rag.llm: groq plan request: ~847 input tokens (estimate)
+2026-10-13 14:06:11,537 INFO rag.llm: groq plan usage: prompt=1580 completion=116 total=1696
+2026-10-13 14:06:11,548 INFO rag.llm: groq sheet_answer request: ~218 input tokens (estimate)
+2026-10-13 14:06:12,806 INFO rag.llm: groq sheet_answer usage: prompt=305 completion=181 total=486
+  hit=None correct=True answer='The highest daily yield recorded in Plant\u202f2 was 9873.0 [1].'
+[20/39] (aggregation) Which Plant 2 inverter recorded the highest maximum AC power, and what was it?
+2026-10-13 14:06:43,277 INFO rag.llm: groq route request: ~304 input tokens (estimate)
+2026-10-13 14:06:44,316 INFO rag.llm: groq route usage: prompt=414 completion=59 total=473
+2026-10-13 14:06:44,399 INFO rag.llm: groq plan request: ~853 input tokens (estimate)
+2026-10-13 14:06:45,657 INFO rag.llm: groq plan usage: prompt=1585 completion=125 total=1710
+2026-10-13 14:06:45,707 INFO rag.llm: groq sheet_answer request: ~412 input tokens (estimate)
+2026-10-13 14:06:46,326 INFO rag.llm: groq sheet_answer usage: prompt=683 completion=145 total=828
+  hit=None correct=True answer='The inverter identified by source key oZ35aAeoifZaQzV recorded the highest maximum AC power, 1385.42'
+[21/39] (aggregation) What is the total AC power summed over all readings for inverter 4UPUqMRk7TRMgml in Plant 2?
+2026-10-13 14:07:17,008 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 14:07:17,504 INFO rag.llm: groq route usage: prompt=425 completion=33 total=458
+2026-10-13 14:07:17,576 INFO rag.llm: groq plan request: ~857 input tokens (estimate)
+2026-10-13 14:07:18,841 INFO rag.llm: groq plan usage: prompt=1596 completion=155 total=1751
+2026-10-13 14:07:18,887 INFO rag.llm: groq sheet_answer request: ~243 input tokens (estimate)
+2026-10-13 14:07:20,490 INFO rag.llm: groq sheet_answer usage: prompt=345 completion=281 total=626
+  hit=None correct=True answer='The total AC power summed over all readings for inverter 4UPUqMRk7TRMgml in Plant\u202f2 is 867688.15, [1'
+[22/39] (aggregation) What was the highest ambient temperature recorded at Plant 1?
+2026-10-13 14:07:51,050 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 14:07:52,183 INFO rag.llm: groq route usage: prompt=409 completion=60 total=469
+2026-10-13 14:07:52,247 INFO rag.llm: groq plan request: ~849 input tokens (estimate)
+2026-10-13 14:07:55,638 INFO rag.llm: groq plan usage: prompt=1580 completion=150 total=1730
+2026-10-13 14:07:55,667 INFO rag.llm: groq sheet_answer request: ~235 input tokens (estimate)
+2026-10-13 14:07:56,501 INFO rag.llm: groq sheet_answer usage: prompt=330 completion=140 total=470
+  hit=None correct=True answer='The highest ambient temperature recorded at Plant\u202f1 was 35.25\u202f°C [1].'
+[23/39] (aggregation) What was the highest module temperature recorded at Plant 2?
+2026-10-13 14:08:27,171 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 14:08:28,157 INFO rag.llm: groq route usage: prompt=409 completion=63 total=472
+2026-10-13 14:08:28,213 INFO rag.llm: groq plan request: ~849 input tokens (estimate)
+2026-10-13 14:08:29,202 INFO rag.llm: groq plan usage: prompt=1580 completion=150 total=1730
+2026-10-13 14:08:29,209 INFO rag.llm: groq sheet_answer request: ~234 input tokens (estimate)
+2026-10-13 14:08:30,189 INFO rag.llm: groq sheet_answer usage: prompt=326 completion=142 total=468
+  hit=None correct=True answer='The highest module temperature recorded at Plant\u202f2 was 66.64\u202f°C [1].'
+[24/39] (aggregation) What is the average irradiation across all of Plant 1's weather readings?
+2026-10-13 14:09:00,607 INFO rag.llm: groq route request: ~302 input tokens (estimate)
+2026-10-13 14:09:02,112 INFO rag.llm: groq route usage: prompt=412 completion=32 total=444
+2026-10-13 14:09:02,173 INFO rag.llm: groq plan request: ~852 input tokens (estimate)
+2026-10-13 14:09:03,168 INFO rag.llm: groq plan usage: prompt=1583 completion=109 total=1692
+2026-10-13 14:09:03,175 INFO rag.llm: groq sheet_answer request: ~221 input tokens (estimate)
+2026-10-13 14:09:03,994 INFO rag.llm: groq sheet_answer usage: prompt=306 completion=127 total=433
+  hit=None correct=True answer='The average irradiation across all of Plant\u202f1’s weather readings is 0.23 [1].'
+[25/39] (aggregation) How many weather sensor readings does Plant 2 have?
+2026-10-13 14:09:34,578 INFO rag.llm: groq route request: ~297 input tokens (estimate)
+2026-10-13 14:09:35,190 INFO rag.llm: groq route usage: prompt=408 completion=42 total=450
+2026-10-13 14:09:35,250 INFO rag.llm: groq plan request: ~847 input tokens (estimate)
+2026-10-13 14:09:35,913 INFO rag.llm: groq plan usage: prompt=1579 completion=111 total=1690
+2026-10-13 14:09:35,933 INFO rag.llm: groq sheet_answer request: ~212 input tokens (estimate)
+2026-10-13 14:09:36,932 INFO rag.llm: groq sheet_answer usage: prompt=293 completion=118 total=411
+  hit=None correct=True answer='Plant 2 has 3,259 weather sensor readings [1].'
+[26/39] (aggregation) What was Pakistan's access to electricity (% of population) in 2017 in the indicators file?
+2026-10-13 14:10:07,448 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 14:10:08,251 INFO rag.llm: groq route usage: prompt=417 completion=29 total=446
+2026-10-13 14:10:09,976 INFO rag.llm: groq answer request: ~3213 input tokens (estimate)
+2026-10-13 14:10:12,574 INFO rag.llm: groq answer usage: prompt=4269 completion=141 total=4410
+  hit=None correct=True answer="Pakistan's access to electricity (% of population) in 2017 was 70.79\u202f%[1]"
+[27/39] (aggregation) What is the highest electric power consumption per capita (kWh) in the indicators file?
+2026-10-13 14:10:43,231 INFO rag.llm: groq route request: ~306 input tokens (estimate)
+2026-10-13 14:10:44,194 INFO rag.llm: groq route usage: prompt=415 completion=93 total=508
+2026-10-13 14:10:44,250 INFO rag.llm: groq plan request: ~856 input tokens (estimate)
+2026-10-13 14:10:45,570 INFO rag.llm: groq plan usage: prompt=1586 completion=98 total=1684
+2026-10-13 14:10:47,177 INFO rag.llm: groq answer request: ~2995 input tokens (estimate)
+2026-10-13 14:10:50,447 INFO rag.llm: groq answer usage: prompt=4119 completion=512 total=4631
+  hit=None correct=True answer='The highest electric power consumption per capita recorded in the file is\u202f466.228357627756\u202fkWh in\u202f20'
+[28/39] (aggregation) What is the average electric power transmission and distribution loss (% of output) across all years in the indicators file?
+2026-10-13 14:11:20,979 INFO rag.llm: groq route request: ~315 input tokens (estimate)
+2026-10-13 14:11:21,834 INFO rag.llm: groq route usage: prompt=419 completion=59 total=478
+2026-10-13 14:11:23,674 INFO rag.llm: groq answer request: ~2679 input tokens (estimate)
+2026-10-13 14:11:28,751 INFO rag.llm: groq answer usage: prompt=3253 completion=1989 total=5242
+  hit=None correct=True answer='The average electric power transmission and distribution loss (% of output) across all years in the '
+[29/39] (aggregation) What is the highest share of electricity from hydroelectric sources in the indicators file?
+2026-10-13 14:11:59,265 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 14:12:00,380 INFO rag.llm: groq route usage: prompt=413 completion=52 total=465
+2026-10-13 14:12:00,461 INFO rag.llm: groq plan request: ~857 input tokens (estimate)
+2026-10-13 14:12:01,213 INFO rag.llm: groq plan usage: prompt=1584 completion=150 total=1734
+2026-10-13 14:12:01,233 INFO rag.llm: groq sheet_answer request: ~251 input tokens (estimate)
+2026-10-13 14:12:02,193 INFO rag.llm: groq sheet_answer usage: prompt=318 completion=194 total=512
+  hit=None correct=False answer='The highest share of electricity from hydroelectric sources is 840000000.0, according to the file [1'
+[30/39] (unanswerable) What buyback rate per unit do new prosumers get under the 2026 Prosumer Regulations?
+2026-10-13 14:12:32,785 INFO rag.llm: groq route request: ~305 input tokens (estimate)
+2026-10-13 14:12:33,841 INFO rag.llm: groq route usage: prompt=417 completion=54 total=471
+2026-10-13 14:12:35,195 INFO rag.llm: groq answer request: ~3192 input tokens (estimate)
+2026-10-13 14:12:36,520 INFO rag.llm: groq answer usage: prompt=3241 completion=118 total=3359
+  hit=None correct=True answer="I don't know."
+[31/39] (unanswerable) Which company won the State Life Sukkur solar tender?
+2026-10-13 14:13:06,590 INFO rag.llm: groq route request: ~297 input tokens (estimate)
+2026-10-13 14:13:07,231 INFO rag.llm: groq route usage: prompt=408 completion=45 total=453
+2026-10-13 14:13:08,469 INFO rag.llm: groq answer request: ~3097 input tokens (estimate)
+2026-10-13 14:13:10,336 INFO rag.llm: groq answer usage: prompt=3077 completion=73 total=3150
+  hit=None correct=True answer="I don't know."
+[32/39] (unanswerable) What is the price per watt of the solar panels in the FBR tender?
+2026-10-13 14:13:40,388 INFO rag.llm: groq route request: ~300 input tokens (estimate)
+2026-10-13 14:13:41,150 INFO rag.llm: groq route usage: prompt=413 completion=46 total=459
+2026-10-13 14:13:42,524 INFO rag.llm: groq answer request: ~3107 input tokens (estimate)
+2026-10-13 14:13:43,690 INFO rag.llm: groq answer usage: prompt=2867 completion=88 total=2955
+  hit=None correct=True answer="I don't know."
+[33/39] (unanswerable) What battery capacity is required in the FBISE solar tender?
+2026-10-13 14:14:13,718 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 14:14:14,345 INFO rag.llm: groq route usage: prompt=409 completion=53 total=462
+2026-10-13 14:14:15,634 INFO rag.llm: groq answer request: ~3088 input tokens (estimate)
+2026-10-13 14:14:16,784 INFO rag.llm: groq answer usage: prompt=3081 completion=254 total=3335
+  hit=None correct=True answer="I don't know."
+[34/39] (unanswerable) What was Pakistan's access to electricity in 2022 according to the indicators file?
+2026-10-13 14:14:46,817 INFO rag.llm: groq route request: ~305 input tokens (estimate)
+2026-10-13 14:14:47,448 INFO rag.llm: groq route usage: prompt=414 completion=40 total=454
+2026-10-13 14:14:49,026 INFO rag.llm: groq answer request: ~3211 input tokens (estimate)
+2026-10-13 14:14:50,128 INFO rag.llm: groq answer usage: prompt=4266 completion=91 total=4357
+  hit=None correct=True answer="I don't know."
+[35/39] (unanswerable) What is the total yield of Plant 3?
+2026-10-13 14:15:20,175 INFO rag.llm: groq route request: ~293 input tokens (estimate)
+2026-10-13 14:15:21,540 INFO rag.llm: groq route usage: prompt=407 completion=64 total=471
+2026-10-13 14:15:23,033 INFO rag.llm: groq answer request: ~3183 input tokens (estimate)
+2026-10-13 14:15:26,556 INFO rag.llm: groq answer usage: prompt=5660 completion=88 total=5748
+  hit=None correct=True answer="I don't know."
+[36/39] (unanswerable) How many net metering connections has NEPRA approved so far?
+2026-10-13 14:15:56,624 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 14:15:57,067 INFO rag.llm: groq route usage: prompt=411 completion=51 total=462
+2026-10-13 14:15:58,363 INFO rag.llm: groq answer request: ~3098 input tokens (estimate)
+2026-10-13 14:15:59,429 INFO rag.llm: groq answer usage: prompt=2843 completion=93 total=2936
+  hit=None correct=True answer="I don't know."
+[37/39] (unanswerable) What is the email address of the State Life In-Charge (Real Estate) in Sukkur?
+2026-10-13 14:16:29,498 INFO rag.llm: groq route request: ~304 input tokens (estimate)
+2026-10-13 14:16:29,999 INFO rag.llm: groq route usage: prompt=417 completion=42 total=459
+2026-10-13 14:16:31,289 INFO rag.llm: groq answer request: ~3272 input tokens (estimate)
+2026-10-13 14:16:32,991 INFO rag.llm: groq answer usage: prompt=3012 completion=142 total=3154
+  hit=None correct=True answer="I don't know."
+[38/39] (unanswerable) What was the population of East Pakistan in 1970?
+2026-10-13 14:17:03,065 INFO rag.llm: groq route request: ~296 input tokens (estimate)
+2026-10-13 14:17:03,643 INFO rag.llm: groq route usage: prompt=409 completion=36 total=445
+2026-10-13 14:17:05,178 INFO rag.llm: groq answer request: ~3193 input tokens (estimate)
+2026-10-13 14:17:06,060 INFO rag.llm: groq answer usage: prompt=4146 completion=49 total=4195
+  hit=None correct=True answer="I don't know."
+[39/39] (unanswerable) What tilt angle is specified for the mounting structure in the COMSATS Attock tender?
+2026-10-13 14:17:36,138 INFO rag.llm: groq route request: ~305 input tokens (estimate)
+2026-10-13 14:17:38,040 INFO rag.llm: groq route usage: prompt=415 completion=55 total=470
+2026-10-13 14:17:39,333 INFO rag.llm: groq answer request: ~3266 input tokens (estimate)
+2026-10-13 14:17:40,828 INFO rag.llm: groq answer usage: prompt=3105 completion=432 total=3537
+  hit=None correct=False answer='The tender specifies that the mounting‑structure tilt angle must be at least\u202f26\u202fdegrees[1].'
+
+type             n   retrieval hit rate       answer accuracy
+--------------------------------------------------------------------
+factual         48    58.3% (28/48)            52.1% (25/48)
+table           10    80.0% (8/10)             70.0% (7/10)
+paraphrased     14    57.1% (8/14)             64.3% (9/14)
+aggregation     15   n/a                       93.3% (14/15)
+unanswerable    10   n/a                       90.0% (9/10)
+--------------------------------------------------------------------
+overall         97    61.1% (44/72)            66.0% (64/97)
+
+Documents path, 85 questions: p50 retrieval 1286 ms, p50 end-to-end 3617 ms
+
+Saved 97 results to /app/eval/results/v2_heldout.jsonl
+exit=0 | Tue Oct 13 19:17:47 PST 2026

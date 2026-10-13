@@ -1,0 +1,49 @@
+{
+ "evidence_updated": [
+  {
+   "id": "q001",
+   "old_evidence": "Rs. 150,000/- in shape of Pay Order",
+   "new_evidence": "Bid Security of Amount (Rs) 150,000/- in form of pay order",
+   "reason": "original evidence is inside a Word table, which the loader does not ingest; the same fact is in an ingested paragraph"
+  },
+  {
+   "id": "q018",
+   "old_evidence": "a Pre- Bid Meeting will be held on 9th",
+   "new_evidence": "a Pre - Bid Meeting will be held on 9th",
+   "reason": "PDF parser spacing: 'Pre - Bid'"
+  },
+  {
+   "id": "q038",
+   "old_evidence": "deemed to have taken effect on 9th",
+   "new_evidence": "deemed to have taken effect on 9 th",
+   "reason": "PDF parser spacing: '9 th'"
+  },
+  {
+   "id": "q056",
+   "old_evidence": "The under voltage and over voltage levels and the corresponding",
+   "new_evidence": "The under voltage and over vol tage levels and the corresponding",
+   "reason": "PDF parser spacing: 'vol tage'"
+  }
+ ],
+ "evidence_unchanged_not_ingested": {
+  "ids": [
+   "q003",
+   "q004",
+   "q005",
+   "q006",
+   "q007",
+   "q041",
+   "q042",
+   "q043",
+   "q044",
+   "q046",
+   "q047",
+   "q048",
+   "q058",
+   "q059",
+   "q066",
+   "q072"
+  ],
+  "reason": "the evidence is inside a Word table; the Word loader reads paragraphs only, so this text was never ingested and no equivalent text exists in the chunks"
+ }
+}

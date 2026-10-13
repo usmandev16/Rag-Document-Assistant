@@ -1,0 +1,22 @@
+q076 OK       pandas=1410.9500  expected='1410.95' | at row: DATE_TIME=14-06-2020 14:00
+q077 OK       pandas=3154.0000  expected='3154'
+q078 OK       pandas=3147.4262  expected='about 3147.43'
+q079 OK       pandas=68778.0000  expected='68778'
+q080 OK       pandas=9873.0000  expected='9873.0' | at row: DATE_TIME=2020-05-22 18:30:00
+q081 OK       pandas=1385.4200  expected='oZ35aAeoifZaQzV, at 1385.42 (just ahead of 4UPUqMRk7TRMgml at 1384.35)' | top: oZ35aAeoifZaQzV=1385.42, next: 4UPUqMRk7TRMgml=1384.35
+q082 OK       pandas=867688.1516  expected='about 867688.15'
+q083 OK       pandas=35.2525  expected='about 35.25' | at row: DATE_TIME=2020-05-17 15:15:00
+q084 OK       pandas=66.6360  expected='about 66.64' | at row: DATE_TIME=2020-06-02 12:45:00
+q085 OK       pandas=0.2283  expected='about 0.2283'
+q086 OK       pandas=3259.0000  expected='3259'
+q087 OK       pandas=70.7900  expected='70.79' | at row: Year=2017
+q088 OK       pandas=466.2284  expected='about 466.23 kWh (in 2006)' | at row: Year=2006
+q089 OK       pandas=23.2189  expected='about 23.22% (44 years, 1971–2014)' | rows 44, years 1971-2014
+q090 OK       pandas=60.1374  expected='about 60.14% (in 1978)' | at row: Year=1978
+
+15/15 aggregation answers match the pandas ground truth
+  Plant_1_Solar_Data.xlsx / Generation: 68778 rows; DATE_TIME sample: 15-05-2020 00:00 (str)
+  Plant_1_Solar_Data.xlsx / Weather: 3182 rows; DATE_TIME sample: 2020-05-15 00:00:00 (str)
+  Plant_2_Solar_Data.xlsx / Generation: 67698 rows; DATE_TIME sample: 2020-05-15 00:00:00 (str)
+  Plant_2_Solar_Data.xlsx / Weather: 3259 rows; DATE_TIME sample: 2020-05-15 00:00:00 (str)
+  Pakistan_Energy_Indicators.xlsx / Indicators: 897 rows; DATE_TIME sample: - ()

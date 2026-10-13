@@ -1,0 +1,89 @@
+commit at start: 473b6e76cdc504d113eff9008d42625b0f9b864a
+Tue Oct 13 17:18:39 PST 2026
+#10 CACHED
+#11 CACHED
+#12 naming to docker.io/library/ragdocchat-worker:latest done
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-e8386b56307c Creating 
+ Container ragdocchat-worker-run-e8386b56307c Created 
+Ingesting 28 documents into namespace 'eval-v2-heldout'...
+2026-10-13 12:19:10,215 INFO rag.ingest: 2026261223723116BiddingDocumentforSolar_part1of4.pdf: 2 of 34 pages used OCR
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1367.01it/s]
+2026-10-13 12:19:51,197 INFO rag.ingest: 2026261223723116BiddingDocumentforSolar_part2of4.pdf: 2 of 34 pages used OCR
+2026-10-13 12:20:05,074 INFO rag.ingest: 2026261223723116BiddingDocumentforSolar_part3of4.pdf: 4 of 34 pages used OCR
+2026-10-13 12:20:16,146 INFO rag.ingest: 2026261223723116BiddingDocumentforSolar_part4of4.pdf: 2 of 31 pages used OCR
+2026-10-13 12:20:46,858 INFO rag.ingest: NetMeteringReferenceGuideforDISCOs150118-1_part1of2.pdf: 4 of 15 pages used OCR
+2026-10-13 12:20:52,264 INFO rag.ingest: NetMeteringReferenceGuideforDISCOs150118-1_part2of2.pdf: 2 of 15 pages used OCR
+2026-10-13 12:20:54,420 INFO rag.ingest: Notification_Amendment_Prosumer_Regs-Final.pdf: 0 of 1 pages used OCR
+2026-10-13 12:26:55,961 INFO rag.ingest: SRO-892-Sep-2015_part1of2.pdf: 0 of 11 pages used OCR
+2026-10-13 12:26:58,057 INFO rag.ingest: SRO-892-Sep-2015_part2of2.pdf: 0 of 11 pages used OCR
+Impossible to decode XFormObject /TPL3: Invalid Elementary Object starting with b'\x00' @250: b'1 11.0 Tf  [(\x001\x00.\x00 )\x00 -497\x00 ()] TJ 0.000 Tw ET\nBT 98.478 686.475 Td 5.470 Tw /F1'
+Impossible to decode XFormObject /TPL4: Invalid Elementary Object starting with b'\x00' @88: b'S\x00e\x00p\x00t\x00e\x00m\x00b\x00e\x00r\x00 )\x00 -231\x00 (\x001\x005\x00,\x00 )\x00 -231\x00 (\x002\x000\x002\x006\x00 )\x00 -231\x00 (\x000\x002\x00:\x000\x000\x00 )'
+Impossible to decode XFormObject /TPL6: Invalid Elementary Object starting with b'\x00' @313: b'.0 Tf  [(\x001\x00.\x001\x00.\x00 )\x00 -29\x00 ()] TJ 0.000 Tw ET\nBT 115.822 701.611 Td 0.320 Tw /F1'
+Impossible to decode XFormObject /TPL7: Invalid Elementary Object starting with b'\x00' @334: b'.0 Tf  [(\x003\x00.\x002\x00.\x00 )\x00 -84\x00 ()] TJ 0.000 Tw ET\nBT 116.422 761.921 Td 0.921 Tw /F1'
+Impossible to decode XFormObject /TPL8: Invalid Elementary Object starting with b'\x00' @123: b'f  [(\x003\x00.\x004\x00.\x002\x00.\x00 )\x00 -170\x00 ()] TJ 0.000 Tw ET\nBT 139.861 791.895 Td 1.865 Tw /F'
+Impossible to decode XFormObject /TPL9: Invalid Elementary Object starting with b'\x00' @900: b' [(\x00S\x00e\x00c\x00t\x00i\x00o\x00n\x00 )\x00 -405\x00 (\x00V\x00I\x00 )\x00 -405\x00 (\x00W\x00o\x00r\x00k\x00s\x00 )\x00 -405\x00 (\x00R\x00e\x00q\x00u\x00i\x00r\x00'
+Impossible to decode XFormObject /TPL10: Invalid Elementary Object starting with b'\x00' @118: b'.0 Tf  [(\x006\x00.\x005\x00.\x00 )\x00 -124\x00 ()] TJ 0.000 Tw ET\nBT 116.868 791.895 Td 1.367 Tw /F'
+Impossible to decode XFormObject /TPL11: Invalid Elementary Object starting with b'\x00' @512: b'.0 Tf  [(\x008\x00.\x001\x00.\x00 )\x00 -267\x00 ()] TJ 0.000 Tw ET\nBT 118.439 666.637 Td 2.937 Tw /F'
+Impossible to decode XFormObject /TPL12: Invalid Elementary Object starting with b'\x00' @125: b' [(\x001\x000\x00.\x001\x00.\x004\x00.\x00 )\x00 -139\x00 ()] TJ 0.000 Tw ET\nBT 146.525 791.895 Td 1.534 Tw /F'
+Impossible to decode XFormObject /TPL13: Invalid Elementary Object starting with b'\x00' @125: b' [(\x001\x000\x00.\x004\x00.\x003\x00.\x00 )\x00 -308\x00 ()] TJ 0.000 Tw ET\nBT 148.380 791.895 Td 3.388 Tw /F'
+Impossible to decode XFormObject /TPL14: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x001\x002\x00.\x001\x00.\x00 )\x00 -448\x00 ()] TJ 0.000 Tw ET\nBT 127.425 781.895 Td 4.927 Tw /F'
+Impossible to decode XFormObject /TPL15: Invalid Elementary Object starting with b'\x00' @213: b' Tf  [(\x001\x003\x00.\x006\x00.\x00 )\x00 -335\x00 ()] TJ 0.000 Tw ET\nBT 126.183 761.921 Td 3.685 Tw /F'
+Impossible to decode XFormObject /TPL16: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x001\x006\x00.\x002\x00.\x00 )\x00 -112\x00 ()] TJ 0.000 Tw ET\nBT 123.735 791.895 Td 1.237 Tw /F'
+Impossible to decode XFormObject /TPL17: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x001\x007\x00.\x003\x00.\x00 )\x00 -182\x00 ()] TJ 0.000 Tw ET\nBT 124.500 791.895 Td 2.002 Tw /F'
+Impossible to decode XFormObject /TPL18: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x001\x007\x00.\x008\x00.\x00 )\x00 -267\x00 ()] TJ 0.000 Tw ET\nBT 125.437 791.895 Td 2.939 Tw /F'
+Impossible to decode XFormObject /TPL19: Invalid Elementary Object starting with b'\x00' @651: b' Tf  [(\x002\x001\x00.\x001\x00.\x00 )\x00 -266\x00 ()] TJ 0.000 Tw ET\nBT 125.423 681.972 Td 2.925 Tw /F'
+Impossible to decode XFormObject /TPL20: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x002\x004\x00.\x001\x00.\x00 )\x00 -176\x00 ()] TJ 0.000 Tw ET\nBT 124.436 781.895 Td 1.939 Tw /F'
+Impossible to decode XFormObject /TPL21: Invalid Elementary Object starting with b'\x00' @327: b' [(\x002\x006\x00.\x001\x00.\x005\x00.\x00 )\x00 -320\x00 ()] TJ 0.000 Tw ET\nBT 148.511 761.921 Td 3.519 Tw /F'
+Impossible to decode XFormObject /TPL22: Invalid Elementary Object starting with b'\x00' @132: b'f\x00o\x00r\x00m\x00a\x00l\x00i\x00t\x00y\x00 )\x00 -287\x00 (\x00o\x00r\x00 )\x00 -287\x00 (\x00i\x00r\x00r\x00e\x00g\x00u\x00l\x00a\x00r\x00i\x00t\x00y\x00 )\x00 -287\x00 '
+Impossible to decode XFormObject /TPL23: Invalid Elementary Object starting with b'\x00' @394: b'e\x00v\x00i\x00a\x00t\x00i\x00o\x00n \x1d\x00 )\x00 -13\x00 (\x00m\x00e\x00a\x00n\x00s\x00 )\x00 -13\x00 (\x00d\x00e\x00p\x00a\x00r\x00t\x00u\x00r\x00e\x00 )\x00 -13\x00 (\x00f'
+Impossible to decode XFormObject /TPL24: Invalid Elementary Object starting with b'\x00' @125: b' [(\x002\x008\x00.\x001\x00.\x004\x00.\x00 )\x00 -65\x00 ()] TJ 0.000 Tw ET\nBT 145.709 791.895 Td 0.717 Tw /F1'
+Impossible to decode XFormObject /TPL25: Invalid Elementary Object starting with b'\x00' @116: b'11.0 Tf  [(\x00a\x00n\x00d\x00 )\x00 -548\x00 (\x00i\x00n\x00 )\x00 -548\x00 (\x00t\x00e\x00r\x00m\x00s\x00 )\x00 -548\x00 (\x00o\x00f\x00 )\x00 -548'
+Impossible to decode XFormObject /TPL26: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x003\x001\x00.\x001\x00.\x00 )\x00 -190\x00 ()] TJ 0.000 Tw ET\nBT 124.585 781.895 Td 2.087 Tw /F'
+Impossible to decode XFormObject /TPL27: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x003\x004\x00.\x002\x00.\x00 )\x00 -220\x00 ()] TJ 0.000 Tw ET\nBT 124.920 791.895 Td 2.422 Tw /F'
+Impossible to decode XFormObject /TPL28: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x003\x005\x00.\x004\x00.\x00 )\x00 -352\x00 ()] TJ 0.000 Tw ET\nBT 126.365 791.895 Td 3.867 Tw /F'
+Impossible to decode XFormObject /TPL29: Invalid Elementary Object starting with b'\x00' @125: b' [(\x003\x007\x00.\x001\x00.\x001\x00.\x00 )\x00 -283\x00 ()] TJ 0.000 Tw ET\nBT 148.101 781.895 Td 3.109 Tw /F'
+Impossible to decode XFormObject /TPL30: Invalid Elementary Object starting with b'\x00' @120: b' Tf  [(\x00w\x00o\x00r\x00k\x00s\x00 )\x00 -86\x00 (\x00a\x00s\x00 )\x00 -86\x00 (\x00p\x00r\x00e\x00s\x00c\x00r\x00i\x00b\x00e\x00d\x00 )\x00 -86\x00 (\x00b\x00y\x00 '
+Impossible to decode XFormObject /TPL31: Invalid Elementary Object starting with b'\x00' @361: b' [(\x004\x001\x00.\x002\x00.\x002\x00.\x00 )\x00 -54\x00 ()] TJ 0.000 Tw ET\nBT 145.587 751.921 Td 0.595 Tw /F1'
+Impossible to decode XFormObject /TPL32: Invalid Elementary Object starting with b'\x00' @287: b' Tf  [(\x004\x003\x00.\x001\x00.\x00 )\x00 -720\x00 ()] TJ 0.000 Tw ET\nBT 130.415 761.921 Td 7.917 Tw /F'
+Impossible to decode XFormObject /TPL34: Invalid Elementary Object starting with b'\x00' @206: b'11.0 Tf  [(\x00T\x00h\x00e\x00 )\x00 -146\x00 (\x00f\x00o\x00l\x00l\x00o\x00w\x00i\x00n\x00g\x00 )\x00 -146\x00 (\x00s\x00p\x00e\x00c\x00i\x00f\x00i\x00c\x00 )\x00 '
+Impossible to decode XFormObject /TPL35: Invalid Elementary Object starting with b'\x00' @392: b'11.0 Tf  [(\x006\x00.\x002\x00 )\x00 -1611\x00 (\x00&)] TJ 0.000 Tw ET\nBT 159.551 759.917 Td /F2 11.0'
+Impossible to decode XFormObject /TPL37: Invalid Elementary Object starting with b'\x00' @556: b'11.0 Tf  [(\x00T\x00h\x00e\x00 )\x00 -118\x00 (\x00q\x00u\x00a\x00l\x00i\x00f\x00i\x00c\x00a\x00t\x00i\x00o\x00n\x00 )\x00 -118\x00 (\x00c\x00r\x00i\x00t\x00e\x00r\x00'
+Impossible to decode XFormObject /TPL38: Invalid Elementary Object starting with b'\x00' @670: b'.0 Tf  [(\x001\x008\x00.\x001\x00 )\x00 -915\x00 (\x00&)] TJ 0.000 Tw ET\nBT 159.551 702.607 Td /F2 11.0 '
+Impossible to decode XFormObject /TPL39: Invalid Elementary Object starting with b'\x00' @396: b'.0 Tf  [(\x004\x001\x00.\x001\x00 )\x00 -915\x00 (\x00&)] TJ 0.000 Tw ET\nBT 159.551 759.917 Td /F2 11.0 '
+2026-10-13 12:29:18,421 INFO rag.ingest: bidding-document_part1of5.pdf: 36 of 43 pages used OCR
+2026-10-13 12:29:40,598 INFO rag.ingest: bidding-document_part2of5.pdf: 3 of 43 pages used OCR
+2026-10-13 12:30:14,111 INFO rag.ingest: bidding-document_part3of5.pdf: 18 of 43 pages used OCR
+2026-10-13 12:30:28,801 INFO rag.ingest: bidding-document_part4of5.pdf: 5 of 43 pages used OCR
+2026-10-13 12:30:40,832 INFO rag.ingest: bidding-document_part5of5.pdf: 2 of 43 pages used OCR
+  2026261223723116BiddingDocumentforSolar_part1of4.pdf: 136 chunks
+  2026261223723116BiddingDocumentforSolar_part2of4.pdf: 93 chunks
+  2026261223723116BiddingDocumentforSolar_part3of4.pdf: 82 chunks
+  2026261223723116BiddingDocumentforSolar_part4of4.pdf: 102 chunks
+  Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part1of3.docx: 55 chunks
+  Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part2of3.docx: 78 chunks
+  Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part3of3.docx: 72 chunks
+  Draft-Model-Bidding-Documents-on-Own-Cost-Model_part1of2.docx: 63 chunks
+  Draft-Model-Bidding-Documents-on-Own-Cost-Model_part2of2.docx: 76 chunks
+  NetMeteringReferenceGuideforDISCOs150118-1_part1of2.pdf: 35 chunks
+  NetMeteringReferenceGuideforDISCOs150118-1_part2of2.pdf: 48 chunks
+  Notification_Amendment_Prosumer_Regs-Final.pdf: 3 chunks
+  Pakistan_Energy_Indicators.xlsx: 36 chunks
+  Plant_1_Solar_Data.xlsx: 2880 chunks
+  Plant_2_Solar_Data.xlsx: 2839 chunks
+  SRO-892-Sep-2015_part1of2.pdf: 49 chunks
+  SRO-892-Sep-2015_part2of2.pdf: 17 chunks
+  Tender_Documents_of_Solar_Power_System_part1of2.docx: 31 chunks
+  Tender_Documents_of_Solar_Power_System_part2of2.docx: 23 chunks
+  bidding-document_part1of5.pdf: 111 chunks
+  bidding-document_part2of5.pdf: 81 chunks
+  bidding-document_part3of5.pdf: 107 chunks
+  bidding-document_part4of5.pdf: 120 chunks
+  bidding-document_part5of5.pdf: 109 chunks
+  tender_tender-document-file_20260513131133_part1of4.docx: 26 chunks
+  tender_tender-document-file_20260513131133_part2of4.docx: 41 chunks
+  tender_tender-document-file_20260513131133_part3of4.docx: 41 chunks
+  tender_tender-document-file_20260513131133_part4of4.docx: 31 chunks
+exit=0
+Tue Oct 13 17:31:47 PST 2026

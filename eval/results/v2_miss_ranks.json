@@ -1,0 +1,65 @@
+{
+ "q002": {
+  "dense_rank": 37,
+  "bm25_rank": 12,
+  "fused_rank": 20,
+  "fused": 34,
+  "sent": 15
+ },
+ "q011": {
+  "dense_rank": 25,
+  "bm25_rank": 7,
+  "fused_rank": 14,
+  "fused": 36,
+  "sent": 13
+ },
+ "q014": {
+  "dense_rank": 37,
+  "bm25_rank": 36,
+  "fused_rank": null,
+  "fused": 33,
+  "sent": 15
+ },
+ "q021": {
+  "dense_rank": 19,
+  "bm25_rank": 71,
+  "fused_rank": 35,
+  "fused": 37,
+  "sent": 14
+ },
+ "q029": {
+  "dense_rank": 16,
+  "bm25_rank": 23,
+  "fused_rank": 28,
+  "fused": 33,
+  "sent": 15
+ },
+ "q049": {
+  "dense_rank": 85,
+  "bm25_rank": 20,
+  "fused_rank": 34,
+  "fused": 34,
+  "sent": 15
+ },
+ "q063": {
+  "dense_rank": 99,
+  "bm25_rank": 40,
+  "fused_rank": null,
+  "fused": 37,
+  "sent": 15
+ },
+ "q071": {
+  "dense_rank": null,
+  "bm25_rank": null,
+  "fused_rank": null,
+  "fused": 32,
+  "sent": 15
+ },
+ "q075": {
+  "dense_rank": 33,
+  "bm25_rank": 25,
+  "fused_rank": null,
+  "fused": 33,
+  "sent": 15
+ }
+}

@@ -1,0 +1,118 @@
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-1cf14ad74c68 Creating 
+ Container ragdocchat-worker-run-1cf14ad74c68 Created 
+chunks in the keyword store: 7385 | keyword index memory: ~179 MB (process peak 710 MB)
+sheets: [('Pakistan_Energy_Indicators.xlsx / Indicators', 6), ('Plant_1_Solar_Data.xlsx / Generation', 7), ('Plant_1_Solar_Data.xlsx / Weather', 6), ('Plant_2_Solar_Data.xlsx / Generation', 7), ('Plant_2_Solar_Data.xlsx / Weather', 6)]
+
+file                                                           chunks  OCR'd pages
+2026261223723116BiddingDocumentforSolar_part1of4.pdf              136  [5, 10]
+2026261223723116BiddingDocumentforSolar_part2of4.pdf               93  [22, 32]
+2026261223723116BiddingDocumentforSolar_part3of4.pdf               82  [2, 13, 24, 31]
+2026261223723116BiddingDocumentforSolar_part4of4.pdf              102  [17, 26]
+Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part1o       55  -
+Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part2o       78  -
+Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part3o       72  -
+Draft-Model-Bidding-Documents-on-Own-Cost-Model_part1of2.doc       63  -
+Draft-Model-Bidding-Documents-on-Own-Cost-Model_part2of2.doc       76  -
+NetMeteringReferenceGuideforDISCOs150118-1_part1of2.pdf            35  -
+NetMeteringReferenceGuideforDISCOs150118-1_part2of2.pdf            48  -
+Notification_Amendment_Prosumer_Regs-Final.pdf                      3  -
+Pakistan_Energy_Indicators.xlsx                                    36  -
+Plant_1_Solar_Data.xlsx                                          2880  -
+Plant_2_Solar_Data.xlsx                                          2839  -
+SRO-892-Sep-2015_part1of2.pdf                                      49  -
+SRO-892-Sep-2015_part2of2.pdf                                      17  -
+Tender_Documents_of_Solar_Power_System_part1of2.docx               31  -
+Tender_Documents_of_Solar_Power_System_part2of2.docx               23  -
+bidding-document_part1of5.pdf                                     111  [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40]
+bidding-document_part2of5.pdf                                      81  [29, 30, 40]
+bidding-document_part3of5.pdf                                     107  [2, 4, 7, 9, 12, 14, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
+bidding-document_part4of5.pdf                                     120  [4, 7, 16, 28, 30]
+bidding-document_part5of5.pdf                                     109  [19, 25]
+tender_tender-document-file_20260513131133_part1of4.docx           26  -
+tender_tender-document-file_20260513131133_part2of4.docx           41  -
+tender_tender-document-file_20260513131133_part3of4.docx           41  -
+tender_tender-document-file_20260513131133_part4of4.docx           31  -
+
+evidence check: 52/72 found (single-space match); 3 more match with all whitespace removed; 17 not found
+
+q001 (factual) NOT FOUND
+  evidence: 'Rs. 150,000/- in shape of Pay Order'
+  nearest (tender_tender-document-file_20260513131133_part1of4.docx, chunk 3, page None, ocr None): ' bid) bid security of amount (rs) 150,000/- in form of pay order (in original), must be deliver'
+
+q003 (factual) NOT FOUND
+  evidence: '12 Months from date of completion of project including net metering'
+  nearest (tender_tender-document-file_20260513131133_part1of4.docx, chunk 8, page None, ocr None): 'e from schedule bank of pakistan till the successful completion of the contract, for the sum equivalent to five percent (5%) of'
+
+q004 (factual) NOT FOUND
+  evidence: 'One Hundred Twenty (120) Days from date of opening of bid'
+  nearest (tender_tender-document-file_20260513131133_part1of4.docx, chunk 11, page None, ocr None): 'be submitted through epads online before the due time and date fixed for opening of the tender. physical submission s'
+
+q005 (factual) NOT FOUND
+  evidence: 'Minimum for any one incident for loss of property or life'
+  nearest (tender_tender-document-file_20260513131133_part1of4.docx, chunk 16, page None, ocr None): 'serving to themselves the right to recover from us any further loss or expenses to which they may have been put direc'
+
+q006 (factual) NOT FOUND
+  evidence: '610W to 625W, Monoperc, Half cut'
+  nearest (tender_tender-document-file_20260513131133_part4of4.docx, chunk 28, page None, ocr None): 'd where the installed inverters have become nonoperational.'
+
+q007 (factual) NOT FOUND
+  evidence: 'Sungrow / Huawei / SMA or equivalent'
+  nearest (tender_tender-document-file_20260513131133_part1of4.docx, chunk 8, page None, ocr None): ' the successful completion of the contract, for the sum equivalent to five percent (5%) of the c'
+
+q018 (factual) matches only with ALL whitespace removed
+  evidence: 'a Pre- Bid Meeting will be held on 9th'
+  nearest (2026261223723116BiddingDocumentforSolar_part1of4.pdf, chunk 12, page 7, ocr False): 'and suggestive improvements, a pre - bid meeting will be held on 9th february, 2026 at 2:30 pm. in'
+
+q038 (factual) matches only with ALL whitespace removed
+  evidence: 'deemed to have taken effect on 9th'
+  nearest (Notification_Amendment_Prosumer_Regs-Final.pdf, chunk 2, page 1, ocr False): 'this sub -regulation shall be deemed to have taken effect on 9 th february, 2026 and shall alw'
+
+q041 (factual) NOT FOUND
+  evidence: 'ninety (90) days from the date of Bid Opening'
+  nearest (Draft-Model-Bidding-Documents-on-Own-Cost-Model_part1of2.docx, chunk 14, page None, ocr None): 'for the period stipulated in the bidding data after the date of bid opening specified in clause ib.23.'
+
+q042 (factual) NOT FOUND
+  evidence: 'sixty (60) days after the date of Bid Opening'
+  nearest (Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part1of3.docx, chunk 17, page None, ocr None): 'for the period stipulated in the bidding data after the date of bid opening specified in clause ib.23. in'
+
+q043 (factual) NOT FOUND
+  evidence: 'Rs. 9,000/-] per kW'
+  nearest (Draft-Model-Bidding-Documents-on-Own-Cost-Model_part1of2.docx, chunk 1, page None, ocr None): '021 in the relevant category. ib.4 one bid per bidder 4.1 each bidder shall sub'
+
+q044 (factual) NOT FOUND
+  evidence: 'Rs. 7,000] per kW'
+  nearest (Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part1of3.docx, chunk 2, page None, ocr None): 'e federal board of revenue. ib.4 one bid per bidder'
+
+q046 (factual) NOT FOUND
+  evidence: 'cumulative capacity of 250kW or above'
+  nearest (Draft-Model-Bidding-Documents-on-Own-Cost-Model_part2of2.docx, chunk 68, page None, ocr None): 'output frequency of 50hz. the cumulative capacity of inverter shall be according to the total sol'
+
+q047 (factual) NOT FOUND
+  evidence: 'Average Annual Turnover of minimum PKR 25 Million'
+  nearest (Draft-Model-Bidding-Documents-on-Lease-Purchase-Model_part3of3.docx, chunk 9, page None, ocr None): 'd in accordance with instructions to bidders (ib) 9; the minimum annual energy yield of the proposed system a'
+
+q048 (factual) NOT FOUND
+  evidence: 'shall be 0.33% of the Contract Price'
+  nearest (Draft-Model-Bidding-Documents-on-Own-Cost-Model_part2of2.docx, chunk 8, page None, ocr None): 'act price and payment terms 11.1 contract price the contract price shall be as provided in the c'
+
+q056 (table) matches only with ALL whitespace removed
+  evidence: 'The under voltage and over voltage levels and the corresponding'
+  nearest (NetMeteringReferenceGuideforDISCOs150118-1_part1of2.pdf, chunk 27, page 13, ocr False): ' range of operation: voltage the under voltage and over vol tage levels and the corresponding triptimes shall be in accorda'
+
+q058 (table) NOT FOUND
+  evidence: 'shall not be less than Rs. 1,500,000/-'
+  nearest (tender_tender-document-file_20260513131133_part1of4.docx, chunk 6, page None, ocr None): ' various tenders received and shall not be deemed to be the actual sum which is to be paid to the '
+
+q059 (table) NOT FOUND
+  evidence: 'Fifty five percent (55%) of the Contract Price'
+  nearest (Draft-Model-Bidding-Documents-on-Own-Cost-Model_part2of2.docx, chunk 8, page None, ocr None): ' 11. contract price and payment terms 11.1 contract price the contract price shall be as provided in the c'
+
+q066 (paraphrased) NOT FOUND
+  evidence: 'refuses to enter into contract'
+  nearest (tender_tender-document-file_20260513131133_part1of4.docx, chunk 7, page None, ocr None): 'hose tender accepted will be required to enter into an agreement form of which (subject to'
+
+q072 (paraphrased) NOT FOUND
+  evidence: '0.1% per day upto a maximum of (10%)'
+  nearest (tender_tender-document-file_20260513131133_part1of4.docx, chunk 20, page None, ocr None): 'ks, including the number of shifts per day and hours per shift, he expects to work. provide stra'
+{"checked": 72, "found": 52, "loose": 3}

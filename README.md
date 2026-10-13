@@ -29,10 +29,22 @@ Eval of 50 questions over 4 documents, **measured at commit `a39e6fe`**, compari
 - **Retrieval hit:** the question's evidence sentence is in the chunks sent to the LLM.
 - **Accuracy:** a separate LLM judge (`gpt-oss-20b`) grades each answer against the expected answer. An unanswerable question counts as correct only when the system says it doesn't know.
 
+### Held-out eval (v2)
+
+A second eval on new, harder documents, run without any tuning: no prompt, retrieval setting, chunking or router code was changed before or during the run (commit `473b6e7`).
+
+| | v1 final (50 questions, 4 documents) | v2 held-out (97 questions, 28 files) |
+|---|---|---|
+| Answer accuracy | 92% (46/50) | 66% (64/97) |
+| Retrieval hit rate | 83% (25/30) | 60% (43/72) |
+
+The largest single cause of the drop is that text inside Word tables is not ingested, which cost 15 of the 33 failed questions. Full breakdown, every failed question and the three biggest problems: [`v2_heldout_report.md`](eval/results/v2_heldout_report.md).
+
 ### Eval limitations
 
 - **Small set:** 50 questions over 4 documents, written with LLM help and checked by hand.
-- **No held-out test set:** prompts were changed after seeing failures on these same questions, so the scores are optimistic.
+- **v1 is not a held-out test:** prompts were changed after seeing failures on these same questions, so the v1 scores are optimistic. The v2 eval above is held-out.
+- **Few documents:** v2 covers 28 files split from 12 source documents; real deployments often have hundreds, and the system hasn't yet been tested with many unrelated distractor documents.
 - **One run per question:** each question was run once, and answers vary slightly between runs.
 - **Strict judge:** an answer with the right figure but missing a second detail the expected answer includes is marked wrong.
 

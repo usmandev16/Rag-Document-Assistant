@@ -1,0 +1,380 @@
+session 1 | commit 473b6e76cdc504d113eff9008d42625b0f9b864a | API key 1 | Tue Oct 13 17:35:44 PST 2026
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-8b9a22d07495 Creating 
+ Container ragdocchat-worker-run-8b9a22d07495 Created 
+[1/97] (factual) What is the bid security amount for the State Life solar tender in Sukkur?
+2026-10-13 12:35:55,917 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 12:35:57,112 INFO rag.llm: groq route usage: prompt=413 completion=46 total=459
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1576.22it/s]
+2026-10-13 12:36:28,369 INFO rag.llm: groq answer request: ~3186 input tokens (estimate)
+2026-10-13 12:36:29,409 INFO rag.llm: groq answer usage: prompt=3256 completion=120 total=3376
+  hit=True correct=False answer='The bid security amount is Rs\u202f150,000/‑[1][2]'
+[2/97] (factual) By what date and time must bids for the State Life Sukkur 30 kW solar system be submitted?
+2026-10-13 12:36:59,777 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 12:37:00,532 INFO rag.llm: groq route usage: prompt=419 completion=45 total=464
+2026-10-13 12:37:01,734 INFO rag.llm: groq answer request: ~3173 input tokens (estimate)
+2026-10-13 12:37:03,183 INFO rag.llm: groq answer usage: prompt=3272 completion=280 total=3552
+  hit=False correct=False answer="I don't know."
+[3/97] (factual) What is the defect liability period in the State Life Sukkur solar tender?
+2026-10-13 12:37:33,824 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 12:37:34,368 INFO rag.llm: groq route usage: prompt=412 completion=46 total=458
+2026-10-13 12:37:35,669 INFO rag.llm: groq answer request: ~3133 input tokens (estimate)
+2026-10-13 12:37:36,731 INFO rag.llm: groq answer usage: prompt=2982 completion=115 total=3097
+  hit=False correct=False answer="I don't know."
+[4/97] (factual) How long must tenders remain valid for the State Life Sukkur project?
+2026-10-13 12:38:07,383 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 12:38:08,212 INFO rag.llm: groq route usage: prompt=412 completion=44 total=456
+2026-10-13 12:38:09,403 INFO rag.llm: groq answer request: ~3140 input tokens (estimate)
+2026-10-13 12:38:11,586 INFO rag.llm: groq answer usage: prompt=2993 completion=269 total=3262
+  hit=False correct=False answer="I don't know."
+[5/97] (factual) What minimum third party insurance does the State Life Sukkur tender require?
+2026-10-13 12:38:41,933 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 12:38:42,529 INFO rag.llm: groq route usage: prompt=411 completion=37 total=448
+2026-10-13 12:38:43,771 INFO rag.llm: groq answer request: ~3045 input tokens (estimate)
+2026-10-13 12:38:45,096 INFO rag.llm: groq answer usage: prompt=2855 completion=154 total=3009
+  hit=False correct=False answer="I don't know."
+[6/97] (factual) How many solar modules are listed in the State Life Sukkur bill of quantities, and what wattage range?
+2026-10-13 12:39:15,618 INFO rag.llm: groq route request: ~310 input tokens (estimate)
+2026-10-13 12:39:16,600 INFO rag.llm: groq route usage: prompt=419 completion=50 total=469
+2026-10-13 12:39:17,842 INFO rag.llm: groq answer request: ~3252 input tokens (estimate)
+2026-10-13 12:39:20,860 INFO rag.llm: groq answer usage: prompt=3113 completion=355 total=3468
+  hit=False correct=False answer='The bill of quantities lists\u202f86 solar modules, each specified with a wattage between\u202f580\u202fW\u202fand\u202f600\u202fW'
+[7/97] (factual) Which inverter brands are named in the State Life Sukkur bill of quantities?
+2026-10-13 12:39:51,794 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 12:39:52,239 INFO rag.llm: groq route usage: prompt=412 completion=50 total=462
+2026-10-13 12:39:53,497 INFO rag.llm: groq answer request: ~3248 input tokens (estimate)
+2026-10-13 12:39:54,972 INFO rag.llm: groq answer usage: prompt=2966 completion=342 total=3308
+  hit=False correct=False answer='The bill of quantities lists the following inverter manufacturers: Goodwe, Sineng, Huawei, Nitrox an'
+[8/97] (factual) What spare parts must be ordered along with the State Life Sukkur project?
+2026-10-13 12:40:25,647 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 12:40:26,342 INFO rag.llm: groq route usage: prompt=412 completion=45 total=457
+2026-10-13 12:40:27,632 INFO rag.llm: groq answer request: ~3196 input tokens (estimate)
+2026-10-13 12:40:29,049 INFO rag.llm: groq answer usage: prompt=2869 completion=239 total=3108
+  hit=True correct=True answer='The spare parts to be ordered with the State Life Sukkur project are:\n\n- 10 extra modules  \n- 50\u202fm D'
+[9/97] (factual) What solar panel warranty does the State Life Sukkur tender ask for?
+2026-10-13 12:40:59,484 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 12:40:59,974 INFO rag.llm: groq route usage: prompt=411 completion=44 total=455
+2026-10-13 12:41:01,247 INFO rag.llm: groq answer request: ~3273 input tokens (estimate)
+2026-10-13 12:41:02,204 INFO rag.llm: groq answer usage: prompt=3099 completion=151 total=3250
+  hit=True correct=False answer='The tender requires a solar‑panel product warranty of\u202f16\u202fyears and a performance warranty of\u202f30\u202fyear'
+[10/97] (factual) What is FBISE's sanctioned load and main transformer size?
+2026-10-13 12:41:33,026 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 12:41:33,617 INFO rag.llm: groq route usage: prompt=409 completion=45 total=454
+2026-10-13 12:41:34,978 INFO rag.llm: groq answer request: ~3105 input tokens (estimate)
+2026-10-13 12:41:35,768 INFO rag.llm: groq answer usage: prompt=3019 completion=119 total=3138
+  hit=True correct=True answer='FBISE’s sanctioned load is\u202f403\u202fkW, and the building is served by a single main transformer rated at\u202f'
+[11/97] (factual) In which currency must bids be submitted for the FBISE 300 kWp solar tender?
+2026-10-13 12:42:06,755 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 12:42:08,059 INFO rag.llm: groq route usage: prompt=415 completion=55 total=470
+2026-10-13 12:42:09,207 INFO rag.llm: groq answer request: ~3153 input tokens (estimate)
+2026-10-13 12:42:10,366 INFO rag.llm: groq answer usage: prompt=3218 completion=221 total=3439
+  hit=False correct=False answer='Bids must be submitted in US\u202fDollar[1]'
+[12/97] (factual) What is the earnest money for the FBISE 300 kWp solar system?
+2026-10-13 12:42:41,342 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 12:42:41,867 INFO rag.llm: groq route usage: prompt=413 completion=47 total=460
+2026-10-13 12:42:43,097 INFO rag.llm: groq answer request: ~3070 input tokens (estimate)
+2026-10-13 12:42:45,021 INFO rag.llm: groq answer usage: prompt=3108 completion=188 total=3296
+  hit=True correct=True answer='The earnest money is Rs\u202f1,200,000 (one\u202fmillion\u202ftwo\u202fhundred\u202fthousand rupees)[1]'
+[13/97] (factual) What daily AC energy output must the FBISE system guarantee after the first year?
+2026-10-13 12:43:15,479 INFO rag.llm: groq route request: ~304 input tokens (estimate)
+2026-10-13 12:43:16,171 INFO rag.llm: groq route usage: prompt=413 completion=65 total=478
+2026-10-13 12:43:17,597 INFO rag.llm: groq answer request: ~2716 input tokens (estimate)
+2026-10-13 12:43:18,903 INFO rag.llm: groq answer usage: prompt=4132 completion=384 total=4516
+  hit=True correct=True answer='The system must guarantee a daily AC energy output of at least\u202f4\u202fkWh per\u202fkWp\u202f(i.e.,\u202f4\u202fkWh/kWp\u202fper\u202fda'
+[14/97] (factual) Within how many weeks must the FBISE solar system be completed after contract signing?
+2026-10-13 12:43:49,683 INFO rag.llm: groq route request: ~306 input tokens (estimate)
+2026-10-13 12:43:51,405 INFO rag.llm: groq route usage: prompt=413 completion=42 total=455
+2026-10-13 12:43:52,711 INFO rag.llm: groq answer request: ~3172 input tokens (estimate)
+2026-10-13 12:43:54,462 INFO rag.llm: groq answer usage: prompt=3142 completion=299 total=3441
+  hit=False correct=False answer="I don't know."
+[15/97] (factual) Are joint ventures allowed for the FBISE solar tender?
+2026-10-13 12:44:24,750 INFO rag.llm: groq route request: ~298 input tokens (estimate)
+2026-10-13 12:44:25,361 INFO rag.llm: groq route usage: prompt=408 completion=42 total=450
+2026-10-13 12:44:26,611 INFO rag.llm: groq answer request: ~3136 input tokens (estimate)
+2026-10-13 12:44:28,060 INFO rag.llm: groq answer usage: prompt=3013 completion=219 total=3232
+  hit=True correct=True answer='Joint ventures are not allowed for the FBISE solar tender; submitting a joint‑venture bid would lead'
+[16/97] (factual) Which court has jurisdiction over unresolved disputes in the FBISE tender?
+2026-10-13 12:44:58,310 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 12:44:58,746 INFO rag.llm: groq route usage: prompt=410 completion=44 total=454
+2026-10-13 12:45:00,072 INFO rag.llm: groq answer request: ~3220 input tokens (estimate)
+2026-10-13 12:45:01,036 INFO rag.llm: groq answer usage: prompt=3029 completion=112 total=3141
+  hit=True correct=True answer='The jurisdiction for any unresolved dispute in the FBISE tender is the Islamabad Court of Law[1][2]'
+[17/97] (factual) What capacity of solar system is FBR procuring, and for which site?
+2026-10-13 12:45:31,468 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 12:45:32,050 INFO rag.llm: groq route usage: prompt=413 completion=52 total=465
+2026-10-13 12:45:33,385 INFO rag.llm: groq answer request: ~3064 input tokens (estimate)
+2026-10-13 12:45:34,693 INFO rag.llm: groq answer usage: prompt=3004 completion=168 total=3172
+  hit=True correct=True answer='The Federal Board of Revenue is procuring a 50\u202fkW net‑metering solar system to be installed at its T'
+[18/97] (factual) When was the pre-bid meeting for the FBR solar tender held?
+2026-10-13 12:46:05,287 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 12:46:06,924 INFO rag.llm: groq route usage: prompt=412 completion=44 total=456
+2026-10-13 12:46:08,188 INFO rag.llm: groq answer request: ~3134 input tokens (estimate)
+2026-10-13 12:46:09,979 INFO rag.llm: groq answer usage: prompt=3265 completion=189 total=3454
+  hit=True correct=False answer='The pre‑bid meeting for the Federal Board of Revenue solar tender was held on\u202f9\u202fFebruary\u202f2026.\u202f[1][2'
+[19/97] (factual) What is the bid security for the FBR 50 kW solar tender?
+2026-10-13 12:46:40,465 INFO rag.llm: groq route request: ~298 input tokens (estimate)
+2026-10-13 12:46:41,613 INFO rag.llm: groq route usage: prompt=413 completion=40 total=453
+2026-10-13 12:46:42,793 INFO rag.llm: groq answer request: ~3270 input tokens (estimate)
+2026-10-13 12:46:45,417 INFO rag.llm: groq answer usage: prompt=3378 completion=130 total=3508
+  hit=True correct=True answer='The bid security required is PKR\u202f100,000.\u202f[1]'
+[20/97] (factual) What is the delivery period for the FBR solar system?
+2026-10-13 12:47:15,834 INFO rag.llm: groq route request: ~297 input tokens (estimate)
+2026-10-13 12:47:16,776 INFO rag.llm: groq route usage: prompt=409 completion=44 total=453
+2026-10-13 12:47:18,026 INFO rag.llm: groq answer request: ~3263 input tokens (estimate)
+2026-10-13 12:47:19,076 INFO rag.llm: groq answer usage: prompt=3161 completion=109 total=3270
+  hit=False correct=True answer='The delivery period for the Federal Board of Revenue’s 50\u202fkW net‑metering solar system is 90\u202fdays[1]'
+[21/97] (factual) What penalty applies if the FBR solar system is delivered late?
+2026-10-13 12:47:50,162 INFO rag.llm: groq route request: ~300 input tokens (estimate)
+2026-10-13 12:47:51,160 INFO rag.llm: groq route usage: prompt=410 completion=32 total=442
+2026-10-13 12:47:52,430 INFO rag.llm: groq answer request: ~3054 input tokens (estimate)
+2026-10-13 12:47:53,852 INFO rag.llm: groq answer usage: prompt=2895 completion=276 total=3171
+  hit=False correct=False answer='If the solar system is delivered late, the Procuring Agency may impose liquidated damages under GCC '
+[22/97] (factual) Which university is procuring the 400 kW on-grid solar system, and what is the procurement reference?
+2026-10-13 12:48:24,255 INFO rag.llm: groq route request: ~309 input tokens (estimate)
+2026-10-13 12:48:25,058 INFO rag.llm: groq route usage: prompt=419 completion=60 total=479
+2026-10-13 12:48:26,391 INFO rag.llm: groq answer request: ~3199 input tokens (estimate)
+2026-10-13 12:48:27,484 INFO rag.llm: groq answer usage: prompt=3126 completion=199 total=3325
+  hit=True correct=True answer='Comsats University, Islamabad (Attock Campus) is the procuring university, and the procurement refer'
+[23/97] (factual) What is the deadline for e-bids in the COMSATS Attock 400 kW solar procurement?
+2026-10-13 12:48:57,878 INFO rag.llm: groq route request: ~304 input tokens (estimate)
+2026-10-13 12:48:58,480 INFO rag.llm: groq route usage: prompt=419 completion=33 total=452
+2026-10-13 12:48:59,734 INFO rag.llm: groq answer request: ~3229 input tokens (estimate)
+2026-10-13 12:49:00,658 INFO rag.llm: groq answer usage: prompt=3312 completion=197 total=3509
+  hit=True correct=False answer='The e‑bid deadline is Tuesday,\u202fSeptember\u202f15,\u202f2026\u202fat\u202f02:00\u202fPM.[1]'
+[24/97] (factual) What is the bid security for the COMSATS Attock 400 kW solar lot?
+2026-10-13 12:49:31,074 INFO rag.llm: groq route request: ~300 input tokens (estimate)
+2026-10-13 12:49:31,838 INFO rag.llm: groq route usage: prompt=416 completion=45 total=461
+2026-10-13 12:49:33,082 INFO rag.llm: groq answer request: ~3214 input tokens (estimate)
+2026-10-13 12:49:33,953 INFO rag.llm: groq answer usage: prompt=3317 completion=129 total=3446
+  hit=True correct=True answer='The bid security is PKR\u202f1,200,000.\u202f[1][2]'
+[25/97] (factual) What is the performance guarantee in the COMSATS Attock solar contract?
+2026-10-13 12:50:04,510 INFO rag.llm: groq route request: ~302 input tokens (estimate)
+2026-10-13 12:50:05,136 INFO rag.llm: groq route usage: prompt=412 completion=46 total=458
+2026-10-13 12:50:06,445 INFO rag.llm: groq answer request: ~3219 input tokens (estimate)
+2026-10-13 12:50:08,416 INFO rag.llm: groq answer usage: prompt=3022 completion=270 total=3292
+  hit=False correct=True answer='The contract requires the successful bidder to provide a performance guarantee equal to\u202f10\u202f% of the '
+[26/97] (factual) What evaluation method and weights does the COMSATS Attock solar tender use?
+2026-10-13 12:50:38,972 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 12:50:39,906 INFO rag.llm: groq route usage: prompt=413 completion=42 total=455
+2026-10-13 12:50:41,352 INFO rag.llm: groq answer request: ~3252 input tokens (estimate)
+2026-10-13 12:50:43,107 INFO rag.llm: groq answer usage: prompt=3215 completion=181 total=3396
+  hit=True correct=True answer='The tender uses a Quality and Cost Based Selection (QCBS) method, assigning 70\u202f% weight to the techn'
+[27/97] (factual) Under the 2015 net metering regulations, what is the maximum size of a distributed generation facility?
+2026-10-13 12:51:13,681 INFO rag.llm: groq route request: ~310 input tokens (estimate)
+2026-10-13 12:51:14,533 INFO rag.llm: groq route usage: prompt=418 completion=45 total=463
+2026-10-13 12:51:15,743 INFO rag.llm: groq answer request: ~3284 input tokens (estimate)
+2026-10-13 12:51:17,135 INFO rag.llm: groq answer usage: prompt=2912 completion=158 total=3070
+  hit=True correct=True answer='The regulations limit a Distributed Generation Facility to a maximum capacity of\u202f1\u202fMW[1][2]'
+[28/97] (factual) What is the term of the net metering agreement between a distributed generator and the DISCO?
+2026-10-13 12:51:47,645 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 12:51:48,629 INFO rag.llm: groq route usage: prompt=416 completion=30 total=446
+2026-10-13 12:51:49,970 INFO rag.llm: groq answer request: ~3263 input tokens (estimate)
+2026-10-13 12:51:51,410 INFO rag.llm: groq answer usage: prompt=2865 completion=214 total=3079
+  hit=True correct=True answer='The net‑metering agreement is for a period of three\u202fyears, beginning on the date the distributed‑gen'
+[29/97] (factual) What is the maximum fine for violating the 2015 net metering regulations?
+2026-10-13 12:52:21,836 INFO rag.llm: groq route request: ~302 input tokens (estimate)
+2026-10-13 12:52:24,148 INFO rag.llm: groq route usage: prompt=413 completion=52 total=465
+2026-10-13 12:52:25,409 INFO rag.llm: groq answer request: ~3181 input tokens (estimate)
+2026-10-13 12:52:26,676 INFO rag.llm: groq answer usage: prompt=2939 completion=241 total=3180
+  hit=False correct=False answer="I don't know."
+[30/97] (factual) What voltage and frequency variation is permitted under the 2015 net metering regulations?
+2026-10-13 12:52:57,364 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 12:52:58,112 INFO rag.llm: groq route usage: prompt=414 completion=38 total=452
+2026-10-13 12:52:59,528 INFO rag.llm: groq answer request: ~3175 input tokens (estimate)
+2026-10-13 12:53:00,688 INFO rag.llm: groq answer usage: prompt=2815 completion=160 total=2975
+  hit=True correct=True answer='A variation of\u202f±5\u202f% is allowed for the nominal voltage and\u202f±1\u202f% for the nominal frequency\u202f[1]'
+[31/97] (factual) Who pays for interconnection facilities up to the interconnection point?
+2026-10-13 12:53:31,301 INFO rag.llm: groq route request: ~302 input tokens (estimate)
+2026-10-13 12:53:31,903 INFO rag.llm: groq route usage: prompt=410 completion=47 total=457
+2026-10-13 12:53:33,133 INFO rag.llm: groq answer request: ~3139 input tokens (estimate)
+2026-10-13 12:53:34,517 INFO rag.llm: groq answer usage: prompt=2724 completion=140 total=2864
+  hit=True correct=True answer='The Distributed Generator is responsible for paying all costs associated with the interconnection fa'
+[32/97] (factual) When a distributed generator exports more than it imports, at what rate does the DISCO pay?
+2026-10-13 12:54:05,067 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 12:54:05,933 INFO rag.llm: groq route usage: prompt=416 completion=49 total=465
+2026-10-13 12:54:07,246 INFO rag.llm: groq answer request: ~3085 input tokens (estimate)
+2026-10-13 12:54:08,557 INFO rag.llm: groq answer usage: prompt=2829 completion=204 total=3033
+  hit=True correct=True answer='The DISCO pays the exported energy at the off‑peak tariff that applies to the consumer category for '
+[33/97] (factual) According to the AEDB guide, when was the Distribution Code Review Panel established?
+2026-10-13 12:54:39,156 INFO rag.llm: groq route request: ~305 input tokens (estimate)
+2026-10-13 12:54:40,266 INFO rag.llm: groq route usage: prompt=413 completion=51 total=464
+2026-10-13 12:54:41,466 INFO rag.llm: groq answer request: ~3188 input tokens (estimate)
+2026-10-13 12:54:42,735 INFO rag.llm: groq answer usage: prompt=2795 completion=111 total=2906
+  hit=True correct=True answer='The Distribution Code Review Panel was established on\u202fOctober\u202f21st\u202f2014[1]'
+[34/97] (factual) What earthing resistance does the AEDB net metering guide allow for the solar PV support structure?
+2026-10-13 12:55:12,943 INFO rag.llm: groq route request: ~309 input tokens (estimate)
+2026-10-13 12:55:13,647 INFO rag.llm: groq route usage: prompt=417 completion=45 total=462
+2026-10-13 12:55:14,944 INFO rag.llm: groq answer request: ~3195 input tokens (estimate)
+2026-10-13 12:55:16,451 INFO rag.llm: groq answer usage: prompt=3160 completion=340 total=3500
+  hit=True correct=False answer='The guide permits a total earth resistance of up to\u202f5\u202fohms for the solar PV support structure\u202f[1].'
+[35/97] (factual) How often must net meters and inverter functionality be checked according to the AEDB guide?
+2026-10-13 12:55:46,727 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 12:55:47,358 INFO rag.llm: groq route usage: prompt=414 completion=45 total=459
+2026-10-13 12:55:48,585 INFO rag.llm: groq answer request: ~3163 input tokens (estimate)
+2026-10-13 12:55:49,550 INFO rag.llm: groq answer usage: prompt=2819 completion=168 total=2987
+  hit=True correct=True answer='Both uni‑directional and bi‑directional energy meters must be tested once every six months, and the '
+[36/97] (factual) Above what building height are lightning arresters required under the AEDB guide?
+2026-10-13 12:56:20,000 INFO rag.llm: groq route request: ~304 input tokens (estimate)
+2026-10-13 12:56:21,041 INFO rag.llm: groq route usage: prompt=412 completion=52 total=464
+2026-10-13 12:56:22,476 INFO rag.llm: groq answer request: ~3098 input tokens (estimate)
+2026-10-13 12:56:23,426 INFO rag.llm: groq answer usage: prompt=3073 completion=95 total=3168
+  hit=True correct=True answer='Lightning arresters are required for buildings that are more than\u202f15\u202fmetres tall[1].'
+[37/97] (factual) What does the 2026 amendment say about consumers who already had net metering agreements under the old regulations?
+2026-10-13 12:56:54,405 INFO rag.llm: groq route request: ~313 input tokens (estimate)
+2026-10-13 12:56:55,563 INFO rag.llm: groq route usage: prompt=419 completion=55 total=474
+2026-10-13 12:56:56,815 INFO rag.llm: groq answer request: ~3145 input tokens (estimate)
+2026-10-13 12:56:58,471 INFO rag.llm: groq answer usage: prompt=2855 completion=333 total=3188
+  hit=True correct=True answer='The amendment states that, despite the repeal of the old regulations, any approvals, licences, concu'
+[38/97] (factual) From what date is the 2026 Prosumer Regulations amendment deemed to have taken effect?
+2026-10-13 12:57:29,453 INFO rag.llm: groq route request: ~306 input tokens (estimate)
+2026-10-13 12:57:30,455 INFO rag.llm: groq route usage: prompt=415 completion=44 total=459
+2026-10-13 12:57:31,794 INFO rag.llm: groq answer request: ~3183 input tokens (estimate)
+2026-10-13 12:57:32,576 INFO rag.llm: groq answer usage: prompt=2906 completion=111 total=3017
+  hit=True correct=True answer='The amendment is deemed to have taken effect on\u202f9\u202fFebruary\u202f2026[1]'
+[39/97] (factual) In the PPIB Own Cost Model bidding documents, what is the bid validity period?
+2026-10-13 12:58:03,294 INFO rag.llm: groq route request: ~304 input tokens (estimate)
+2026-10-13 12:58:03,957 INFO rag.llm: groq route usage: prompt=415 completion=30 total=445
+2026-10-13 12:58:05,221 INFO rag.llm: groq answer request: ~3223 input tokens (estimate)
+2026-10-13 12:58:06,166 INFO rag.llm: groq answer usage: prompt=3048 completion=170 total=3218
+  hit=False correct=False answer='The bid must remain valid for ninety (90) days from the date fixed for the bid submission deadline[1'
+[40/97] (factual) In the PPIB Lease Purchase Model bidding documents, what is the bid validity period?
+2026-10-13 12:58:36,612 INFO rag.llm: groq route request: ~305 input tokens (estimate)
+2026-10-13 12:58:37,171 INFO rag.llm: groq route usage: prompt=415 completion=34 total=449
+2026-10-13 12:58:38,466 INFO rag.llm: groq answer request: ~3260 input tokens (estimate)
+2026-10-13 12:58:39,832 INFO rag.llm: groq answer usage: prompt=2980 completion=234 total=3214
+  hit=False correct=False answer="I don't know."
+[41/97] (factual) How much bid security per kW does the Own Cost Model require?
+2026-10-13 12:59:10,380 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 12:59:12,009 INFO rag.llm: groq route usage: prompt=411 completion=48 total=459
+2026-10-13 12:59:13,211 INFO rag.llm: groq answer request: ~3229 input tokens (estimate)
+2026-10-13 12:59:14,788 INFO rag.llm: groq answer usage: prompt=3042 completion=359 total=3401
+  hit=False correct=False answer="I don't know."
+[42/97] (factual) How much bid security per kW does the Lease Purchase Model require?
+2026-10-13 12:59:45,355 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 12:59:47,493 INFO rag.llm: groq route usage: prompt=411 completion=48 total=459
+2026-10-13 12:59:48,741 INFO rag.llm: groq answer request: ~3238 input tokens (estimate)
+2026-10-13 12:59:50,346 INFO rag.llm: groq answer usage: prompt=2958 completion=150 total=3108
+  hit=False correct=False answer="I don't know."
+[43/97] (factual) What is the lease term under the PPIB Lease Purchase Model?
+2026-10-13 13:00:20,931 INFO rag.llm: groq route request: ~299 input tokens (estimate)
+2026-10-13 13:00:21,826 INFO rag.llm: groq route usage: prompt=411 completion=53 total=464
+2026-10-13 13:00:23,010 INFO rag.llm: groq answer request: ~3177 input tokens (estimate)
+2026-10-13 13:00:25,036 INFO rag.llm: groq answer usage: prompt=2806 completion=155 total=2961
+  hit=True correct=True answer='The lease term is ten (10) years, beginning from the Commercial Operation Date, with possible extens'
+[44/97] (factual) What minimum experience does the Own Cost Model require from bidders?
+2026-10-13 13:00:55,752 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 13:00:56,497 INFO rag.llm: groq route usage: prompt=409 completion=54 total=463
+2026-10-13 13:00:57,837 INFO rag.llm: groq answer request: ~3182 input tokens (estimate)
+2026-10-13 13:01:00,327 INFO rag.llm: groq answer usage: prompt=2949 completion=181 total=3130
+  hit=False correct=False answer="I don't know."
+[45/97] (factual) What minimum average annual turnover does the Lease Purchase Model require?
+2026-10-13 13:01:30,595 INFO rag.llm: groq route request: ~303 input tokens (estimate)
+2026-10-13 13:01:35,551 INFO rag.llm: groq route usage: prompt=409 completion=45 total=454
+2026-10-13 13:01:36,841 INFO rag.llm: groq answer request: ~3209 input tokens (estimate)
+2026-10-13 13:01:38,987 INFO rag.llm: groq answer usage: prompt=2850 completion=194 total=3044
+  hit=False correct=False answer='The Lease Purchase Model requires a minimum average annual turnover of PKR\u202f100\u202fmillion in the last t'
+[46/97] (factual) What is the liquidated damages rate in the Own Cost Model contract?
+2026-10-13 13:02:09,378 INFO rag.llm: groq route request: ~301 input tokens (estimate)
+2026-10-13 13:02:10,050 INFO rag.llm: groq route usage: prompt=411 completion=42 total=453
+2026-10-13 13:02:11,260 INFO rag.llm: groq answer request: ~3120 input tokens (estimate)
+2026-10-13 13:02:12,512 INFO rag.llm: groq answer usage: prompt=2744 completion=219 total=2963
+  hit=False correct=False answer="I don't know."
+[47/97] (factual) Under the 2015 regulations themselves, how many working days does the DISCO have to acknowledge a net metering application?
+2026-10-13 13:02:43,374 INFO rag.llm: groq route request: ~315 input tokens (estimate)
+2026-10-13 13:02:44,216 INFO rag.llm: groq route usage: prompt=422 completion=39 total=461
+2026-10-13 13:02:45,489 INFO rag.llm: groq answer request: ~3197 input tokens (estimate)
+2026-10-13 13:02:49,199 INFO rag.llm: groq answer usage: prompt=2899 completion=507 total=3406
+  hit=False correct=False answer="I don't know."
+[48/97] (factual) According to the AEDB reference guide's timeline, how quickly must the DISCO acknowledge a net metering application?
+2026-10-13 13:03:19,782 INFO rag.llm: groq route request: ~313 input tokens (estimate)
+2026-10-13 13:03:20,538 INFO rag.llm: groq route usage: prompt=420 completion=42 total=462
+2026-10-13 13:03:21,763 INFO rag.llm: groq answer request: ~3139 input tokens (estimate)
+2026-10-13 13:03:24,694 INFO rag.llm: groq answer usage: prompt=2783 completion=373 total=3156
+  hit=True correct=True answer='The DISCO must acknowledge receipt of the application within one working day of receiving it[1].'
+[49/97] (table) How much roof area is available on Roof-3 at FBISE, and how many kWp of modules can it hold?
+2026-10-13 13:03:57,090 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 13:03:57,646 INFO rag.llm: groq route usage: prompt=422 completion=40 total=462
+2026-10-13 13:03:58,867 INFO rag.llm: groq answer request: ~3148 input tokens (estimate)
+2026-10-13 13:04:00,792 INFO rag.llm: groq answer usage: prompt=3166 completion=581 total=3747
+  hit=True correct=False answer="I don't know."
+[50/97] (table) What is the total module capacity the FBISE roofs can hold, and what size system must bidders propose?
+2026-10-13 13:04:31,486 INFO rag.llm: groq route request: ~310 input tokens (estimate)
+2026-10-13 13:04:32,211 INFO rag.llm: groq route usage: prompt=418 completion=43 total=461
+2026-10-13 13:04:33,545 INFO rag.llm: groq answer request: ~3209 input tokens (estimate)
+2026-10-13 13:04:35,802 INFO rag.llm: groq answer usage: prompt=3186 completion=345 total=3531
+  hit=True correct=True answer='The FBISE roof area can accommodate up to 322\u202fkWp of solar modules, but bidders are required to prop'
+[51/97] (table) What are the FBISE payment milestones?
+2026-10-13 13:05:06,770 INFO rag.llm: groq route request: ~294 input tokens (estimate)
+2026-10-13 13:05:07,173 INFO rag.llm: groq route usage: prompt=405 completion=39 total=444
+2026-10-13 13:05:08,462 INFO rag.llm: groq answer request: ~3114 input tokens (estimate)
+2026-10-13 13:05:10,452 INFO rag.llm: groq answer usage: prompt=2922 completion=255 total=3177
+  hit=True correct=True answer='The FBISE payment milestones are:\n\n- 20\u202f% mobilization advance at the time of signing the contract  '
+[52/97] (table) What one-time NEPRA licence fee applies to a 30 kW distributed generation facility under the 2015 fee schedule?
+2026-10-13 13:05:40,656 INFO rag.llm: groq route request: ~312 input tokens (estimate)
+2026-10-13 13:05:45,305 INFO rag.llm: groq route usage: prompt=423 completion=49 total=472
+2026-10-13 13:05:46,551 INFO rag.llm: groq answer request: ~3105 input tokens (estimate)
+2026-10-13 13:05:50,215 INFO rag.llm: groq answer usage: prompt=3041 completion=419 total=3460
+  hit=True correct=True answer='The one‑time licence fee for a 30\u202fkW distributed generation facility is Rs.\u202f500/‑[1]'
+[53/97] (table) Is there a NEPRA licence fee for a 15 kW solar system under the 2015 fee schedule?
+2026-10-13 13:06:21,501 INFO rag.llm: groq route request: ~305 input tokens (estimate)
+2026-10-13 13:06:22,106 INFO rag.llm: groq route usage: prompt=421 completion=34 total=455
+2026-10-13 13:06:23,495 INFO rag.llm: groq answer request: ~3246 input tokens (estimate)
+2026-10-13 13:06:26,177 INFO rag.llm: groq answer usage: prompt=3304 completion=253 total=3557
+  hit=True correct=True answer='Under the 2015 fee schedule, a 15\u202fkW system falls in the 0‑20\u202fkW bracket, which is “Free of Cost” (n'
+[54/97] (table) Under the AEDB guide, how fast must an inverter trip if voltage falls below 50%?
+2026-10-13 13:06:56,678 INFO rag.llm: groq route request: ~304 input tokens (estimate)
+2026-10-13 13:06:57,439 INFO rag.llm: groq route usage: prompt=417 completion=33 total=450
+2026-10-13 13:06:58,797 INFO rag.llm: groq answer request: ~3069 input tokens (estimate)
+2026-10-13 13:07:01,341 INFO rag.llm: groq answer usage: prompt=2941 completion=183 total=3124
+  hit=True correct=True answer='The inverter must trip within 0.1\u202fseconds when the voltage drops below 50\u202f%\u202f[1]'
+[55/97] (table) What harmonic distortion limit applies to 11th through 15th odd harmonics in the AEDB guide?
+2026-10-13 13:07:32,243 INFO rag.llm: groq route request: ~307 input tokens (estimate)
+2026-10-13 13:07:33,064 INFO rag.llm: groq route usage: prompt=419 completion=33 total=452
+2026-10-13 13:07:34,217 INFO rag.llm: groq answer request: ~3061 input tokens (estimate)
+2026-10-13 13:07:35,495 INFO rag.llm: groq answer usage: prompt=2927 completion=139 total=3066
+  hit=True correct=True answer='The limit is less than\u202f2.0\u202f% for the 11th through 15th odd harmonics[1].'
+[56/97] (table) What is the minimum payment per bill in the State Life Sukkur contract?
+2026-10-13 13:08:05,788 INFO rag.llm: groq route request: ~302 input tokens (estimate)
+2026-10-13 13:08:06,696 INFO rag.llm: groq route usage: prompt=412 completion=48 total=460
+2026-10-13 13:08:07,997 INFO rag.llm: groq answer request: ~3168 input tokens (estimate)
+2026-10-13 13:08:10,197 INFO rag.llm: groq answer usage: prompt=2898 completion=315 total=3213
+  hit=False correct=False answer="I don't know."
+[57/97] (table) What are the payment percentages in the Own Cost Model contract?
+2026-10-13 13:08:40,804 INFO rag.llm: groq route request: ~300 input tokens (estimate)
+2026-10-13 13:08:41,690 INFO rag.llm: groq route usage: prompt=409 completion=46 total=455
+2026-10-13 13:08:42,925 INFO rag.llm: groq answer request: ~3219 input tokens (estimate)
+2026-10-13 13:08:46,481 INFO rag.llm: groq answer usage: prompt=2903 completion=521 total=3424
+  hit=False correct=False answer="I don't know."
+[58/97] (table) How many technical marks are needed to pass in the COMSATS Attock solar evaluation?
+2026-10-13 13:09:16,924 INFO rag.llm: groq route request: ~305 input tokens (estimate)
+2026-10-13 13:09:17,665 INFO rag.llm: groq route usage: prompt=415 completion=49 total=464
+2026-10-13 13:09:19,001 INFO rag.llm: groq answer request: ~3275 input tokens (estimate)
+2026-10-13 13:09:21,555 INFO rag.llm: groq answer usage: prompt=3201 completion=98 total=3299
+  hit=True correct=True answer='The evaluation requires at least\u202f49\u202ftechnical marks to pass[1].'
+[59/97] (paraphrased) If my solar system makes more electricity than I use, does the extra get carried forward to next month's bill?
+2026-10-13 13:09:52,197 INFO rag.llm: groq route request: ~312 input tokens (estimate)
+2026-10-13 13:09:53,139 INFO rag.llm: groq route usage: prompt=419 completion=36 total=455
+2026-10-13 13:09:54,342 INFO rag.llm: groq answer request: ~3201 input tokens (estimate)
+  429 rate limited, retrying in 60s
+2026-10-13 13:10:54,483 INFO rag.llm: groq answer request: ~3201 input tokens (estimate)
+  error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m4k8e245e0fsaj44nktcd8s4` service tier `on_demand` on tokens per day 
+
+Daily token limit reached; stopping. Re-run later with --retry-errors --out v2_heldout
+
+type             n   retrieval hit rate       answer accuracy
+--------------------------------------------------------------------
+factual         48    58.3% (28/48)            52.1% (25/48)
+table           10    80.0% (8/10)             70.0% (7/10)
+paraphrased     14   n/a                      n/a
+aggregation     15   n/a                      n/a
+unanswerable    10   n/a                      n/a
+--------------------------------------------------------------------
+overall         97    62.1% (36/58)            55.2% (32/58)
+
+39 question(s) errored and are excluded from accuracy
+
+Documents path, 58 questions: p50 retrieval 1264 ms, p50 end-to-end 3650 ms
+
+Saved 97 results to /app/eval/results/v2_heldout.jsonl
+exit=0 | Tue Oct 13 18:10:56 PST 2026

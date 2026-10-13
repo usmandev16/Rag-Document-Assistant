@@ -1,0 +1,13 @@
+ Container ragdocchat-redis-1 Running 
+ Container ragdocchat-worker-run-6d2190f68da4 Creating 
+ Container ragdocchat-worker-run-6d2190f68da4 Created 
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1783.74it/s]
+
+Retrieval hit rate (v2):
+  factual      28/48
+  table        8/10
+  paraphrased  8/14
+  overall      44/72
+Retrieval latency over 72 questions: p50 306 ms, p95 333 ms, max 475 ms
+Saved /app/eval/results/retrieval_v2.json
